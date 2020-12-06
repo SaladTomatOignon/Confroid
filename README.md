@@ -1,0 +1,2 @@
+# Confroid
+Le projet Confroid consiste à réaliser une application Android permettant la gestion centralisée de configurations. Toute application installée sur l'appareil a la possibilité de confier le stockage de sa configuration à Confroid plutôt que de réaliser cette tâche elle-même. L'utilisateur a la possibilité de modifier la configuration d'une application en utilisant Confroid. Les configurations sont stockées selon un mode transactionnel avec un historique de versions.
