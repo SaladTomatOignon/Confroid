@@ -16,22 +16,22 @@ public class ConfigurationDeserializerTest {
         java.lang.String jsonBoolean = "true";
 
         Value value;
-        value = Configuration.importFromJson(jsonInteger).getContent();
+        value = Configuration.fromJson(jsonInteger).getContent();
         assertTrue(value.isPrimitive());
         assertTrue(value.getPrimitive().isInteger());
         assertEquals(5, (int) value.getPrimitive().getInteger());
 
-        value = Configuration.importFromJson(jsonFloat).getContent();
+        value = Configuration.fromJson(jsonFloat).getContent();
         assertTrue(value.isPrimitive());
         assertTrue(value.getPrimitive().isFloat());
         assertEquals(8.25f, value.getPrimitive().getFloat(), 0.01);
 
-        value = Configuration.importFromJson(jsonString).getContent();
+        value = Configuration.fromJson(jsonString).getContent();
         assertTrue(value.isPrimitive());
         assertTrue(value.getPrimitive().isString());
         assertEquals("Salut", value.getPrimitive().getString());
 
-        value = Configuration.importFromJson(jsonBoolean).getContent();
+        value = Configuration.fromJson(jsonBoolean).getContent();
         assertTrue(value.isPrimitive());
         assertTrue(value.getPrimitive().isBoolean());
         assertTrue(value.getPrimitive().getBoolean());
@@ -44,11 +44,11 @@ public class ConfigurationDeserializerTest {
         int[] integersArray = new int[] {1, 52, 789, -45, 0};
 
         Value value;
-        value = Configuration.importFromJson(jsonEmptyArray).getContent();
+        value = Configuration.fromJson(jsonEmptyArray).getContent();
         assertTrue(value.isArray());
         assertTrue(value.getArray().length == 0);
 
-        value = Configuration.importFromJson(jsonIntegersArray).getContent();
+        value = Configuration.fromJson(jsonIntegersArray).getContent();
         assertTrue(value.isArray());
         Value[] array = value.getArray();
         for (int i = 0; i < array.length; i++) {
@@ -61,7 +61,7 @@ public class ConfigurationDeserializerTest {
     @Test
     public void jsonToValue_dictionary() {
         java.lang.String json = "{\"key1\":42,\"key2\":\"Coco\",\"key3\":78.23,\"key4\":false}";
-        Value value = Configuration.importFromJson(json).getContent();
+        Value value = Configuration.fromJson(json).getContent();
 
         assertTrue(value.isDictionary());
         Map<java.lang.String, Value> map = value.getMap();
@@ -85,7 +85,7 @@ public class ConfigurationDeserializerTest {
         java.lang.String subJson2 = java.lang.String.format("{\"key5\":[%s, %s, true, 98]}", subJson1, subJson1);
         java.lang.String json = java.lang.String.format("{\"key6\":%s,\"key7\":\"Wesh alors\"}", subJson2);
 
-        Value value = Configuration.importFromJson(json).getContent();
+        Value value = Configuration.fromJson(json).getContent();
         assertTrue(value.isDictionary());
         assertTrue(value.getMap().get("key6").isDictionary());
         assertTrue(value.getMap().get("key7").getPrimitive().isString());

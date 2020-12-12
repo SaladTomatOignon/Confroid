@@ -16,10 +16,10 @@ public class ConfigurationSerializerTest {
         Configuration bool = new Configuration(new Boolean(true));
         Configuration string = new Configuration(new String("Batman"));
 
-        assertEquals("5", integer.exportToJson());
-        assertEquals("45.12", floot.exportToJson());
-        assertEquals("true", bool.exportToJson());
-        assertEquals("\"Batman\"", string.exportToJson());
+        assertEquals("5", integer.toJson());
+        assertEquals("45.12", floot.toJson());
+        assertEquals("true", bool.toJson());
+        assertEquals("\"Batman\"", string.toJson());
     }
 
     @Test
@@ -31,8 +31,8 @@ public class ConfigurationSerializerTest {
         Boolean bool = new Boolean(false);
         Configuration array = new Configuration(new Array(new Value[]{a, str, floot, bool}));
 
-        assertEquals("[]", emptyArray.exportToJson());
-        assertEquals("[42,\"Ali baba\",12.8,false]", array.exportToJson());
+        assertEquals("[]", emptyArray.toJson());
+        assertEquals("[42,\"Ali baba\",12.8,false]", array.toJson());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ConfigurationSerializerTest {
 
         Configuration dico = new Configuration(new Dictionary(map));
 
-        assertEquals("{\"Tableau vide\":[],\"boolean\":false,\"chaine\":\"Ali baba\",\"Tableau\":[42,\"Ali baba\",12.8,false],\"int\":42}", dico.exportToJson());
+        assertEquals("{\"Tableau vide\":[],\"boolean\":false,\"chaine\":\"Ali baba\",\"Tableau\":[42,\"Ali baba\",12.8,false],\"int\":42}", dico.toJson());
     }
 
     @Test
@@ -81,6 +81,6 @@ public class ConfigurationSerializerTest {
         Configuration dico = new Configuration(new Dictionary(map2));
 
         assertEquals("{\"key1\":true,\"key2\":852.123,\"key3\":5,\"key4\":{\"Tableau vide\":[],\"boolean\":false,\"chaine\":\"Ali baba\",\"Tableau\":[42,\"Ali baba\",12.8,false],\"int\":42}}",
-                dico.exportToJson());
+                dico.toJson());
     }
 }

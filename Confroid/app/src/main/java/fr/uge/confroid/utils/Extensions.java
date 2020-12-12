@@ -47,6 +47,24 @@ public class Extensions {
     }
 
     /**
+     * Convert an array to a Bundle, where the key is the index of the value.
+     *
+     * @param array The array to convert
+     * @param <V> The type of the array values
+     * @return A bundle containing the array values, where the key is the index of the value
+     * @throws IllegalArgumentException If the array contains value that is not supported
+     */
+    public static <V> Bundle convertToBundle(V[] array) throws IllegalArgumentException {
+        Bundle bundle = new Bundle();
+
+        for (int i = 0; i < array.length; i++) {
+            addValueToBundle(bundle, String.valueOf(i), array[i]);
+        }
+
+        return bundle;
+    }
+
+    /**
      * Add an entry in the bundle, with the right value type.
      *
      * @param bundle The bundle in which insert the entry
@@ -66,16 +84,28 @@ public class Extensions {
             bundle.putByte(key, (Byte) value);
         } else if (value instanceof byte[]) {
             bundle.putByteArray(key, (byte[]) value);
+        } else if (value instanceof fr.uge.confroid.configuration.Byte) {
+            bundle.putByte(key, ((fr.uge.confroid.configuration.Byte) value).getByte());
         } else if (value instanceof Character) {
             bundle.putChar(key, (Character) value);
         } else if (value instanceof char[]) {
             bundle.putCharArray(key, (char[]) value);
+        }  else if (value instanceof String) {
+            bundle.putString(key, (String) value);
+        } else if (value instanceof fr.uge.confroid.configuration.String) {
+            bundle.putString(key, ((fr.uge.confroid.configuration.String) value).getString());
         } else if (value instanceof CharSequence) {
             bundle.putCharSequence(key, (CharSequence) value);
         } else if (value instanceof Float) {
             bundle.putFloat(key, (Float) value);
         } else if (value instanceof float[]) {
             bundle.putFloatArray(key, (float[]) value);
+        } else if (value instanceof fr.uge.confroid.configuration.Float) {
+            bundle.putFloat(key, ((fr.uge.confroid.configuration.Float) value).getFloat());
+        }  else if (value instanceof Integer) {
+            bundle.putInt(key, (Integer) value);
+        } else if (value instanceof fr.uge.confroid.configuration.Integer) {
+            bundle.putInt(key, ((fr.uge.confroid.configuration.Integer) value).getInteger());
         } else if (value instanceof Short) {
             bundle.putShort(key, (Short) value);
         } else if (value instanceof short[]) {
@@ -84,6 +114,8 @@ public class Extensions {
             bundle.putBoolean(key, (Boolean) value);
         } else if (value instanceof boolean[]) {
             bundle.putBooleanArray(key, (boolean[]) value);
+        } else if (value instanceof fr.uge.confroid.configuration.Boolean) {
+            bundle.putBoolean(key, ((fr.uge.confroid.configuration.Boolean) value).getBoolean());
         } else if (value instanceof Parcelable) {
             bundle.putParcelable(key, (Parcelable) value);
         } else if (value instanceof Serializable) {
@@ -92,10 +124,14 @@ public class Extensions {
             try {
                 bundle.putBundle(key, convertToBundle((Map<String, Object>) value));
             } catch (ClassCastException e) {
-                throw new IllegalArgumentException("The map key type must be String");
+                throw new IllegalArgumentException("The map key type must be String", e);
             }
+        }  else if (value instanceof fr.uge.confroid.configuration.Dictionary) {
+            bundle.putBundle(key, convertToBundle(((fr.uge.confroid.configuration.Dictionary) value).getMap()));
         } else if (value instanceof List) {
             bundle.putBundle(key, convertToBundle((List<Object>) value));
+        }  else if (value instanceof fr.uge.confroid.configuration.Array) {
+            bundle.putBundle(key, convertToBundle(((fr.uge.confroid.configuration.Array) value).getArray()));
         } else {
             throw new IllegalArgumentException("Le type " + value.getClass() + " is not currently supported");
         }
