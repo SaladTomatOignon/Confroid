@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.uge.confroid">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,6 +18,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <service
+            android:name=".services.ConfigurationPusher"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="fr.uge.confroid.services.ConfigurationPusher" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.ConfigurationPuller"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="fr.uge.confroid.services.ConfigurationPuller" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".receivers.TokenDispenser"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="fr.uge.confroid.receivers.TokenDispenser" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+    </application>
 </manifest>
