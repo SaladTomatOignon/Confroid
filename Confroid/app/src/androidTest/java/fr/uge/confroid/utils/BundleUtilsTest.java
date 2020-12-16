@@ -12,7 +12,7 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
-public class ExtensionsTest {
+public class BundleUtilsTest {
 
     @Test
     public void objectToBundleTest() {
@@ -23,33 +23,33 @@ public class ExtensionsTest {
         prefs.map("home", new ShoppingInfo(address1, billing, true));
         prefs.map("work", new ShoppingInfo(address2, billing, false));
 
-        Bundle bundle = Extensions.convertToBundleReflection(prefs);
+        Bundle bundle = BundleUtils.convertToBundleReflection(prefs);
 
         assertEquals(3, bundle.size());
-        assertEquals(1, bundle.getInt(Extensions.ID_KEYWORD));
-        assertEquals(ShoppingPreferences.class.getName(), bundle.getString(Extensions.CLASS_KEYWORD));
+        assertEquals(1, bundle.getInt(BundleUtils.ID_KEYWORD));
+        assertEquals(ShoppingPreferences.class.getName(), bundle.getString(BundleUtils.CLASS_KEYWORD));
 
         assertEquals(3, bundle.getBundle("shoppingInfos").size());
 
         {
             Bundle workBundle = bundle.getBundle("shoppingInfos").getBundle("work");
             assertEquals(5, workBundle.size());
-            assertEquals(2, workBundle.getInt(Extensions.ID_KEYWORD));
-            assertEquals(ShoppingInfo.class.getName(), workBundle.getString(Extensions.CLASS_KEYWORD));
+            assertEquals(2, workBundle.getInt(BundleUtils.ID_KEYWORD));
+            assertEquals(ShoppingInfo.class.getName(), workBundle.getString(BundleUtils.CLASS_KEYWORD));
             assertFalse(workBundle.getBoolean("favorite"));
 
             {
                 Bundle workBundleAddress = workBundle.getBundle("address");
                 assertEquals(6, workBundleAddress.size());
-                assertEquals(3, workBundleAddress.getInt(Extensions.ID_KEYWORD));
-                assertEquals(ShippingAddress.class.getName(), workBundleAddress.getString(Extensions.CLASS_KEYWORD));
+                assertEquals(3, workBundleAddress.getInt(BundleUtils.ID_KEYWORD));
+                assertEquals(ShippingAddress.class.getName(), workBundleAddress.getString(BundleUtils.CLASS_KEYWORD));
             }
 
             {
                 Bundle workBundleBilling = workBundle.getBundle("billing");
                 assertEquals(7, workBundleBilling.size());
-                assertEquals(4, workBundleBilling.getInt(Extensions.ID_KEYWORD));
-                assertEquals(BillingDetails.class.getName(), workBundleBilling.getString(Extensions.CLASS_KEYWORD));
+                assertEquals(4, workBundleBilling.getInt(BundleUtils.ID_KEYWORD));
+                assertEquals(BillingDetails.class.getName(), workBundleBilling.getString(BundleUtils.CLASS_KEYWORD));
                 assertEquals("Bugdroid", workBundleBilling.getString("cardHolder"));
                 assertEquals("123456789", workBundleBilling.getString("cardNumber"));
                 assertEquals(12, workBundleBilling.getInt("expirationMonth"));
@@ -59,19 +59,19 @@ public class ExtensionsTest {
         {
             Bundle homeBundle = bundle.getBundle("shoppingInfos").getBundle("home");
             assertEquals(5, homeBundle.size());
-            assertEquals(5, homeBundle.getInt(Extensions.ID_KEYWORD));
-            assertEquals(ShoppingInfo.class.getName(), homeBundle.getString(Extensions.CLASS_KEYWORD));
+            assertEquals(5, homeBundle.getInt(BundleUtils.ID_KEYWORD));
+            assertEquals(ShoppingInfo.class.getName(), homeBundle.getString(BundleUtils.CLASS_KEYWORD));
             assertTrue(homeBundle.getBoolean("favorite"));
 
             {
                 Bundle homeBundleAddress = homeBundle.getBundle("address");
                 assertEquals(6, homeBundleAddress.size());
-                assertEquals(6, homeBundleAddress.getInt(Extensions.ID_KEYWORD));
-                assertEquals(ShippingAddress.class.getName(), homeBundleAddress.getString(Extensions.CLASS_KEYWORD));
+                assertEquals(6, homeBundleAddress.getInt(BundleUtils.ID_KEYWORD));
+                assertEquals(ShippingAddress.class.getName(), homeBundleAddress.getString(BundleUtils.CLASS_KEYWORD));
             }
 
             {
-                assertEquals(4, homeBundle.getBundle("billing").getInt(Extensions.REF_KEYWORD));
+                assertEquals(4, homeBundle.getBundle("billing").getInt(BundleUtils.REF_KEYWORD));
             }
         }
     }
@@ -80,23 +80,23 @@ public class ExtensionsTest {
     public void bundleToObjectTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
         Bundle bundle = new Bundle();
 
-        bundle.putInt(Extensions.ID_KEYWORD, 1);
-        bundle.putString(Extensions.CLASS_KEYWORD, ShoppingPreferences.class.getName());
+        bundle.putInt(BundleUtils.ID_KEYWORD, 1);
+        bundle.putString(BundleUtils.CLASS_KEYWORD, ShoppingPreferences.class.getName());
         Bundle shopInfos = new Bundle();
-        shopInfos.putString(Extensions.CLASS_KEYWORD, HashMap.class.getName());
+        shopInfos.putString(BundleUtils.CLASS_KEYWORD, HashMap.class.getName());
         bundle.putBundle("shoppingInfos", shopInfos);
 
         {
             Bundle home = new Bundle();
             shopInfos.putBundle("home", home);
-            home.putInt(Extensions.ID_KEYWORD, 2);
-            home.putString(Extensions.CLASS_KEYWORD, ShoppingInfo.class.getName());
+            home.putInt(BundleUtils.ID_KEYWORD, 2);
+            home.putString(BundleUtils.CLASS_KEYWORD, ShoppingInfo.class.getName());
 
             {
                 Bundle address = new Bundle();
                 home.putBundle("address", address);
-                address.putInt(Extensions.ID_KEYWORD, 3);
-                address.putString(Extensions.CLASS_KEYWORD, ShippingAddress.class.getName());
+                address.putInt(BundleUtils.ID_KEYWORD, 3);
+                address.putString(BundleUtils.CLASS_KEYWORD, ShippingAddress.class.getName());
                 address.putString("name", "Bugdroid");
                 address.putString("street", "Bd Descartes");
                 address.putString("city", "Champs-sur-Marne");
@@ -106,8 +106,8 @@ public class ExtensionsTest {
             {
                 Bundle billing = new Bundle();
                 home.putBundle("billing", billing);
-                billing.putInt(Extensions.ID_KEYWORD, 4);
-                billing.putString(Extensions.CLASS_KEYWORD, BillingDetails.class.getName());
+                billing.putInt(BundleUtils.ID_KEYWORD, 4);
+                billing.putString(BundleUtils.CLASS_KEYWORD, BillingDetails.class.getName());
                 billing.putString("cardHolder", "Bugdroid");
                 billing.putString("cardNumber", "123456789");
                 billing.putInt("expirationMonth", 12);
@@ -121,14 +121,14 @@ public class ExtensionsTest {
         {
             Bundle work = new Bundle();
             shopInfos.putBundle("work", work);
-            work.putInt(Extensions.ID_KEYWORD, 5);
-            work.putString(Extensions.CLASS_KEYWORD, ShoppingInfo.class.getName());
+            work.putInt(BundleUtils.ID_KEYWORD, 5);
+            work.putString(BundleUtils.CLASS_KEYWORD, ShoppingInfo.class.getName());
 
             {
                 Bundle address = new Bundle();
                 work.putBundle("address", address);
-                address.putInt(Extensions.ID_KEYWORD, 6);
-                address.putString(Extensions.CLASS_KEYWORD, ShippingAddress.class.getName());
+                address.putInt(BundleUtils.ID_KEYWORD, 6);
+                address.putString(BundleUtils.CLASS_KEYWORD, ShippingAddress.class.getName());
                 address.putString("name", "Bugdroid");
                 address.putString("street", "Rue des tartes au nougat");
                 address.putString("city", "Lollipop City");
@@ -138,7 +138,7 @@ public class ExtensionsTest {
             {
                 Bundle billing = new Bundle();
                 work.putBundle("billing", billing);
-                billing.putInt(Extensions.REF_KEYWORD, 4);
+                billing.putInt(BundleUtils.REF_KEYWORD, 4);
             }
 
             work.putBoolean("favorite", false);
@@ -152,7 +152,7 @@ public class ExtensionsTest {
         prefs.map("home", new ShoppingInfo(address1, billing, true));
         prefs.map("work", new ShoppingInfo(address2, billing, false));
 
-        ShoppingPreferences prefsAfterConversion = (ShoppingPreferences) Extensions.convertFromBundle(bundle);
+        ShoppingPreferences prefsAfterConversion = (ShoppingPreferences) BundleUtils.convertFromBundle(bundle);
         assertEquals(prefs, prefsAfterConversion);
     }
 }

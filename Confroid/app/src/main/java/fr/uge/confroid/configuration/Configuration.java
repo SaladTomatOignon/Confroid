@@ -11,7 +11,7 @@ import java.util.Set;
 
 import fr.uge.confroid.storage.serialization.ConfigDeserializer;
 import fr.uge.confroid.storage.serialization.ConfigSerializer;
-import fr.uge.confroid.utils.Extensions;
+import fr.uge.confroid.utils.BundleUtils;
 
 public class Configuration {
     private final static java.lang.String PRIMITIVE_KEY_NAME = "primitive";
@@ -56,9 +56,9 @@ public class Configuration {
      */
     public Bundle toBundle() {
         if (content.isDictionary()) {
-            return Extensions.convertToBundle(content.getMap());
+            return BundleUtils.convertToBundle(content.getMap());
         } else if (content.isArray()) {
-            return Extensions.convertToBundle(content.getArray());
+            return BundleUtils.convertToBundle(content.getArray());
         } else if (content.isPrimitive()) {
             Bundle bundle = new Bundle();
             Primitive prim = content.getPrimitive();
@@ -116,7 +116,7 @@ public class Configuration {
             return null;
         }
 
-        if (Extensions.isBundleArray(bundle)) { // If the bundle represents an array
+        if (BundleUtils.isBundleArray(bundle)) { // If the bundle represents an array
             Value[] values = new Value[keys.size()];
 
             for (int i = 0; i < keys.size(); i++) {

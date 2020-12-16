@@ -16,11 +16,10 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Extensions {
+public class BundleUtils {
     public static final String ID_KEYWORD = "confroid#id";
     public static final String CLASS_KEYWORD = "confroid#class";
     public static final String REF_KEYWORD = "confroid#ref";
-    private static java.lang.Object Object;
 
     /**
      * Convert a map to a Bundle.
