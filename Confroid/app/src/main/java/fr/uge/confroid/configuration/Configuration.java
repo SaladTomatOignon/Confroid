@@ -5,14 +5,9 @@ import android.os.Bundle;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import fr.uge.confroid.storage.serialization.ConfigDeserializer;
 import fr.uge.confroid.storage.serialization.ConfigSerializer;
@@ -121,7 +116,7 @@ public class Configuration {
             return null;
         }
 
-        if (isBundleArray(bundle)) { // If the bundle represents an array
+        if (Extensions.isBundleArray(bundle)) { // If the bundle represents an array
             Value[] values = new Value[keys.size()];
 
             for (int i = 0; i < keys.size(); i++) {
@@ -145,25 +140,6 @@ public class Configuration {
         }
 
         return new Dictionary(map);
-    }
-
-    /**
-     * Determines if the bundle represents an array.
-     * A bundle represents an array if all of the keys are a succession of integers starting from 0.
-     *
-     * @param bundle The bundle to test
-     * @return True if the bundle represents an array. False otherwise
-     */
-    private static boolean isBundleArray(Bundle bundle) {
-        SortedSet<java.lang.String> set = new TreeSet<>(Comparator.comparing(java.lang.Integer::valueOf));
-
-        try {
-            set.addAll(bundle.keySet());
-        } catch (IllegalArgumentException e) { // If one element is not an int.
-            return false;
-        }
-
-        return IntStream.range(0, set.size()).boxed().map(integer -> java.lang.String.valueOf(integer)).collect(Collectors.toSet()).equals(set);
     }
 
     /**
