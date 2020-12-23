@@ -24,11 +24,14 @@ public class Client {
     public void sendConfig(Configuration config, String name, String version) {
         String encryptedConfig = CryptUtils.encrypt(config.toJson(), key);
         ConfigurationContext configCtx = new ConfigurationContext(name, version, encryptedConfig);
+        RequestContext request = new RequestContext(userInfos, configCtx);
 
         // TODO : Faire la requete HTTP au service web
     }
 
     public Configuration getConfig(String name, String version) {
+        RequestContext request = new RequestContext(userInfos, new ConfigurationContext(name, version, null));
+
         ConfigurationContext configCtx = null; // TODO : Faire la requete HTTP au service web
 
         String decryptedConfig = CryptUtils.decrypt(configCtx.getConfig(), key);
