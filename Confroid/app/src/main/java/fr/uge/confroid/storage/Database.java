@@ -4,6 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.sql.Blob;
+import java.sql.Connection;
+
 import fr.uge.confroid.configuration.Configuration;
 
 public class Database extends SQLiteOpenHelper {
@@ -37,7 +41,18 @@ public class Database extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // update of the database structure
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
+    }
 
+    public byte[] getData(){
+        byte[] blob = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(" SELECT " + COLUMN_DATA + " FROM " + TABLE_NAME ,null );
+        while(cursor.moveToNext())
+            blob = cursor.getBlob(0);
+        cursor.close();
+        return blob;
     }
 
     public void save(String packageName, int version,String tag, Configuration config){
