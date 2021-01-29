@@ -9,6 +9,8 @@ import fr.uge.confroid.web.service.confroidstorageservice.services.ConfigService
 import fr.uge.confroid.web.service.confroidstorageservice.services.UserService;
 import fr.uge.confroid.web.service.confroidstorageservice.utils.CryptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +26,7 @@ public class ConfigController {
     private UserService userService;
 
     @PostMapping("/getConfig")
-    public Configuration getConfig(@RequestBody RequestContext ctx) {
+    public ResponseEntity<Configuration> getConfig(@RequestBody RequestContext ctx) {
         var invalidParameter = getInvalidParameter(ctx, false);
         if (!Objects.isNull(invalidParameter)) {
             throw new InvalidParameterException(invalidParameter);
@@ -44,11 +46,11 @@ public class ConfigController {
             throw new ConfigurationNotFoundException(name, version);
         }
 
-        return config;
+        return ResponseEntity.status(HttpStatus.FOUND).body(config);
     }
 
     @PostMapping("/saveConfig")
-    public void saveConfig(@RequestBody RequestContext ctx) {
+    public ResponseEntity<RequestContext> saveConfig(@RequestBody RequestContext ctx) {
         var invalidParameter = getInvalidParameter(ctx, true);
         if (!Objects.isNull(invalidParameter)) {
             throw new InvalidParameterException(invalidParameter);
@@ -63,6 +65,8 @@ public class ConfigController {
         }
 
         configService.save(config);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(ctx);
     }
 
     private String getInvalidParameter(RequestContext ctx, boolean configContentRequired) {
