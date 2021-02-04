@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import fr.uge.confroid.storage.serialization.ConfigDeserializer;
@@ -142,6 +143,19 @@ public class Configuration {
         return new Dictionary(map);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Configuration that = (Configuration) o;
+        return Objects.equals(content, that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content);
+    }
+
     /**
      * Convert an object to a Value of Configuration if possible.
      *
@@ -165,5 +179,6 @@ public class Configuration {
         } else {
             throw new IllegalArgumentException("The type " + object.getClass() + " is not currently supported");
         }
+
     }
 }

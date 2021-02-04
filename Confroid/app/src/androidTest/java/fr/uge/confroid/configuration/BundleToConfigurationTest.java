@@ -1,6 +1,7 @@
 package fr.uge.confroid.configuration;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -27,7 +28,6 @@ public class BundleToConfigurationTest {
         bundle2.putBoolean("bouboul", true);
         bundle2.putBundle("nested", bundle1);
         bundle2.putBundle("UnDernier", bundlePrimitive);
-
         Value config = Configuration.fromBundle(bundle2).getContent();
 
         assertTrue(config.isDictionary());
