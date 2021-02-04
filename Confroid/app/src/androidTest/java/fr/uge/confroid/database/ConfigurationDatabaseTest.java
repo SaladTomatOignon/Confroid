@@ -1,9 +1,5 @@
 package fr.uge.confroid.database;
 
-
-
-import android.util.Log;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import org.junit.Test;
@@ -29,7 +25,6 @@ import fr.uge.confroid.storage.Database;
 
 @RunWith(AndroidJUnit4.class)
 public class ConfigurationDatabaseTest {
-
 
     //ok
     @Test
@@ -81,12 +76,7 @@ public class ConfigurationDatabaseTest {
         assertEquals(false, database.saveConfig(confPackageInteger));
         assertEquals(false, database.saveConfig(confPackageFloot));
         assertEquals(false, database.saveConfig(confPackageBool));
-
-
-
     }
-
-
 
     @Test
     public void getConfig() {
@@ -141,11 +131,7 @@ public class ConfigurationDatabaseTest {
             assertEquals(array, configArray.get().getConfig());
             assertEquals(dico, configDico.get().getConfig());
         }
-
-
-
     }
-
 
     //OK
     @Test
@@ -162,26 +148,19 @@ public class ConfigurationDatabaseTest {
         assertEquals(List.of(), database.getConfigsName());
     }
 
-
     // Todo  chaque tester
     @Test
     public void getAllConfigs() {
         Database database = new Database(InstrumentationRegistry.getInstrumentation().getTargetContext(), "db_test", null, 1);
         assertEquals(3, database.getAllConfigs("configInt").size());
         assertEquals(1, database.getAllConfigs("confiFloot").size());
-
-
-
-
     }
 
     @Test
     public void getAllConfigseEmpty() {
         Database database = new Database(InstrumentationRegistry.getInstrumentation().getTargetContext(), "db_testEmpty", null, 1);
         assertEquals(List.of(),  database.getAllConfigs("configInt"));
-
     }
-
 
     @Test
     public void updateConfig() {
@@ -193,8 +172,5 @@ public class ConfigurationDatabaseTest {
 
         database.updateConfig("configInt", "1", newInteger);
     }
-
-
-
 }
 

@@ -6,10 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-<<<<<<< HEAD
 import android.util.Log;
 
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,11 +15,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-=======
-
-import java.sql.Blob;
-import java.sql.Connection;
->>>>>>> refs/remotes/origin/database
 
 import fr.uge.confroid.configuration.Configuration;
 import fr.uge.confroid.configuration.Value;
@@ -29,7 +22,6 @@ import fr.uge.confroid.configuration.Value;
 
 public class Database extends SQLiteOpenHelper {
 
-    private  static final String DATABASE_NAME = "database_confroid";
     private  static final String TABLE_NAME = "configuration";
     private  static final String  COLUMN_PACKAGE_NAME = "packageName";
     private  static final String  COLUMN_VERSION = "version";
@@ -37,14 +29,8 @@ public class Database extends SQLiteOpenHelper {
     private  static final String  COLUMN_DATA = "data";
     private  static final String  COLUMN_DATE = "date";
 
-    private  static final int  DATABASE_VERSION = 1 ;
-    private String tag = "tag";
-
-
-
     public Database(Context context, String name, CursorFactory cursorFactory, int version){
         super(context, name, cursorFactory, version);
-
     }
 
     @Override
@@ -60,14 +46,11 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(request);
     }
 
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // update of the database structure
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
-<<<<<<< HEAD
-=======
     }
 
     public byte[] getData(){
@@ -78,9 +61,7 @@ public class Database extends SQLiteOpenHelper {
             blob = cursor.getBlob(0);
         cursor.close();
         return blob;
->>>>>>> refs/remotes/origin/database
     }
-
 
     /**
      *Sauvegarde la configuration,name,la version,tag dans la bd
@@ -106,7 +87,6 @@ public class Database extends SQLiteOpenHelper {
         this.getWritableDatabase().insert(TABLE_NAME, null, values);
         return true;
     }
-
 
     /** Fonction annexe qui permet de crée un ConfroidPackage à partir d'un cursor
      * @param cursor contient le résultat d'une requete SQL
@@ -141,7 +121,6 @@ public class Database extends SQLiteOpenHelper {
         return Optional.empty();
     }
 
-
     //TODO
     /**
      *
@@ -152,8 +131,6 @@ public class Database extends SQLiteOpenHelper {
     public void getConfigAsync(String name, String version, Consumer<ConfroidPackage> callback){
 
     }
-
-    /*
 
     /**
      * Renvoie toutes les configs correspondant au nom donné
@@ -173,7 +150,6 @@ public class Database extends SQLiteOpenHelper {
         return listConfroidPackage;
     }
 
-
     //TODO
     /**
      *
@@ -183,9 +159,6 @@ public class Database extends SQLiteOpenHelper {
     public void getAllConfigsAsync(String name, Consumer<List<ConfroidPackage>> callback){
 
     }
-
-
-
 
     /**
      * Récupère la liste de tous les noms de config enregistrés dans la bdd
