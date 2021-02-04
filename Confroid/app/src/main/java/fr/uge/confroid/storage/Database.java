@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+<<<<<<< HEAD
 import android.util.Log;
 
 import java.sql.Time;
@@ -16,6 +17,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+=======
+
+import java.sql.Blob;
+import java.sql.Connection;
+>>>>>>> refs/remotes/origin/database
 
 import fr.uge.confroid.configuration.Configuration;
 import fr.uge.confroid.configuration.Value;
@@ -60,6 +66,19 @@ public class Database extends SQLiteOpenHelper {
         // update of the database structure
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
+<<<<<<< HEAD
+=======
+    }
+
+    public byte[] getData(){
+        byte[] blob = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(" SELECT " + COLUMN_DATA + " FROM " + TABLE_NAME ,null );
+        while(cursor.moveToNext())
+            blob = cursor.getBlob(0);
+        cursor.close();
+        return blob;
+>>>>>>> refs/remotes/origin/database
     }
 
 
