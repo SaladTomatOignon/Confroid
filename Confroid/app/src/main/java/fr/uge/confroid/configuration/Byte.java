@@ -1,4 +1,5 @@
 package fr.uge.confroid.configuration;
+import java.util.Objects;
 
 import java.util.Objects;
 

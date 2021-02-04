@@ -50,4 +50,5 @@ public interface Primitive extends Value {
     default java.lang.Boolean getBoolean() {
         throw new ClassCastException("The literal is not a Boolean");
     }
+
 }

@@ -1,4 +1,5 @@
 package fr.uge.confroid.configuration;
+import java.util.Objects;
 
 import java.util.Objects;
 
@@ -32,3 +33,4 @@ public class String implements Primitive {
         return Objects.hash(string);
     }
 }
+
