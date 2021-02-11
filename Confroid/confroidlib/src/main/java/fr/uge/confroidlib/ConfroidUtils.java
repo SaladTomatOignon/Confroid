@@ -26,8 +26,7 @@ public class ConfroidUtils {
             intent.putExtra(ConfroidIntents.EXTRA_NAME, appId + "." + name);
             intent.putExtra(ConfroidIntents.EXTRA_TAG, versionName);
             intent.putExtra(ConfroidIntents.EXTRA_TOKEN, token);
-
-            // intent.putExtra(ConfroidIntents.EXTRA_CONTENT, value);
+            intent.putExtra(ConfroidIntents.EXTRA_CONTENT, BundleUtils.convertToBundleReflection(value));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 ContextCompat.startForegroundService(context, intent);

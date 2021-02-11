@@ -1,15 +1,19 @@
-package fr.uge.confroid.utils;
+package fr.uge.confroidlib;
 
 import android.os.Bundle;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
-import static org.junit.Assert.*;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class BundleUtilsTest {
@@ -154,5 +158,133 @@ public class BundleUtilsTest {
 
         ShoppingPreferences prefsAfterConversion = (ShoppingPreferences) BundleUtils.convertFromBundle(bundle);
         assertEquals(prefs, prefsAfterConversion);
+    }
+
+
+    static class BillingDetails {
+        public String cardHolder;
+        public String cardNumber;
+        public int expirationMonth;
+        public int expirationYear;
+        public int cryptogram;
+
+        public BillingDetails(String cardHolder, String cardNumber, int expirationMonth, int expirationYear, int cryptogram) {
+            this.cardHolder = cardHolder;
+            this.cardNumber = cardNumber;
+            this.expirationMonth = expirationMonth;
+            this.expirationYear = expirationYear;
+            this.cryptogram = cryptogram;
+        }
+
+        public BillingDetails() {
+
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            BillingDetails that = (BillingDetails) o;
+            return expirationMonth == that.expirationMonth &&
+                    expirationYear == that.expirationYear &&
+                    cryptogram == that.cryptogram &&
+                    Objects.equals(cardHolder, that.cardHolder) &&
+                    Objects.equals(cardNumber, that.cardNumber);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(cardHolder, cardNumber, expirationMonth, expirationYear, cryptogram);
+        }
+    }
+
+    static class ShippingAddress {
+        public String name;
+        public String street;
+        public String city;
+        public String country;
+
+        public ShippingAddress(String name, String street, String city, String country) {
+            this.name = name;
+            this.street = street;
+            this.city = city;
+            this.country = country;
+        }
+
+        public ShippingAddress() {
+
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ShippingAddress that = (ShippingAddress) o;
+            return Objects.equals(name, that.name) &&
+                    Objects.equals(street, that.street) &&
+                    Objects.equals(city, that.city) &&
+                    Objects.equals(country, that.country);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, street, city, country);
+        }
+    }
+
+    static class ShoppingInfo {
+        public ShippingAddress address;
+        public BillingDetails billing;
+        public boolean favorite;
+
+        public ShoppingInfo(ShippingAddress address, BillingDetails billing, boolean favorite) {
+            this.address = address;
+            this.billing = billing;
+            this.favorite = favorite;
+        }
+
+        public ShoppingInfo() {
+
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ShoppingInfo that = (ShoppingInfo) o;
+            return favorite == that.favorite &&
+                    Objects.equals(address, that.address) &&
+                    Objects.equals(billing, that.billing);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(address, billing, favorite);
+        }
+    }
+
+    static class ShoppingPreferences {
+        public Map<String, ShoppingInfo> shoppingInfos;
+
+        public ShoppingPreferences() {
+            this.shoppingInfos = new HashMap<>();
+        }
+
+        public void map(String name, ShoppingInfo shopInfo) {
+            shoppingInfos.put(name, shopInfo);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ShoppingPreferences that = (ShoppingPreferences) o;
+            return shoppingInfos.equals(that.shoppingInfos);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(shoppingInfos);
+        }
     }
 }

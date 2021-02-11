@@ -1,4 +1,4 @@
-package fr.uge.confroid.utils;
+package fr.uge.confroidlib;
 
 import android.os.Bundle;
 import android.os.IBinder;

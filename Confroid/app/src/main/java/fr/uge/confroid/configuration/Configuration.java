@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import fr.uge.confroid.utils.BundleUtils;
+import fr.uge.confroidlib.BundleUtils;
 
 public class Configuration {
     private final static java.lang.String PRIMITIVE_KEY_NAME = "primitive";
