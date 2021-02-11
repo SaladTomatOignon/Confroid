@@ -1,4 +1,4 @@
-package fr.uge.confroid.storage.serialization;
+package fr.uge.confroid.configuration;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -12,9 +12,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import fr.uge.confroid.configuration.Configuration;
-import fr.uge.confroid.configuration.Value;
-
 public class ConfigSerializer implements JsonSerializer<Configuration> {
 
     @Override
@@ -24,8 +21,8 @@ public class ConfigSerializer implements JsonSerializer<Configuration> {
 
     private JsonElement serializeValue(Value config, Type configType, JsonSerializationContext context) {
         if (config.isDictionary()) {
-            Map<String, JsonElement> map = config.getMap().entrySet().stream().map(entry ->
-                    new AbstractMap.SimpleEntry<String, JsonElement>(entry.getKey(), serializeValue(entry.getValue(), configType, context))
+            Map<java.lang.String, JsonElement> map = config.getMap().entrySet().stream().map(entry ->
+                    new AbstractMap.SimpleEntry<java.lang.String, JsonElement>(entry.getKey(), serializeValue(entry.getValue(), configType, context))
             ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
 
             Gson gson = new Gson();
@@ -45,7 +42,7 @@ public class ConfigSerializer implements JsonSerializer<Configuration> {
             } else if (config.getPrimitive().isFloat()) {
                 return new JsonPrimitive(config.getPrimitive().getFloat());
             } else if (config.getPrimitive().isString()) {
-                String str = config.getPrimitive().getString();
+                java.lang.String str = config.getPrimitive().getString();
                 return new JsonPrimitive(config.getPrimitive().getString());
             } else {
                 return null;

@@ -4,7 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import fr.uge.confroid.storage.AuthToken;
+import fr.uge.confroid.utils.AuthUtils;
+import fr.uge.confroidlib.ConfroidIntents;
 
 /**
  * Generates auth token for applications using Confroid.
@@ -17,11 +18,11 @@ import fr.uge.confroid.storage.AuthToken;
 public class TokenDispenser extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        String name = intent.getStringExtra("name");
-        String receiver = intent.getStringExtra("receiver");
+        String name = intent.getStringExtra(ConfroidIntents.EXTRA_NAME);
+        String receiver = intent.getStringExtra(ConfroidIntents.EXTRA_RECEIVER);
         if (name != null && receiver != null) {
             Intent response = new Intent(receiver);
-            response.putExtra("token", new AuthToken(context).get(name));
+            response.putExtra(ConfroidIntents.EXTRA_TOKEN, AuthUtils.forApp(context, name));
             context.sendBroadcast(response);
         }
     }

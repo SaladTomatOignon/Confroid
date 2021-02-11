@@ -1,2 +1,3 @@
+include ':confroidlib'
 include ':app'
 rootProject.name = "Confroid"

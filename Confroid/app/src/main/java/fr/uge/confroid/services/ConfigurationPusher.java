@@ -3,8 +3,13 @@ package fr.uge.confroid.services;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import fr.uge.confroid.storage.AuthToken;
+import java.util.Date;
+
+import fr.uge.confroid.configuration.Configuration;
+import fr.uge.confroid.utils.AuthUtils;
+import fr.uge.confroid.storage.ConfroidDatabase;
+import fr.uge.confroid.storage.ConfroidPackage;
+import fr.uge.confroidlib.ConfroidIntents;
 
 public class ConfigurationPusher extends BackgroundService {
     public ConfigurationPusher() {
@@ -12,35 +17,74 @@ public class ConfigurationPusher extends BackgroundService {
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        assert intent != null;
+    protected void onHandleIntent(Intent intent) {
+        if (intent == null) {
+            throw new IllegalArgumentException("intent");
+        }
 
-        // TODO handle names like fr.uge.calculator.latestComputations/0
-        String name = intent.getStringExtra("name");
-        String token = intent.getStringExtra("token");
-        String receiver = intent.getStringExtra("receiver");
-        String tag = intent.getStringExtra("tag");
-        Bundle content = intent.getBundleExtra("content");
+        String tag = intent.getStringExtra(ConfroidIntents.EXTRA_TAG);
+        String name = intent.getStringExtra(ConfroidIntents.EXTRA_NAME);
+        String token = intent.getStringExtra(ConfroidIntents.EXTRA_TOKEN);
+        Bundle content = intent.getBundleExtra(ConfroidIntents.EXTRA_CONTENT);
+        String receiver = intent.getStringExtra(ConfroidIntents.EXTRA_RECEIVER);
 
-        if (name == null || receiver == null || token == null) {
-            sendResponse(receiver, false);
+        if (name == null) {
+            throw new AssertionError("Extra 'name' is required");
+        }
+
+        if (token == null) {
+            throw new AssertionError("Extra 'token' is required");
+        }
+
+        // name is like fr.uge.calculator.latestComputations or fr.uge.calculator.latestComputations/0
+
+        int lastDotIndex = name.lastIndexOf('.');
+        String appId = name.substring(0, lastDotIndex);
+        if (!AuthUtils.verifyToken(this, appId, token)) {
+            throw new AssertionError("Unauthorized token");
+        }
+
+        // TODO partial updates like fr.uge.calculator.latestComputations/0.
+
+        if (tag != null && content == null) { // should update only the last version's tag
+            ConfroidDatabase.exec(this, dao -> {
+                ConfroidPackage pkg = dao.findLastVersion(name);
+                if (pkg != null) {
+                    pkg.setTag(tag);
+                    dao.update(pkg);
+                    sendSuccess(receiver);
+                } else {
+                    throw new AssertionError("Missing configuration " + name);
+                }
+            });
             return;
         }
 
-        AuthToken auth = new AuthToken(this);
-        if (!auth.get(name).equals(token)) {
-            sendResponse(receiver, false);
-            return;
+        if (content == null) {
+            throw new AssertionError("Extra 'content' is required when 'tag' is not specified");
         }
 
-        // TODO save configuration in database
+        ConfroidDatabase.exec(this, dao -> {
+            ConfroidPackage pkg = new ConfroidPackage(
+                name, 0, new Date(), Configuration.fromBundle(content), tag
+            );
 
-        sendResponse(receiver, true);
+            ConfroidPackage latest = dao.findLastVersion(name);
+            if (latest != null) {
+                pkg.setVersion(latest.getVersion() + 1);
+            }
+
+            dao.create(pkg);
+
+            sendSuccess(receiver);
+        });
     }
 
-    private void sendResponse(String receiver, boolean success) {
+    private void sendSuccess(String receiver) {
         if (receiver != null) {
-            sendBroadcast(new Intent(receiver).putExtra("success", success));
+            sendBroadcast(
+                new Intent(receiver).putExtra(ConfroidIntents.EXTRA_SUCCESS, true)
+            );
         }
     }
 }

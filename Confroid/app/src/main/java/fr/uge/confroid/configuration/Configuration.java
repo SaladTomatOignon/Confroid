@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import fr.uge.confroid.storage.serialization.ConfigDeserializer;
-import fr.uge.confroid.storage.serialization.ConfigSerializer;
 import fr.uge.confroid.utils.BundleUtils;
 
 public class Configuration {

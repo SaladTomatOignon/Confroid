@@ -2,17 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.uge.confroid">
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:networkSecurityConfig="@xml/network_security_config">
+        android:theme="@style/AppTheme">
         <activity android:name=".front.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,32 +17,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".services.ConfigurationPusher"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="fr.uge.confroid.services.ConfigurationPusher" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </service>
-
-        <service
-            android:name=".services.ConfigurationPuller"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="fr.uge.confroid.services.ConfigurationPuller" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </service>
-
         <receiver
             android:name=".receivers.TokenDispenser"
             android:exported="true">
             <intent-filter>
                 <action android:name="fr.uge.confroid.receivers.TokenDispenser" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <service
+            android:name=".services.ConfigurationPuller"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="fr.uge.confroid.services.ConfigurationPuller" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.ConfigurationPusher"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="fr.uge.confroid.services.ConfigurationPusher" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
 </manifest>

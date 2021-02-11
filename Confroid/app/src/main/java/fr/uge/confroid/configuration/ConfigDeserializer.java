@@ -1,4 +1,4 @@
-package fr.uge.confroid.storage.serialization;
+package fr.uge.confroid.configuration;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
