@@ -54,32 +54,91 @@ public class Configuration {
      * @return Le Bundle créé à partir de cette configuration
      */
     public Bundle toBundle() {
-        if (content.isDictionary()) {
-            return BundleUtils.convertToBundle(content.getMap());
-        } else if (content.isArray()) {
-            return BundleUtils.convertToBundle(content.getArray());
-        } else if (content.isPrimitive()) {
-            Bundle bundle = new Bundle();
-            Primitive prim = content.getPrimitive();
-            java.lang.String keyValue = PRIMITIVE_KEY_NAME;
+        return valueToBundle(content);
+    }
 
-            if (prim.isBoolean()) {
-                bundle.putBoolean(keyValue, prim.getBoolean());
-            } else if (prim.isByte()) {
-                bundle.putByte(keyValue, prim.getByte());
-            } else if (prim.isFloat()) {
-                bundle.putFloat(keyValue, prim.getFloat());
-            } else if (prim.isInteger()) {
-                bundle.putInt(keyValue, prim.getInteger());
-            } else if (prim.isString()) {
-                bundle.putString(keyValue, prim.getString());
-            } else {
-                return null;
-            }
+    /**
+     * Fonction auxiliaire de {@link #toBundle()}
+     *
+     * @param value L'objet Value à convertir en bundle
+     * @return Le Bundle créé à partir de l'objet Value
+     */
+    private Bundle valueToBundle(Value value) {
+        if (value.isDictionary()) {
+            return mapToBundle(value.getMap());
+        } else if (value.isArray()) {
+            return arrayToBundle(value.getArray());
+        } else if (value.isPrimitive()) {
+            Bundle bundle = new Bundle();
+            Primitive prim = value.getPrimitive();
+
+            addPrimitiveToBundle(bundle, PRIMITIVE_KEY_NAME, prim);
 
             return bundle;
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Convertis un dictionnaire dont les clés sont des String et les valeur des Value,
+     * en Bundle
+     *
+     * @param map Le dictionnaire à convertir
+     * @return Le Bundle créé à partir du dictionnaire
+     */
+    private Bundle mapToBundle(Map<java.lang.String, Value> map) {
+        Bundle bundle = new Bundle();
+
+        for (Map.Entry<java.lang.String, Value> key : map.entrySet()) {
+            if (key.getValue().isPrimitive()) {
+                addPrimitiveToBundle(bundle, key.getKey(), key.getValue().getPrimitive());
+            } else {
+                bundle.putBundle(key.getKey(), valueToBundle(key.getValue()));
+            }
+        }
+
+        return bundle;
+    }
+
+    /**
+     * Convertis un tableau dont les clés représente l'indice de l'element dans le tableau,
+     * et les valeurs sont des Value, en Bundle
+     *
+     * @param values Le tableau de Value à convertir
+     * @return Le Bundle créé à partir du tableau
+     */
+    private Bundle arrayToBundle(Value[] values) {
+        Bundle bundle = new Bundle();
+
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].isPrimitive()) {
+                addPrimitiveToBundle(bundle, java.lang.String.valueOf(i), values[i].getPrimitive());
+            } else {
+                bundle.putBundle(java.lang.String.valueOf(i), valueToBundle(values[i]));
+            }
+        }
+        return bundle;
+    }
+
+    /**
+     * Ajoute dans le bundle une primitive dont la clé est donnée en paramètre.
+     *
+     * @param bundle Le Bundle où il faut ajouter la primitive
+     * @param key Le nom de clé à liée à la primitive
+     * @param prim La primitive à ajouter
+     */
+    private void addPrimitiveToBundle(Bundle bundle, java.lang.String key, Primitive prim) {
+        if (prim.isBoolean()) {
+            bundle.putBoolean(key, prim.getBoolean());
+        } else if (prim.isByte()) {
+            bundle.putByte(key, prim.getByte());
+        } else if (prim.isFloat()) {
+            bundle.putFloat(key, prim.getFloat());
+        } else if (prim.isInteger()) {
+            bundle.putInt(key, prim.getInteger());
+        } else if (prim.isString()) {
+            bundle.putString(key, prim.getString());
         }
     }
 
