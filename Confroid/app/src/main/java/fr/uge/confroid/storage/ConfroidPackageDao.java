@@ -2,6 +2,7 @@ package fr.uge.confroid.storage;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -31,6 +32,9 @@ public interface ConfroidPackageDao {
     @Query("SELECT * FROM packages WHERE name LIKE :name ORDER BY version")
     List<ConfroidPackage> findAllVersions(String name);
 
-    @Query("SELECT name FROM packages")
+    @Query("SELECT DISTINCT name FROM packages")
     List<String> findAllNames();
+
+    @Query("SELECT * FROM packages WHERE name LIKE :name ORDER BY version DESC LIMIT 1")
+    LiveData<ConfroidPackage> findLastVersionChanges(String name);
 }

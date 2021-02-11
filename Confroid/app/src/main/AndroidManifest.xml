@@ -44,6 +44,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
+        <service
+            android:name=".services.ConfigurationVersions"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="fr.uge.confroid.services.ConfigurationVersions" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

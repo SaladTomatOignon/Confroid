@@ -17,7 +17,7 @@ public abstract class ConfroidDatabase extends RoomDatabase {
     public static void exec(Context context, Consumer<ConfroidPackageDao> consumer) {
         ConfroidDatabase db = Room.databaseBuilder(
             context, ConfroidDatabase.class, "confroid.db"
-        ).build();
+        ).allowMainThreadQueries().build();
 
         try {
             consumer.accept(db.packageDao());

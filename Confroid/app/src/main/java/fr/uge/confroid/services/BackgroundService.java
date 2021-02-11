@@ -3,10 +3,12 @@ package fr.uge.confroid.services;
 import android.app.IntentService;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import fr.uge.confroid.R;
+import fr.uge.confroid.utils.AuthUtils;
 
 /**
  * Base class that handle background services limitations in post android 8.0 devices.
@@ -42,6 +44,22 @@ public abstract class BackgroundService extends IntentService {
                     channelId
             );
             startForeground(1, builder.build());
+        }
+    }
+
+    void authGuard(String configName, String authToken) {
+        int lastDotIndex = configName.lastIndexOf('.');
+        String appId = configName.substring(0, lastDotIndex);
+        if (!AuthUtils.verifyToken(this, appId, authToken)) {
+            throw new AssertionError("Unauthorized token");
+        }
+    }
+
+    void extrasGuard(Intent intent, String... extras) {
+        for (String extra : extras) {
+            if (!intent.hasExtra(extra)) {
+                throw new AssertionError("Extra '" + extra + "' is required");
+            }
         }
     }
 }

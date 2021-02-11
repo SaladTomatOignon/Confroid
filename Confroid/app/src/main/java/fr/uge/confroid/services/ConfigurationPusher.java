@@ -6,10 +6,11 @@ import android.os.Bundle;
 import java.util.Date;
 
 import fr.uge.confroid.configuration.Configuration;
-import fr.uge.confroid.utils.AuthUtils;
 import fr.uge.confroid.storage.ConfroidDatabase;
 import fr.uge.confroid.storage.ConfroidPackage;
 import fr.uge.confroidlib.ConfroidIntents;
+
+// TODO partial updates like fr.uge.calculator.latestComputations/0.
 
 public class ConfigurationPusher extends BackgroundService {
     public ConfigurationPusher() {
@@ -22,29 +23,16 @@ public class ConfigurationPusher extends BackgroundService {
             throw new IllegalArgumentException("intent");
         }
 
+        extrasGuard(intent, ConfroidIntents.EXTRA_NAME, ConfroidIntents.EXTRA_TOKEN);
+
         String tag = intent.getStringExtra(ConfroidIntents.EXTRA_TAG);
+
         String name = intent.getStringExtra(ConfroidIntents.EXTRA_NAME);
         String token = intent.getStringExtra(ConfroidIntents.EXTRA_TOKEN);
         Bundle content = intent.getBundleExtra(ConfroidIntents.EXTRA_CONTENT);
         String receiver = intent.getStringExtra(ConfroidIntents.EXTRA_RECEIVER);
 
-        if (name == null) {
-            throw new AssertionError("Extra 'name' is required");
-        }
-
-        if (token == null) {
-            throw new AssertionError("Extra 'token' is required");
-        }
-
-        // name is like fr.uge.calculator.latestComputations or fr.uge.calculator.latestComputations/0
-
-        int lastDotIndex = name.lastIndexOf('.');
-        String appId = name.substring(0, lastDotIndex);
-        if (!AuthUtils.verifyToken(this, appId, token)) {
-            throw new AssertionError("Unauthorized token");
-        }
-
-        // TODO partial updates like fr.uge.calculator.latestComputations/0.
+        authGuard(name, token);
 
         if (tag != null && content == null) { // should update only the last version's tag
             ConfroidDatabase.exec(this, dao -> {
