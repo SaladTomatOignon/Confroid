@@ -32,4 +32,9 @@ public class Byte implements Primitive {
     public int hashCode() {
         return Objects.hash(_byte);
     }
+
+    @Override
+    public java.lang.String toString() {
+        return Objects.toString(_byte);
+    }
 }

@@ -31,4 +31,9 @@ public class Integer implements Primitive {
     public int hashCode() {
         return Objects.hash(_int);
     }
+
+    @Override
+    public java.lang.String toString() {
+        return Objects.toString(_int);
+    }
 }

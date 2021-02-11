@@ -31,4 +31,9 @@ public class Boolean implements Primitive {
     public int hashCode() {
         return Objects.hash(_bool);
     }
+
+    @Override
+    public java.lang.String toString() {
+        return Objects.toString(_bool);
+    }
 }

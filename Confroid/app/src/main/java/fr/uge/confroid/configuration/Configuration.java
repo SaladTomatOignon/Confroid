@@ -213,6 +213,11 @@ public class Configuration {
         return Objects.hash(content);
     }
 
+    @Override
+    public java.lang.String toString() {
+        return Objects.toString(content);
+    }
+
     /**
      * Convert an object to a Value of Configuration if possible.
      *

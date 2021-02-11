@@ -31,4 +31,9 @@ public class Array implements Value {
     public int hashCode() {
         return Arrays.hashCode(array);
     }
+
+    @Override
+    public java.lang.String toString() {
+        return Arrays.toString(array);
+    }
 }

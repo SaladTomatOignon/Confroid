@@ -32,5 +32,10 @@ public class String implements Primitive {
     public int hashCode() {
         return Objects.hash(string);
     }
+
+    @Override
+    public java.lang.String toString() {
+        return string;
+    }
 }
 

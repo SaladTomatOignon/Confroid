@@ -32,4 +32,9 @@ public class Dictionary implements Value {
     public int hashCode() {
         return Objects.hash(map);
     }
+
+    @Override
+    public java.lang.String toString() {
+        return Objects.toString(map);
+    }
 }
