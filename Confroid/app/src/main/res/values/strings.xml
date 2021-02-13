@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Confroid</string>
+    <string name="menu_conf">Menu Conf</string>
 </resources>
