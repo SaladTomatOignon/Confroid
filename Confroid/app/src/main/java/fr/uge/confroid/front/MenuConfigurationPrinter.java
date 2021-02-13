@@ -34,6 +34,7 @@ public class MenuConfigurationPrinter extends AppCompatActivity {
         ListView lv = findViewById(R.id.listView);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 , conf);
         lv.setAdapter(arrayAdapter);
+
         //TextView tv = (TextView) findViewById(R.id.textView);
         //tv.setText(p.toString());
     }
