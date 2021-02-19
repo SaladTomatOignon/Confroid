@@ -5,21 +5,28 @@ import android.os.IBinder;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import fr.uge.confroidlib.annotations.RegexValidator;
+
 public class BundleUtils {
     public static final String ID_KEYWORD = "confroid#id";
     public static final String CLASS_KEYWORD = "confroid#class";
     public static final String REF_KEYWORD = "confroid#ref";
+
+    private static final String ANNOTATION_SEP = "@";
+    private static final String ANNOTATION_PARAM = "param";
 
     /**
      * Convert a map to a Bundle.
@@ -149,6 +156,7 @@ public class BundleUtils {
      * So if a key has for name {@value #REF_KEYWORD} and an id for value, then the id refers to an already existing object.
      *
      * This function is recursive.
+     * The object and each nested object must have a default constructor (without argument).
      *
      * @param obj The object to convert into Bundle
      * @return A Bundle containing every fields of the object (recursively)
@@ -174,7 +182,7 @@ public class BundleUtils {
         }
 
         int refId = references.size() + 1;
-        references.put(obj, refId);
+        references.put(obj, refId); // Adding the object to references
         bundle.putInt(ID_KEYWORD, refId);
         bundle.putString(CLASS_KEYWORD, obj.getClass().getName());
 
@@ -183,6 +191,11 @@ public class BundleUtils {
                 addValueToBundle(bundle, field.getName(), field.get(obj), true, references);
             } catch (IllegalAccessException e) {
                 continue;
+            }
+
+            // Retrieving field's annotations
+            for (Annotation annotation : field.getDeclaredAnnotations()) {
+                addAnnotationToBundle(annotation, bundle, field.getName());
             }
         }
 
@@ -283,7 +296,7 @@ public class BundleUtils {
 
         // Fields assignment
         for (String key : bundle.keySet()) {
-            if (!key.equals(CLASS_KEYWORD) && !key.equals(ID_KEYWORD)) {
+            if (!key.equals(CLASS_KEYWORD) && !key.equals(ID_KEYWORD) && !key.contains(ANNOTATION_SEP)) {
                 Field field = clazz.getField(key);
                 Object value = bundle.get(key) instanceof Bundle ? convertFromBundleAux(bundle.getBundle(key), obj, field, references, remainingObjects) : bundle.get(key);
                 field.set(obj, value);
@@ -395,6 +408,65 @@ public class BundleUtils {
         }
 
         return array;
+    }
+
+    /**
+     * If the annotation is a ConfroidAnnotation, then the function adds a new Bundle in the given bundle
+     * where the key = "fieldName" + {@value #ANNOTATION_SEP} + "annotationName".
+     *
+     * This new nested bundle is filled with the unapply() method of the annotation which adds
+     * an entry for each parameter of the annotation.
+     *
+     * @param annotation The annotation to add to bundle
+     * @param bundle The bundle to fill
+     * @param fieldName The field associated to the annotation
+     */
+    private static void addAnnotationToBundle(Annotation annotation, Bundle bundle, String fieldName) {
+        Bundle annotBundle = new Bundle();
+
+        if (annotation instanceof RegexValidator) {
+            annotBundle.putString(ANNOTATION_PARAM + "1", ((RegexValidator)annotation).pattern());
+        } else {
+            return;
+        }
+
+        bundle.putBundle(fieldName + ANNOTATION_SEP + annotation.annotationType().getSimpleName(), annotBundle);
+    }
+
+    /**
+     * Retrieves the annotation corresponding to the given Bundle.
+     * The unique key of the bundle must be of form "fieldName" + {@value #ANNOTATION_SEP} + "annotationName"
+     * and its value must be a bundle containing the information of the annotation.
+     *
+     * @param bundle The bundle containing the annotation information
+     * @return The annotation
+     */
+    public static Annotation getAnnotationFromBundle(Bundle bundle) {
+        Optional<String> annotKey = bundle.keySet().stream().findFirst();
+        String annotName;
+
+        try {
+            annotName = annotKey.get().split(ANNOTATION_SEP)[1];
+        } catch (Exception e) {
+            throw new IllegalArgumentException("The bundle must contain the key corresponding to an annotation.\n" +
+                    "It must be of the form 'fieldName" + ANNOTATION_SEP + "annotationName'");
+        }
+
+        if (annotName.equals(RegexValidator.class.getSimpleName())) {
+            return new RegexValidator() {
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return RegexValidator.class;
+                }
+
+                @Override
+                public String pattern() {
+                    return bundle.getString(ANNOTATION_PARAM + "1");
+                }
+            };
+        }
+
+        return null;
     }
 
     /**
