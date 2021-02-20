@@ -11,6 +11,12 @@ import java.util.Objects;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import fr.uge.confroidlib.annotations.ClassValidator;
+import fr.uge.confroidlib.annotations.Description;
+import fr.uge.confroidlib.annotations.RangeValidator;
+import fr.uge.confroidlib.annotations.RegexValidator;
+import fr.uge.confroidlib.validators.CreditCardChecker;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -160,6 +166,79 @@ public class BundleUtilsTest {
         assertEquals(prefs, prefsAfterConversion);
     }
 
+    @Test
+    public void objectAnnotationToBundleTest() {
+        BillingDetailsWithAnnotations billing = new BillingDetailsWithAnnotations("Bugdroid", "123456789", 12, 2021, 123);
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(billing);
+
+        assertEquals(18, bundle.size());
+
+        // Testing Description annotation from cardHolder field
+        {
+            Bundle descAnnotBundle = bundle.getBundle("cardHolder" + BundleUtils.ANNOTATION_SEP + Description.class.getSimpleName());
+            assertEquals(1, descAnnotBundle.size());
+            assertEquals("Titulaire de la carte", descAnnotBundle.getString(BundleUtils.ANNOTATION_PARAM + "1"));
+        }
+
+        // Testing RegexValidator annotation from cardNumber field
+        {
+            Bundle regexAnnotBundle = bundle.getBundle("cardHolder" + BundleUtils.ANNOTATION_SEP + RegexValidator.class.getSimpleName());
+            assertEquals(1, regexAnnotBundle.size());
+            assertEquals(".+", regexAnnotBundle.getString(BundleUtils.ANNOTATION_PARAM + "1"));
+        }
+
+        // Testing ClassValidator annotation from cardNumber field
+        {
+            Bundle classValidatorAnnotBundle = bundle.getBundle("cardNumber" + BundleUtils.ANNOTATION_SEP + ClassValidator.class.getSimpleName());
+            assertEquals(1, classValidatorAnnotBundle.size());
+            assertEquals("CreditCardChecker", classValidatorAnnotBundle.getString(BundleUtils.ANNOTATION_PARAM + "1"));
+        }
+
+        // Testing RangeValidator annotation from expirationYear field
+        {
+            Bundle rangeValidatorAnnotBundle = bundle.getBundle("expirationYear" + BundleUtils.ANNOTATION_SEP + RangeValidator.class.getSimpleName());
+            assertEquals(2, rangeValidatorAnnotBundle.size());
+            assertEquals(2020, rangeValidatorAnnotBundle.getLong(BundleUtils.ANNOTATION_PARAM + "1"));
+            assertEquals(2040, rangeValidatorAnnotBundle.getLong(BundleUtils.ANNOTATION_PARAM + "2"));
+        }
+
+        // Testing Description annotation from cryptogram field
+        {
+            Bundle descAnnotBundle = bundle.getBundle("cryptogram" + BundleUtils.ANNOTATION_SEP + Description.class.getSimpleName());
+            assertEquals(1, descAnnotBundle.size());
+            assertEquals("cryptogram", descAnnotBundle.getString(BundleUtils.ANNOTATION_PARAM + "1"));
+        }
+    }
+
+    @Test
+    public void bundleToObjectAnnotationTest() {
+        Bundle description = new Bundle();
+        Bundle descriptionParams = new Bundle();
+        descriptionParams.putString(BundleUtils.ANNOTATION_PARAM + "1", "Salut ca va");
+        description.putBundle("field" + BundleUtils.ANNOTATION_SEP + Description.class.getSimpleName(), descriptionParams);
+
+        Bundle regexValidor = new Bundle();
+        Bundle regexValidorParams = new Bundle();
+        regexValidorParams.putString(BundleUtils.ANNOTATION_PARAM + "1", "[0-9]{16}");
+        regexValidor.putBundle("field" + BundleUtils.ANNOTATION_SEP + RegexValidator.class.getSimpleName(), regexValidorParams);
+
+        Bundle classValidator = new Bundle();
+        Bundle classValidatorParams = new Bundle();
+        classValidatorParams.putString(BundleUtils.ANNOTATION_PARAM + "1", CreditCardChecker.class.getSimpleName());
+        classValidator.putBundle("field" + BundleUtils.ANNOTATION_SEP + ClassValidator.class.getSimpleName(), classValidatorParams);
+
+        Bundle rangeValidator = new Bundle();
+        Bundle rangeValidatorParams = new Bundle();
+        rangeValidatorParams.putLong(BundleUtils.ANNOTATION_PARAM + "1", 15);
+        rangeValidatorParams.putLong(BundleUtils.ANNOTATION_PARAM + "2", 94);
+        rangeValidator.putBundle("field" + BundleUtils.ANNOTATION_SEP + RangeValidator.class.getSimpleName(), rangeValidatorParams);
+
+        Description descAnnot = (Description) BundleUtils.getAnnotationFromBundle(description);
+        RegexValidator regexValidatorAnnot = (RegexValidator) BundleUtils.getAnnotationFromBundle(regexValidor);
+        ClassValidator classValidatorAnnot = (ClassValidator) BundleUtils.getAnnotationFromBundle(classValidator);
+        RangeValidator rangeValidatorAnnot = (RangeValidator) BundleUtils.getAnnotationFromBundle(rangeValidator);
+    }
 
     static class BillingDetails {
         public String cardHolder;
@@ -177,6 +256,59 @@ public class BundleUtilsTest {
         }
 
         public BillingDetails() {
+
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            BillingDetails that = (BillingDetails) o;
+            return expirationMonth == that.expirationMonth &&
+                    expirationYear == that.expirationYear &&
+                    cryptogram == that.cryptogram &&
+                    Objects.equals(cardHolder, that.cardHolder) &&
+                    Objects.equals(cardNumber, that.cardNumber);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(cardHolder, cardNumber, expirationMonth, expirationYear, cryptogram);
+        }
+    }
+
+    static class BillingDetailsWithAnnotations {
+
+        @Description(description = "Titulaire de la carte")
+        @RegexValidator(pattern = ".+")
+        public String cardHolder;
+
+        @Description(description = "Numéro de carte")
+        @RegexValidator(pattern = "[0-9]{16}")
+        @ClassValidator(predicateClass = CreditCardChecker.class)
+        public String cardNumber;
+
+        @Description(description = "Mois d'expiration")
+        @RangeValidator(minRange = 1, maxRange = 12)
+        public int expirationMonth;
+
+        @Description(description = "Année d'expiration")
+        @RangeValidator(minRange = 2020, maxRange = 2040)
+        public int expirationYear;
+
+        @Description()
+        @RangeValidator(minRange = 0, maxRange = 999)
+        public int cryptogram;
+
+        public BillingDetailsWithAnnotations(String cardHolder, String cardNumber, int expirationMonth, int expirationYear, int cryptogram) {
+            this.cardHolder = cardHolder;
+            this.cardNumber = cardNumber;
+            this.expirationMonth = expirationMonth;
+            this.expirationYear = expirationYear;
+            this.cryptogram = cryptogram;
+        }
+
+        public BillingDetailsWithAnnotations() {
 
         }
 

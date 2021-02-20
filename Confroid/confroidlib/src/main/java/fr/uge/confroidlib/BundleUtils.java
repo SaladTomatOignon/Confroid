@@ -15,9 +15,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import fr.uge.confroidlib.annotations.ClassValidator;
+import fr.uge.confroidlib.annotations.CustomizableView;
+import fr.uge.confroidlib.annotations.CustomizedView;
+import fr.uge.confroidlib.annotations.Description;
+import fr.uge.confroidlib.annotations.GeoCoordinates;
+import fr.uge.confroidlib.annotations.PhoneNumber;
+import fr.uge.confroidlib.annotations.RangeValidator;
 import fr.uge.confroidlib.annotations.RegexValidator;
 
 public class BundleUtils {
@@ -25,8 +33,8 @@ public class BundleUtils {
     public static final String CLASS_KEYWORD = "confroid#class";
     public static final String REF_KEYWORD = "confroid#ref";
 
-    private static final String ANNOTATION_SEP = "@";
-    private static final String ANNOTATION_PARAM = "param";
+    public static final String ANNOTATION_SEP = "@";
+    public static final String ANNOTATION_PARAM = "param";
 
     /**
      * Convert a map to a Bundle.
@@ -426,6 +434,20 @@ public class BundleUtils {
 
         if (annotation instanceof RegexValidator) {
             annotBundle.putString(ANNOTATION_PARAM + "1", ((RegexValidator)annotation).pattern());
+        } else if (annotation instanceof RangeValidator) {
+            annotBundle.putLong(ANNOTATION_PARAM + "1", ((RangeValidator)annotation).minRange());
+            annotBundle.putLong(ANNOTATION_PARAM + "2", ((RangeValidator)annotation).maxRange());
+        } else if (annotation instanceof ClassValidator) {
+            annotBundle.putString(ANNOTATION_PARAM + "1", ((ClassValidator)annotation).predicateClass().getSimpleName());
+        } else if (annotation instanceof Description) {
+            annotBundle.putString(ANNOTATION_PARAM + "1", ((Description)annotation).description().isEmpty() ?
+                    fieldName : ((Description)annotation).description());
+        } else if (annotation instanceof GeoCoordinates) {
+            // Parameterless annotation
+        } else if (annotation instanceof PhoneNumber) {
+            // Parameterless annotation
+        } else if (annotation instanceof CustomizedView) {
+            annotBundle.putString(ANNOTATION_PARAM + "1", ((CustomizedView)annotation).viewClass().getSimpleName());
         } else {
             return;
         }
@@ -462,6 +484,93 @@ public class BundleUtils {
                 @Override
                 public String pattern() {
                     return bundle.getString(ANNOTATION_PARAM + "1");
+                }
+            };
+        }
+
+        if (annotName.equals(RangeValidator.class.getSimpleName())) {
+            return new RangeValidator() {
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return RangeValidator.class;
+                }
+
+                @Override
+                public long minRange() {
+                    return bundle.getLong(ANNOTATION_PARAM + "1");
+                }
+
+                @Override
+                public long maxRange() {
+                    return bundle.getLong(ANNOTATION_PARAM + "2");
+                }
+            };
+        }
+
+        if (annotName.equals(ClassValidator.class.getSimpleName())) {
+            return new ClassValidator() {
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return ClassValidator.class;
+                }
+
+                @Override
+                public Class<? extends Predicate> predicateClass() {
+                    try {
+                        return (Class<? extends Predicate>) Class.forName(bundle.getString(ANNOTATION_PARAM + "1"));
+                    } catch (ClassNotFoundException e) {
+                        return null;
+                    }
+                }
+            };
+        }
+
+        if (annotName.equals(Description.class.getSimpleName())) {
+            return new Description() {
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return Description.class;
+                }
+
+                @Override
+                public String description() {
+                    return bundle.getString(ANNOTATION_PARAM + "1");
+                }
+            };
+        }
+
+        if (annotName.equals(GeoCoordinates.class.getSimpleName())) {
+            return new GeoCoordinates() {
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return GeoCoordinates.class;
+                }
+            };
+        }
+
+        if (annotName.equals(PhoneNumber.class.getSimpleName())) {
+            return new PhoneNumber() {
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return PhoneNumber.class;
+                }
+            };
+        }
+
+        if (annotName.equals(CustomizedView.class.getSimpleName())) {
+            return new CustomizedView() {
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return CustomizedView.class;
+                }
+
+                @Override
+                public Class<? extends CustomizableView> viewClass() {
+                    try {
+                        return (Class<? extends CustomizableView>) Class.forName(bundle.getString(ANNOTATION_PARAM + "1"));
+                    } catch (ClassNotFoundException e) {
+                        return null;
+                    }
                 }
             };
         }
