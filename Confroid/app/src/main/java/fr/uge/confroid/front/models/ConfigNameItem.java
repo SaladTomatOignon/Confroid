@@ -1,23 +1,22 @@
 package fr.uge.confroid.front.models;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
 import androidx.core.content.ContextCompat;
 import fr.uge.confroid.R;
+import fr.uge.confroid.front.ConfigVersionsActivity;
 
-public class ConfigListItem {
+public class ConfigNameItem {
+    private final Context context;
     private final String name;
-    private final Runnable onClick;
     private final Drawable icon;
 
-    public ConfigListItem(String name, Drawable icon, Runnable onClick) {
+    private ConfigNameItem(Context context, String name, Drawable icon) {
+        this.context = Objects.requireNonNull(context);
         this.name = Objects.requireNonNull(name);
-        this.onClick = Objects.requireNonNull(onClick);
         this.icon = Objects.requireNonNull(icon);
     }
 
@@ -30,10 +29,10 @@ public class ConfigListItem {
     }
 
     public void click() {
-        onClick.run();
+        ConfigVersionsActivity.present(context, name);
     }
 
-    public static ConfigListItem fromConfigName(Context context, String name) {
+    public static ConfigNameItem create(Context context, String name) {
         String id = name.substring(0, name.lastIndexOf("."));
         Drawable icon = null;
         try {
@@ -42,9 +41,6 @@ public class ConfigListItem {
             icon = ContextCompat.getDrawable(context, R.mipmap.ic_android);
         }
 
-        return new ConfigListItem(name, icon, () -> {
-            Intent intent = new Intent();
-            context.startActivity(intent);
-        });
+        return new ConfigNameItem(context, name, icon);
     }
 }

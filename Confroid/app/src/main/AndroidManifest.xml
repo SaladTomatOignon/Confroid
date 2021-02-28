@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".front.ConfigListActivity"></activity>
+        <activity android:name=".front.ConfigVersionsActivity"></activity>
+        <activity android:name=".front.ConfigNamesActivity" />
         <activity
             android:name=".front.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -59,8 +60,8 @@
             </intent-filter>
         </service>
     </application>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 </manifest>

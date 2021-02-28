@@ -4,23 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
-import fr.uge.confroid.front.adapters.ConfigListAdapter;
-import fr.uge.confroid.front.models.ConfigListItem;
+import fr.uge.confroid.front.adapters.ConfigNamesAdapter;
+import fr.uge.confroid.front.models.ConfigNameItem;
 import fr.uge.confroid.storage.ConfroidDatabase;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ConfigListActivity extends AppCompatActivity {
+public class ConfigNamesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_config_list);
+        setContentView(R.layout.activity_config_names);
 
         getSupportActionBar().setTitle(R.string.explore);
 
@@ -31,15 +30,15 @@ public class ConfigListActivity extends AppCompatActivity {
         emptyState.setVisibility(View.GONE);
 
         ConfroidDatabase.exec(this, dao -> {
-            List<ConfigListItem> items = dao.findAllNames()
+            List<ConfigNameItem> items = dao.findAllNames()
                 .stream()
-                .map(name -> ConfigListItem.fromConfigName(this, name))
+                .map(name -> ConfigNameItem.create(this, name))
                 .collect(Collectors.toList());
 
             if (items.isEmpty()) {
                 emptyState.setVisibility(View.VISIBLE);
             }
-            recycler.setAdapter(new ConfigListAdapter(items));
+            recycler.setAdapter(new ConfigNamesAdapter(items));
         });
     }
 }

@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         findViewById(R.id.btn_explore).setOnClickListener(view -> {
-           startActivity(new Intent(this, ConfigListActivity.class));
+           startActivity(new Intent(this, ConfigNamesActivity.class));
         });
     }
 }
