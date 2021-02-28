@@ -8,7 +8,7 @@
     tools:context=".front.MainActivity">
 
     <ImageView
-        android:id="@+id/imageLogo"
+        android:id="@+id/logo"
         android:layout_width="128dp"
         android:layout_height="128dp"
         android:layout_marginTop="64dp"
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
-        android:id="@+id/labelTitle"
+        android:id="@+id/label_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -30,10 +30,10 @@
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageLogo" />
+        app:layout_constraintTop_toBottomOf="@id/logo" />
 
     <Button
-        android:id="@+id/btnExplore"
+        android:id="@+id/btn_explore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="26dp"
