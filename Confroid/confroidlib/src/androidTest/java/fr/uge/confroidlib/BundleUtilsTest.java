@@ -5,7 +5,9 @@ import android.os.Bundle;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,6 +25,104 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class BundleUtilsTest {
+
+    @Test
+    public void IntegerTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        int integer = 15;
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(integer);
+        int convertedInteger = (int) BundleUtils.convertFromBundle(bundle);
+
+        assertEquals(integer, convertedInteger);
+    }
+
+    @Test
+    public void StringTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        String string = "Salut";
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(string);
+        String convertedString = (String) BundleUtils.convertFromBundle(bundle);
+
+        assertEquals(string, convertedString);
+    }
+
+    @Test
+    public void stringMapTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Salut", "valeur1");
+        map.put("Coco", "valeur2");
+        map.put("Mdr", "valeur3");
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(map);
+        HashMap<String, String> convertedMap = (HashMap<String, String>) BundleUtils.convertFromBundle(bundle);
+
+        assertEquals(map, convertedMap);
+    }
+
+    @Test
+    public void intMapTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("Salut", 1);
+        map.put("Coco", 2);
+        map.put("Mdr", 3);
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(map);
+        HashMap<String, Integer> convertedMap = (HashMap<String, Integer>) BundleUtils.convertFromBundle(bundle);
+
+        assertEquals(map, convertedMap);
+    }
+
+    @Test
+    public void billingDetailsMapTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        HashMap<String, BillingDetails> map = new HashMap<>();
+        map.put("Salut", new BillingDetails("Bugdroid", "123456789", 12, 2021, 123));
+        map.put("Coco", new BillingDetails("James bond", "987654321", 10, 2025, 159));
+        map.put("Mdr", new BillingDetails("Bruce Wayne", "789456123", 5, 2032, 147));
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(map);
+        HashMap<String, BillingDetails> convertedMap = (HashMap<String, BillingDetails>) BundleUtils.convertFromBundle(bundle);
+
+        assertEquals(map, convertedMap);
+    }
+
+    @Test
+    public void stringListTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        List<String> lst = new ArrayList<>();
+        lst.add("Salut");
+        lst.add("Coco");
+        lst.add("Mdr");
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(lst);
+        List<String> convertedList = (ArrayList<String>) BundleUtils.convertFromBundle(bundle);
+
+        assertEquals(lst, convertedList);
+    }
+
+    @Test
+    public void intListTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        List<Integer> lst = new ArrayList<>();
+        lst.add(1);
+        lst.add(55);
+        lst.add(94);
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(lst);
+        List<Integer> convertedList = (ArrayList<Integer>) BundleUtils.convertFromBundle(bundle);
+
+        assertEquals(lst, convertedList);
+    }
+
+    @Test
+    public void billingDetailsListTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        List<BillingDetails> lst = new ArrayList<>();
+        lst.add(new BillingDetails("Bugdroid", "123456789", 12, 2021, 123));
+        lst.add(new BillingDetails("James bond", "987654321", 10, 2025, 159));
+        lst.add(new BillingDetails("Bruce Wayne", "789456123", 5, 2032, 147));
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(lst);
+        List<BillingDetails> convertedList = (ArrayList<BillingDetails>) BundleUtils.convertFromBundle(bundle);
+
+        assertEquals(lst, convertedList);
+    }
 
     @Test
     public void objectToBundleTest() {

@@ -13,6 +13,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Predicate;
@@ -32,6 +33,7 @@ public class BundleUtils {
     public static final String ID_KEYWORD = "confroid#id";
     public static final String CLASS_KEYWORD = "confroid#class";
     public static final String REF_KEYWORD = "confroid#ref";
+    public static final String PRIMITIVE_KEYWORD = "confroid#primitive";
 
     public static final String ANNOTATION_SEP = "@";
     public static final String ANNOTATION_PARAM = "param";
@@ -156,6 +158,26 @@ public class BundleUtils {
     }
 
     /**
+     * Determines if the given object is boxing a primitive value + String.
+     * It includes :
+     * Byte, Short, Integer, Long, Float, Double, Boolean, Character and String.
+     *
+     * @param obj The object to determine if it's boxing a primitive value.
+     * @return True if `obj` is boxing a primitive value (including String).
+     * False otherwise
+     */
+    private static boolean isPrimitive(Object obj) {
+        return obj instanceof Byte ||
+                obj instanceof Short ||
+                obj instanceof Integer ||
+                obj instanceof Long ||
+                obj instanceof Double ||
+                obj instanceof Boolean ||
+                obj instanceof Character ||
+                obj instanceof String;
+    }
+
+    /**
      * Convert an object to a Bundle using reflexion.
      * Each key of the bundle represents the name of a field of the object.
      * The bundle contains the class name ({@value #CLASS_KEYWORD}) of the object.
@@ -189,10 +211,32 @@ public class BundleUtils {
             return bundle;
         }
 
+        if (isPrimitive(obj)) {
+            addValueToBundle(bundle, PRIMITIVE_KEYWORD, obj);
+            return bundle;
+        }
+
         int refId = references.size() + 1;
         references.put(obj, refId); // Adding the object to references
         bundle.putInt(ID_KEYWORD, refId);
         bundle.putString(CLASS_KEYWORD, obj.getClass().getName());
+
+        // Special treatment for Map, List and Array
+        {
+            if (Map.class.isAssignableFrom(obj.getClass())) {
+                Bundle map = convertToBundle((Map<String, Object>) obj, true, references);
+                map.remove(CLASS_KEYWORD);
+                bundle.putAll(map);
+            } else if (List.class.isAssignableFrom(obj.getClass())) {
+                Bundle lst = convertToBundle((List<Object>) obj, true, references);
+                lst.remove(CLASS_KEYWORD);
+                bundle.putAll(lst);
+            } else if (Object[].class.isAssignableFrom(obj.getClass())) {
+                Bundle array = convertToBundle((Object[]) obj, true, references);
+                array.remove(CLASS_KEYWORD);
+                bundle.putAll(array);
+            }
+        }
 
         for (Field field : obj.getClass().getFields()) {
             try {
@@ -231,7 +275,7 @@ public class BundleUtils {
      */
     public static Object convertFromBundle(Bundle bundle) throws IllegalArgumentException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchFieldException {
         Map<Integer, Object> references = new IdentityHashMap<>();
-        Map<Object, Map<Field, Integer>> remainingObjects = new HashMap<>();
+        Map<Object, Map<Field, Integer>> remainingObjects = new IdentityHashMap<>();
         Object obj = convertFromBundleAux(bundle, null, null, references, remainingObjects);
 
         // Now we have read all of the ids, we can map the remaining objects
@@ -274,6 +318,10 @@ public class BundleUtils {
             remainingObjects.get(parentObject).put(parentField, bundle.getInt(REF_KEYWORD));
 
             return null;
+        }
+
+        if (bundle.containsKey(PRIMITIVE_KEYWORD)) {
+            return bundle.get(PRIMITIVE_KEYWORD);
         }
 
         if (!bundle.containsKey(CLASS_KEYWORD)) {
@@ -348,8 +396,8 @@ public class BundleUtils {
     }
 
     /**
-     * Assuming that the given bundle is representing a Map<String, Object>, where the value is
-     * itself represented by a bundle, return the map object, recursively.
+     * Assuming that the given bundle is representing a Map<String, Object>,
+     * return the map object, recursively.
      *
      * @param bundle The bundle to convert into a map
      * @return The map where the type is given in the bundle with the key {@value #CLASS_KEYWORD}
@@ -368,8 +416,13 @@ public class BundleUtils {
         }
 
         for (String key : bundle.keySet()) {
-            if (!key.equals(CLASS_KEYWORD)) {
-                map.put(key, convertFromBundleAux(bundle.getBundle(key), parentObject, parentField, references, remainingObjects));
+            if (!key.equals(CLASS_KEYWORD) && !key.equals(ID_KEYWORD)) {
+                Object value = bundle.get(key);
+                if (value instanceof Bundle) {
+                    value = convertFromBundleAux(bundle.getBundle(key), parentObject, parentField, references, remainingObjects);
+                }
+
+                map.put(key, value);
             }
         }
 
@@ -377,8 +430,8 @@ public class BundleUtils {
     }
 
     /**
-     * Assuming that the given bundle is representing a List<Object>, where the value is
-     * itself represented by a bundle, return the list object, recursively.
+     * Assuming that the given bundle is representing a List<Object>,
+     * return the list object, recursively.
      *
      * @param bundle The bundle to convert into a List
      * @return The list where the type is given in the bundle with the key {@value #CLASS_KEYWORD}
@@ -390,16 +443,27 @@ public class BundleUtils {
     private static List<Object> getList(Bundle bundle, Object parentObject, Field parentField, Map<Integer, Object> references, Map<Object, Map<Field, Integer>> remainingObjects) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchFieldException {
         List<Object> lst = (List<Object>) Class.forName(bundle.getString(CLASS_KEYWORD)).newInstance();
 
-        for (int i = 0; i < bundle.size() - 1; i++) {
-            lst.add(convertFromBundleAux(bundle.getBundle(String.valueOf(i)), parentObject, parentField, references, remainingObjects));
+        /* Removing Confroid keywords to keep list indexes only.
+        * Then sorting the indexes to add elements in order in the list. */
+        List<String> bundleIndexes = bundle.keySet().stream()
+                .filter(key -> !key.equals(CLASS_KEYWORD) && !key.equals(ID_KEYWORD))
+                .sorted().collect(Collectors.toList());
+
+        for (int i = 0; i < bundleIndexes.size(); i++) {
+            Object value = bundle.get(bundleIndexes.get(i));
+            if (value instanceof Bundle) {
+                value = convertFromBundleAux(bundle.getBundle(String.valueOf(i)), parentObject, parentField, references, remainingObjects);
+            }
+
+            lst.add(value);
         }
 
         return lst;
     }
 
     /**
-     * Assuming that the given bundle is representing an Object[], where the value is
-     * itself represented by a bundle, return the array of object, recursively.
+     * Assuming that the given bundle is representing an Object[],
+     * return the array of object, recursively.
      *
      * @param bundle The bundle to convert into an array
      * @return The array where the type is given in the bundle with the key {@value #CLASS_KEYWORD}
@@ -411,8 +475,19 @@ public class BundleUtils {
     private static Object[] getArray(Bundle bundle, Object parentObject, Field parentField, Map<Integer, Object> references, Map<Object, Map<Field, Integer>> remainingObjects) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchFieldException {
         Object[] array = (Object[]) Class.forName(bundle.getString(CLASS_KEYWORD)).newInstance();
 
-        for (int i = 0; i < bundle.size() - 1; i++) {
-            array[i] = convertFromBundleAux(bundle.getBundle(String.valueOf(i)), parentObject, parentField, references, remainingObjects);
+        /* Removing Confroid keywords to keep list indexes only.
+         * Then sorting the indexes to add elements in order in the array. */
+        List<String> bundleIndexes = bundle.keySet().stream()
+                .filter(key -> !key.equals(CLASS_KEYWORD) && !key.equals(ID_KEYWORD))
+                .sorted().collect(Collectors.toList());
+
+        for (int i = 0; i < bundleIndexes.size() - 1; i++) {
+            Object value = bundle.get(bundleIndexes.get(i));
+            if (value instanceof Bundle) {
+                value = convertFromBundleAux(bundle.getBundle(String.valueOf(i)), parentObject, parentField, references, remainingObjects);
+            }
+
+            array[i] = value;
         }
 
         return array;
