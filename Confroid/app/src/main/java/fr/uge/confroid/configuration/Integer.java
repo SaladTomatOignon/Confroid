@@ -2,21 +2,21 @@ package fr.uge.confroid.configuration;
 
 import java.util.Objects;
 
-public class Integer implements Primitive {
-    private final java.lang.Integer _int;
+public class Integer implements Value {
+    private final java.lang.Integer value;
 
-    public Integer(java.lang.Integer _int) {
-        this._int = _int;
+    public Integer(java.lang.Integer value) {
+        this.value = value;
     }
 
     @Override
-    public boolean isInteger() {
-        return true;
+    public ValueTypes valueType() {
+        return ValueTypes.INTEGER;
     }
 
     @Override
     public java.lang.Integer getInteger() {
-        return _int;
+        return value;
     }
 
     @Override
@@ -24,16 +24,16 @@ public class Integer implements Primitive {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Integer integer = (Integer) o;
-        return Objects.equals(_int, integer._int);
+        return Objects.equals(value, integer.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_int);
+        return Objects.hash(value);
     }
 
     @Override
     public java.lang.String toString() {
-        return Objects.toString(_int);
+        return Objects.toString(value);
     }
 }

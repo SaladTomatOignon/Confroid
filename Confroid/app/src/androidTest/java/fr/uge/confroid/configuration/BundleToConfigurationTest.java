@@ -30,11 +30,11 @@ public class BundleToConfigurationTest {
         bundle2.putBundle("UnDernier", bundlePrimitive);
         Value config = Configuration.fromBundle(bundle2).getContent();
 
-        assertTrue(config.isDictionary());
-        assertEquals(42, (int) config.getMap().get("entier").getPrimitive().getInteger());
+        assertTrue(config.isMap());
+        assertEquals(42, (int) config.getMap().get("entier").getInteger());
         assertTrue(config.getMap().get("nested").isArray());
-        assertEquals("Ok Many", config.getMap().get("nested").getArray()[2].getPrimitive().getString());
+        assertEquals("Ok Many", config.getMap().get("nested").getArray()[2].getString());
         assertTrue(config.getMap().get("UnDernier").isPrimitive());
-        assertEquals("Hello", config.getMap().get("UnDernier").getPrimitive().getString());
+        assertEquals("Hello", config.getMap().get("UnDernier").getString());
     }
 }

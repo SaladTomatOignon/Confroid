@@ -4,19 +4,24 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Dictionary implements Value {
-    private final Map<java.lang.String, Value> map;
+    private final Map<java.lang.String, Value> values;
 
-    public Dictionary(Map<java.lang.String, Value> map) {
-        this.map = Objects.requireNonNull(map);
+    public Dictionary(Map<java.lang.String, Value> values) {
+        this.values = Objects.requireNonNull(values);
+    }
+
+    @Override
+    public ValueTypes valueType() {
+        return ValueTypes.MAP;
     }
 
     @Override
     public Map<java.lang.String, Value> getMap() {
-        return map;
+        return values;
     }
 
     @Override
-    public boolean isDictionary() {
+    public boolean isMap() {
         return true;
     }
 
@@ -25,16 +30,16 @@ public class Dictionary implements Value {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Dictionary that = (Dictionary) o;
-        return Objects.equals(map, that.map);
+        return Objects.equals(values, that.values);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(map);
+        return Objects.hash(values);
     }
 
     @Override
     public java.lang.String toString() {
-        return Objects.toString(map);
+        return Objects.toString(values);
     }
 }

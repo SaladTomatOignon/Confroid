@@ -510,8 +510,8 @@ public class BundleUtils {
         if (annotation instanceof RegexValidator) {
             annotBundle.putString(ANNOTATION_PARAM + "1", ((RegexValidator)annotation).pattern());
         } else if (annotation instanceof RangeValidator) {
-            annotBundle.putLong(ANNOTATION_PARAM + "1", ((RangeValidator)annotation).minRange());
-            annotBundle.putLong(ANNOTATION_PARAM + "2", ((RangeValidator)annotation).maxRange());
+            annotBundle.putInt(ANNOTATION_PARAM + "1", ((RangeValidator)annotation).minRange());
+            annotBundle.putInt(ANNOTATION_PARAM + "2", ((RangeValidator)annotation).maxRange());
         } else if (annotation instanceof ClassValidator) {
             annotBundle.putString(ANNOTATION_PARAM + "1", ((ClassValidator)annotation).predicateClass().getSimpleName());
         } else if (annotation instanceof Description) {
@@ -571,13 +571,13 @@ public class BundleUtils {
                 }
 
                 @Override
-                public long minRange() {
-                    return bundle.getLong(ANNOTATION_PARAM + "1");
+                public int minRange() {
+                    return bundle.getInt(ANNOTATION_PARAM + "1");
                 }
 
                 @Override
-                public long maxRange() {
-                    return bundle.getLong(ANNOTATION_PARAM + "2");
+                public int maxRange() {
+                    return bundle.getInt(ANNOTATION_PARAM + "2");
                 }
             };
         }

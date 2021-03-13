@@ -64,16 +64,13 @@ public class Configuration {
      * @return Le Bundle créé à partir de l'objet Value
      */
     private Bundle valueToBundle(Value value) {
-        if (value.isDictionary()) {
+        if (value.isMap()) {
             return mapToBundle(value.getMap());
         } else if (value.isArray()) {
             return arrayToBundle(value.getArray());
         } else if (value.isPrimitive()) {
             Bundle bundle = new Bundle();
-            Primitive prim = value.getPrimitive();
-
-            addPrimitiveToBundle(bundle, PRIMITIVE_KEY_NAME, prim);
-
+            addPrimitiveToBundle(bundle, PRIMITIVE_KEY_NAME, value);
             return bundle;
         } else {
             return null;
@@ -92,7 +89,7 @@ public class Configuration {
 
         for (Map.Entry<java.lang.String, Value> key : map.entrySet()) {
             if (key.getValue().isPrimitive()) {
-                addPrimitiveToBundle(bundle, key.getKey(), key.getValue().getPrimitive());
+                addPrimitiveToBundle(bundle, key.getKey(), key.getValue());
             } else {
                 bundle.putBundle(key.getKey(), valueToBundle(key.getValue()));
             }
@@ -113,7 +110,7 @@ public class Configuration {
 
         for (int i = 0; i < values.length; i++) {
             if (values[i].isPrimitive()) {
-                addPrimitiveToBundle(bundle, java.lang.String.valueOf(i), values[i].getPrimitive());
+                addPrimitiveToBundle(bundle, java.lang.String.valueOf(i), values[i]);
             } else {
                 bundle.putBundle(java.lang.String.valueOf(i), valueToBundle(values[i]));
             }
@@ -126,19 +123,19 @@ public class Configuration {
      *
      * @param bundle Le Bundle où il faut ajouter la primitive
      * @param key Le nom de clé à liée à la primitive
-     * @param prim La primitive à ajouter
+     * @param value La primitive à ajouter
      */
-    private void addPrimitiveToBundle(Bundle bundle, java.lang.String key, Primitive prim) {
-        if (prim.isBoolean()) {
-            bundle.putBoolean(key, prim.getBoolean());
-        } else if (prim.isByte()) {
-            bundle.putByte(key, prim.getByte());
-        } else if (prim.isFloat()) {
-            bundle.putFloat(key, prim.getFloat());
-        } else if (prim.isInteger()) {
-            bundle.putInt(key, prim.getInteger());
-        } else if (prim.isString()) {
-            bundle.putString(key, prim.getString());
+    private void addPrimitiveToBundle(Bundle bundle, java.lang.String key, Value value) {
+        if (value.isBoolean()) {
+            bundle.putBoolean(key, value.getBoolean());
+        } else if (value.isByte()) {
+            bundle.putByte(key, value.getByte());
+        } else if (value.isFloat()) {
+            bundle.putFloat(key, value.getFloat());
+        } else if (value.isInteger()) {
+            bundle.putInt(key, value.getInteger());
+        } else if (value.isString()) {
+            bundle.putString(key, value.getString());
         }
     }
 
@@ -185,7 +182,7 @@ public class Configuration {
         } else if (keys.size() == 1 && bundle.containsKey(PRIMITIVE_KEY_NAME)) { // Or if it only contains a primitive
             Value value = convertObjectToValue(bundle.get(PRIMITIVE_KEY_NAME));
             if (value.isPrimitive()) {
-                return value.getPrimitive();
+                return value;
             }
         }
 

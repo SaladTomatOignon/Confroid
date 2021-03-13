@@ -20,9 +20,9 @@ public class ConfigSerializer implements JsonSerializer<Configuration> {
     }
 
     private JsonElement serializeValue(Value config, Type configType, JsonSerializationContext context) {
-        if (config.isDictionary()) {
+        if (config.isMap()) {
             Map<java.lang.String, JsonElement> map = config.getMap().entrySet().stream().map(entry ->
-                    new AbstractMap.SimpleEntry<java.lang.String, JsonElement>(entry.getKey(), serializeValue(entry.getValue(), configType, context))
+                    new AbstractMap.SimpleEntry<>(entry.getKey(), serializeValue(entry.getValue(), configType, context))
             ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
 
             Gson gson = new Gson();
@@ -33,17 +33,16 @@ public class ConfigSerializer implements JsonSerializer<Configuration> {
             Gson gson = new Gson();
             return gson.toJsonTree(array).getAsJsonArray();
         } else if (config.isPrimitive()) {
-            if (config.getPrimitive().isBoolean()) {
-                return new JsonPrimitive(config.getPrimitive().getBoolean());
-            } else if (config.getPrimitive().isByte()) {
-                return new JsonPrimitive(config.getPrimitive().getByte());
-            } else if (config.getPrimitive().isInteger()) {
-                return new JsonPrimitive(config.getPrimitive().getInteger());
-            } else if (config.getPrimitive().isFloat()) {
-                return new JsonPrimitive(config.getPrimitive().getFloat());
-            } else if (config.getPrimitive().isString()) {
-                java.lang.String str = config.getPrimitive().getString();
-                return new JsonPrimitive(config.getPrimitive().getString());
+            if (config.isBoolean()) {
+                return new JsonPrimitive(config.getBoolean());
+            } else if (config.isByte()) {
+                return new JsonPrimitive(config.getByte());
+            } else if (config.isInteger()) {
+                return new JsonPrimitive(config.getInteger());
+            } else if (config.isFloat()) {
+                return new JsonPrimitive(config.getFloat());
+            } else if (config.isString()) {
+                return new JsonPrimitive(config.getString());
             } else {
                 return null;
             }

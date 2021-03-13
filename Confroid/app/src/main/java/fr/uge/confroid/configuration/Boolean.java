@@ -2,21 +2,21 @@ package fr.uge.confroid.configuration;
 
 import java.util.Objects;
 
-public class Boolean implements Primitive {
-    private final java.lang.Boolean _bool;
+public class Boolean implements Value {
+    private final java.lang.Boolean value;
 
-    public Boolean(java.lang.Boolean bool) {
-        this._bool = bool;
+    public Boolean(java.lang.Boolean value) {
+        this.value = value;
     }
 
     @Override
-    public boolean isBoolean() {
-        return true;
+    public ValueTypes valueType() {
+        return ValueTypes.BOOLEAN;
     }
 
     @Override
     public java.lang.Boolean getBoolean() {
-        return _bool;
+        return value;
     }
 
     @Override
@@ -24,16 +24,16 @@ public class Boolean implements Primitive {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Boolean aBoolean = (Boolean) o;
-        return Objects.equals(_bool, aBoolean._bool);
+        return Objects.equals(value, aBoolean.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_bool);
+        return Objects.hash(value);
     }
 
     @Override
     public java.lang.String toString() {
-        return Objects.toString(_bool);
+        return Objects.toString(value);
     }
 }

@@ -2,21 +2,21 @@ package fr.uge.confroid.configuration;
 
 import java.util.Objects;
 
-public class Float implements Primitive {
-    private final java.lang.Float _float;
+public class Float implements Value {
+    private final java.lang.Float value;
 
-    public Float(java.lang.Float _float) {
-        this._float = _float;
+    public Float(java.lang.Float value) {
+        this.value = value;
     }
 
     @Override
-    public boolean isFloat() {
-        return true;
+    public ValueTypes valueType() {
+        return ValueTypes.FLOAT;
     }
 
     @Override
     public java.lang.Float getFloat() {
-        return _float;
+        return value;
     }
 
     @Override
@@ -24,16 +24,16 @@ public class Float implements Primitive {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Float aFloat = (Float) o;
-        return Objects.equals(_float, aFloat._float);
+        return Objects.equals(value, aFloat.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_float);
+        return Objects.hash(value);
     }
 
     @Override
     public java.lang.String toString() {
-        return Objects.toString(_float);
+        return Objects.toString(value);
     }
 }

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +23,7 @@ import androidx.core.content.ContextCompat;
  * Exposes convenient methods to use Confroid APIs.
  */
 public class ConfroidUtils {
+    private static final String TAG = "ConfroidUtils";
 
     /**
      *  Creates new version of the configuration identified by `name`.
@@ -76,12 +78,11 @@ public class ConfroidUtils {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     context.unregisterReceiver(this);
-
                     Bundle content = intent.getBundleExtra(ConfroidIntents.EXTRA_CONTENT);
                     try {
                         callback.accept((T) BundleUtils.convertFromBundle(content));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Log.e(TAG, e.getMessage(), e);
                         callback.accept(null);
                     }
                 }

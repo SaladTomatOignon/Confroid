@@ -299,8 +299,8 @@ public class BundleUtilsTest {
         {
             Bundle rangeValidatorAnnotBundle = bundle.getBundle("expirationYear" + BundleUtils.ANNOTATION_SEP + RangeValidator.class.getSimpleName());
             assertEquals(2, rangeValidatorAnnotBundle.size());
-            assertEquals(2020, rangeValidatorAnnotBundle.getLong(BundleUtils.ANNOTATION_PARAM + "1"));
-            assertEquals(2040, rangeValidatorAnnotBundle.getLong(BundleUtils.ANNOTATION_PARAM + "2"));
+            assertEquals(2020, rangeValidatorAnnotBundle.getInt(BundleUtils.ANNOTATION_PARAM + "1"));
+            assertEquals(2040, rangeValidatorAnnotBundle.getInt(BundleUtils.ANNOTATION_PARAM + "2"));
         }
 
         // Testing Description annotation from cryptogram field

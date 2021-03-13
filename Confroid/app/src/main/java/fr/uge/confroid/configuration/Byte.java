@@ -1,23 +1,21 @@
 package fr.uge.confroid.configuration;
 import java.util.Objects;
 
-import java.util.Objects;
+public class Byte implements Value {
+    private final byte value;
 
-public class Byte implements Primitive {
-    private final byte _byte;
-
-    public Byte(byte _byte) {
-        this._byte = _byte;
+    public Byte(byte value) {
+        this.value = value;
     }
 
     @Override
-    public boolean isByte() {
-        return true;
+    public ValueTypes valueType() {
+        return ValueTypes.BYTE;
     }
 
     @Override
     public java.lang.Byte getByte() {
-        return _byte;
+        return value;
     }
 
     @Override
@@ -25,16 +23,16 @@ public class Byte implements Primitive {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Byte aByte = (Byte) o;
-        return _byte == aByte._byte;
+        return value == aByte.value;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_byte);
+        return Objects.hash(value);
     }
 
     @Override
     public java.lang.String toString() {
-        return Objects.toString(_byte);
+        return Objects.toString(value);
     }
 }

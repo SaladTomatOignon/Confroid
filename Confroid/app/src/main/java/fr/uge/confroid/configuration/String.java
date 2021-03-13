@@ -1,23 +1,21 @@
 package fr.uge.confroid.configuration;
 import java.util.Objects;
 
-import java.util.Objects;
+public class String implements Value {
+    private final java.lang.String value;
 
-public class String implements Primitive {
-    private final java.lang.String string;
-
-    public String(java.lang.String string) {
-        this.string = string;
+    public String(java.lang.String value) {
+        this.value = value;
     }
 
     @Override
-    public boolean isString() {
-        return true;
+    public ValueTypes valueType() {
+        return ValueTypes.STRING;
     }
 
     @Override
     public java.lang.String getString() {
-        return string;
+        return value;
     }
 
     @Override
@@ -25,17 +23,17 @@ public class String implements Primitive {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         String string1 = (String) o;
-        return Objects.equals(string, string1.string);
+        return Objects.equals(value, string1.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(string);
+        return Objects.hash(value);
     }
 
     @Override
     public java.lang.String toString() {
-        return string;
+        return value;
     }
 }
 

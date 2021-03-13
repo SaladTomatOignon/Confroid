@@ -3,20 +3,20 @@ package fr.uge.confroid.configuration;
 import java.util.Arrays;
 
 public class Array implements Value {
-    private final Value[] array;
+    private final Value[] values;
 
-    public Array(Value[] array) {
-        this.array = array;
+    public Array(Value[] values) {
+        this.values = values;
+    }
+
+    @Override
+    public ValueTypes valueType() {
+        return ValueTypes.ARRAY;
     }
 
     @Override
     public Value[] getArray() {
-        return array;
-    }
-
-    @Override
-    public boolean isArray() {
-        return true;
+        return values;
     }
 
     @Override
@@ -24,16 +24,16 @@ public class Array implements Value {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Array array1 = (Array) o;
-        return Arrays.equals(array, array1.array);
+        return Arrays.equals(values, array1.values);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(array);
+        return Arrays.hashCode(values);
     }
 
     @Override
     public java.lang.String toString() {
-        return Arrays.toString(array);
+        return Arrays.toString(values);
     }
 }
