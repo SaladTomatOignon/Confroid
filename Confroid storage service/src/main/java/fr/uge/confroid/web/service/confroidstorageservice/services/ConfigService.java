@@ -4,6 +4,7 @@ import fr.uge.confroid.web.service.confroidstorageservice.models.Configuration;
 import fr.uge.confroid.web.service.confroidstorageservice.repositories.ConfigRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,19 +20,32 @@ public class ConfigService {
         return configs;
     }
 
-    public void save(Configuration config) {
-        repository.save(config);
+    public Configuration save(Configuration config) {
+        return repository.save(config);
     }
 
+    @Transactional
     public Optional<Configuration> findById(Long id) {
         return repository.findById(id);
     }
 
-    public Configuration findByNameAndVersion(String name, String version) {
+    @Transactional
+    public List<Configuration> findByName(String name) {
+        return repository.findByName(name);
+    }
+
+    @Transactional
+    public Optional<Configuration> findByNameAndVersion(String name, int version) {
         return repository.findByNameAndVersion(name, version);
     }
 
-    public void delete(Configuration config) {
-        repository.delete(config);
+    @Transactional
+    public Optional<Configuration> findByNameAndTag(String name, String tag) {
+        return repository.findByNameAndTag(name, tag);
+    }
+
+    @Transactional
+    public void deleteByName(String name) {
+        repository.deleteByName(name);
     }
 }
