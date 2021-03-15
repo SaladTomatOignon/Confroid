@@ -18,19 +18,19 @@ import java.util.stream.Collectors;
 import fr.uge.confroid.configuration.Configuration;
 import fr.uge.confroid.configuration.Integer;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class WebClientTest {
 
-    private static final Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
     private static final String configName = "fr.uge.confroid.test";
 
     private static Client client;
 
     @BeforeClass
     public static void initClient() {
-        client = new Client("Samy", "Batman94", appContext);
+        client = new Client("Samy", "Batman94", getApplicationContext());
     }
 
     @AfterClass

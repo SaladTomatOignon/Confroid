@@ -92,14 +92,13 @@ public class ConfroidPackage {
         ConfroidPackage that = (ConfroidPackage) o;
         return version == that.version &&
                 name.equals(that.name) &&
-                date.equals(that.date) &&
                 config.equals(that.config) &&
                 Objects.equals(tag, that.tag);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, version, date, config, tag);
+        return Objects.hash(name, version, config, tag);
     }
 
     @Override
