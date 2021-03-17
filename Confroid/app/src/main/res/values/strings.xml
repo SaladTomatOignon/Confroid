@@ -2,4 +2,55 @@
     <string name="app_name">Confroid</string>
     <string name="explore">Explore</string>
     <string name="nothing_to_show">Nothing to show</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="root_fragment_title">Settings</string>
+    <string name="cloud_service_header">Cloud service</string>
+    <string name="general_header">General</string>
+
+    <!-- Cloud service Preferences -->
+    <string name="configure_access_title">Configure access</string>
+    <string name="configure_access_summary">Manage web address and logins</string>
+
+        <!-- Connexion Preferences -->
+        <string name="connexion_title">Connexion</string>
+
+        <string name="base_address_empty_error">Base address is empty</string>
+        <string name="login_empty_error">Login is empty</string>
+        <string name="password_empty_error">Password is empty</string>
+
+        <string name="server_status">Server status</string>
+        <string name="server_connected">Connected</string>
+        <string name="server_disconnected">Disconnected</string>
+        <string name="base_address_title">Base address</string>
+        <string name="base_address_summary">The url to web service</string>
+        <string name="login_title">Login</string>
+        <string name="login_summary">The login information</string>
+        <string name="password_title">Password</string>
+        <string name="password_summary">The password information</string>
+        <string name="test_connexion">Test connexion</string>
+        <string name="test_connexion_ok">Successfully connected to the server !</string>
+        <string name="test_connexion_ko">Failed to connect to the server</string>
+
+    <string name="data_sync_title">Data synchronization</string>
+    <string name="data_sync_summary">Choose when you upload locales configs</string>
+
+        <!-- Data sync Preferences -->
+        <string name="enable_data_sync_title">Enable data synchronization</string>
+        <string name="enable_data_sync_summary">Regularly upload local configurations to the server when device battery is at an acceptable level</string>
+
+        <string name="time_interval_title">Time interval to the server</string>
+        <string name="time_interval_summary">Sets the interval at which the local configurations will be sent to the server</string>
+
+        <string name="allow_cellular_data_title">Allow cellular data</string>
+        <string name="allow_cellular_data_summary">Turn off cellular data to limit uploads to Wi-Fi</string>
+
+        <string name="requires_charging_title">Requires charging</string>
+        <string name="requires_charging_summary">Sets whether device should be charging for uploads</string>
+
+    <!-- General Preferences -->
+    <string name="language_title">Language</string>
+    <string name="version_title">Version</string>
+    <string name="app_version_value">1.0.0</string>
 </resources>

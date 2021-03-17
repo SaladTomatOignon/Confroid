@@ -7,15 +7,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -23,14 +20,14 @@ import java.util.function.Consumer;
 import javax.crypto.SecretKey;
 
 import fr.uge.confroid.configuration.Configuration;
+import fr.uge.confroid.settings.AppSettings;
 import fr.uge.confroid.utils.CryptUtils;
 import fr.uge.confroid.web.dto.CryptedConfroidPackage;
 
 public class Client {
     private static final String SALT = "Confroid";
-    private static final String BASE_ADDRESS = "http://xxx.xxx.xxx.xxx:8080";
 
-    public static Client INSTANCE;
+    private static Client INSTANCE;
 
     private final User user;
     private final SecretKey key;
@@ -55,13 +52,31 @@ public class Client {
      * @param username The username of the client
      * @param password The password of the client
      * @param context A Context to use for sending requests
+     * @param statusCallback Function called with 'true' as argument if the login succeed, and
+     *                       'false' if the login failed. May be null
      */
-    public static void initClient(String username, String password, Context context) {
+    public static void initClient(String username, String password, Context context, Consumer<Boolean> statusCallback) {
         Client client = new Client(username, password, context);
         client.login(
-                (response) -> Client.INSTANCE = client,
-                (error -> Log.e("Confroid Storage Service", "Authentication failed"))
+                (response) ->  {
+                    Client.INSTANCE = client;
+                    AppSettings.getINSTANCE().setConnected(true);
+                    if (!Objects.isNull(statusCallback)) {
+                        statusCallback.accept(true);
+                    }
+                },
+                (error) -> {
+                    Log.e("Confroid Storage Service", "Authentication failed");
+                    AppSettings.getINSTANCE().setConnected(false);
+                    if (!Objects.isNull(statusCallback)) {
+                        statusCallback.accept(false);
+                    }
+                }
         );
+    }
+
+    private String baseAddress() {
+        return AppSettings.getINSTANCE().getBaseAddress();
     }
 
     /**
@@ -72,7 +87,7 @@ public class Client {
      * @param failCallback The authentication error callback
      */
     private void login(Response.Listener<JSONObject> successCallback, Response.ErrorListener failCallback) {
-        String url = String.join("/", BASE_ADDRESS, "users", "login");
+        String url = String.join("/", baseAddress(), "users", "login");
         JSONObject response = null;
 
         try {
@@ -84,6 +99,10 @@ public class Client {
         } catch (Exception e) {
             Log.e("Error while sending authentication request to web service", e.getMessage());
         }
+    }
+
+    public static Client getInstance() {
+        return INSTANCE;
     }
 
     /**
@@ -119,7 +138,7 @@ public class Client {
         String encryptedConfig = CryptUtils.encrypt(config.toJson(), key);
         CryptedConfroidPackage pkg = new CryptedConfroidPackage(name, version, date.toString(), encryptedConfig, tag);
 
-        String url = BASE_ADDRESS + "/configurations/";
+        String url = baseAddress() + "/configurations/";
 
         try {
             String requestPostJson = new Gson().toJson(pkg);
@@ -142,7 +161,7 @@ public class Client {
      * @return True if the request has been sent, false otherwise
      */
     public boolean getConfig(String name, int version, Response.Listener<CryptedConfroidPackage> listener, Response.ErrorListener errorListener) {
-        String url = String.join("/", BASE_ADDRESS, "configurations", name, String.valueOf(version));
+        String url = String.join("/", baseAddress(), "configurations", name, String.valueOf(version));
         return sendGetRequest(url, listener, errorListener);
     }
 
@@ -158,7 +177,7 @@ public class Client {
      * @return True if the request has been sent, false otherwise
      */
     public boolean getConfig(String name, String tag, Response.Listener<CryptedConfroidPackage> listener, Response.ErrorListener errorListener) {
-        String url = String.join("/", BASE_ADDRESS, "configurations", name, "tags", tag);
+        String url = String.join("/", baseAddress(), "configurations", name, "tags", tag);
         return sendGetRequest(url, listener, errorListener);
     }
 
@@ -173,7 +192,7 @@ public class Client {
      * @return True if the request has been sent, false otherwise
      */
     public boolean getConfigs(String name, Response.Listener<List<CryptedConfroidPackage>> listener, Response.ErrorListener errorListener) {
-        String url = String.join("/", BASE_ADDRESS, "configurations", name);
+        String url = String.join("/", baseAddress(), "configurations", name);
         return sendGetRequestList(url, listener, errorListener);
     }
 
@@ -230,7 +249,7 @@ public class Client {
      * @return True if the request has been sent, false otherwise
      */
     public boolean deleteConfigs(String name, Response.Listener<CryptedConfroidPackage> listener, Response.ErrorListener errorListener) {
-        String url = String.join("/", BASE_ADDRESS, "configurations", name);
+        String url = String.join("/", baseAddress(), "configurations", name);
 
         try {
             JsonConfroidPackageRequest request = new JsonConfroidPackageRequest(Request.Method.DELETE, url, null, listener, errorListener);

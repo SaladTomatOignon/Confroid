@@ -1,0 +1,36 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/cloud_service_header">
+
+        <Preference
+            app:key="configure_access"
+            app:title="@string/configure_access_title"
+            app:summary="@string/configure_access_summary"
+            app:fragment="fr.uge.confroid.front.SettingsActivity$CloudAccessSettingsFragment" />
+
+        <Preference
+            app:key="data_sync"
+            app:title="@string/data_sync_title"
+            app:summary="@string/data_sync_summary"
+            app:fragment="fr.uge.confroid.front.SettingsActivity$DataSyncSettingsFragment" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/general_header">
+
+        <ListPreference
+            app:key="language"
+            app:entries="@array/language_entries"
+            app:entryValues="@array/language_values"
+            app:defaultValue="en"
+            app:title="@string/language_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:title="@string/version_title"
+            app:summary="@string/app_version_value"
+            app:selectable="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

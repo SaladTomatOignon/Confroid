@@ -7,17 +7,25 @@ import androidx.work.WorkRequest;
 
 import java.util.concurrent.TimeUnit;
 
+import fr.uge.confroid.settings.AppSettings;
+
 public class WorkRequests {
 
     public static WorkRequest getUploadWorkRequest() {
-        // TODO : Rendre parametrable les contraintes et la périodicité de la tache.
-        Constraints constraints = new Constraints.Builder()
+        AppSettings settings = AppSettings.getINSTANCE();
+
+        Constraints.Builder constraintsBuilder = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.UNMETERED) // On WiFi available only
                 .setRequiresBatteryNotLow(true) // When the device battery is not low
-                .build();
+                .setRequiresCharging(settings.isRequiresCharging());
+
+        if (settings.isAllowCellularData()) {
+            constraintsBuilder.setRequiredNetworkType(NetworkType.CONNECTED); // Any connection type
+        }
 
         return new PeriodicWorkRequest.Builder(UploadWorker.class,
-                1, TimeUnit.DAYS) // Everyday
+                settings.getRepeatInterval(), settings.getRepeatIntervalTimeUnit())
+                .setConstraints(constraintsBuilder.build())
                 .build();
     }
 }
