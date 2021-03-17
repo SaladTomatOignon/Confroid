@@ -55,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity implements
         switch (key) {
             case "language":
                 String selected = preferences.getString(key, "").toUpperCase();
-                AppSettings.getINSTANCE().setLanguage(Language.valueOf(selected));
+                AppSettings.getINSTANCE().setLanguage(getApplicationContext(), Language.valueOf(selected));
                 break;
             case "base_address":
                 AppSettings.getINSTANCE().setBaseAddress(preferences.getString(key, ""));

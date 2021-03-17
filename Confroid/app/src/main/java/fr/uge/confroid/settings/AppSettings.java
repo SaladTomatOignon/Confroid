@@ -33,7 +33,7 @@ public class AppSettings {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
 
         String language = preferences.getString("language", "").toUpperCase();
-        settings.setLanguage(Language.valueOf(language));
+        settings.setLanguage(ctx, Language.valueOf(language));
         settings.setBaseAddress(preferences.getString("base_address", ""));
         settings.setLogin(preferences.getString("login", ""));
         settings.setPassword(preferences.getString("password", ""));
@@ -67,8 +67,17 @@ public class AppSettings {
         return Objects.isNull(language) ? Language.EN : language;
     }
 
-    public void setLanguage(Language language) {
+    public void setLanguage(Context ctx, Language language) {
         this.language = Objects.requireNonNull(language);
+
+        switch (language) {
+            case FR:
+                LocaleHelper.setLocale(ctx, "fr");
+                break;
+            case EN:
+                LocaleHelper.setLocale(ctx, "en");
+                break;
+        }
     }
 
     public String getBaseAddress() {

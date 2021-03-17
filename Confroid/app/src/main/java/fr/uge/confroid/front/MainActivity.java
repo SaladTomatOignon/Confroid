@@ -54,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initWorkers() {
-        WorkManager.getInstance(getApplicationContext()).enqueue(
-                WorkRequests.getUploadWorkRequest()
-        );
+        WorkManager workManager = WorkManager.getInstance(getApplicationContext());
+        if (AppSettings.getINSTANCE().isEnableDataSync()) {
+            workManager.enqueue(WorkRequests.getUploadWorkRequest());
+        }
     }
 }
