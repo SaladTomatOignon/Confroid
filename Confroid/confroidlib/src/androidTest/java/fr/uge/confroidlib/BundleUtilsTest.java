@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import fr.uge.confroidlib.annotations.RangeValidator;
 import fr.uge.confroidlib.annotations.RegexValidator;
 import fr.uge.confroidlib.validators.CreditCardChecker;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -122,6 +124,50 @@ public class BundleUtilsTest {
         List<BillingDetails> convertedList = (ArrayList<BillingDetails>) BundleUtils.convertFromBundle(bundle);
 
         assertEquals(lst, convertedList);
+    }
+
+    @Test
+    public void stringArrayTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        String[] array = new String[] {"Salut", "Coco", "Mdr"};
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(array);
+        String[] convertedList = (String[]) BundleUtils.convertFromBundle(bundle);
+
+        assertArrayEquals(array, convertedList);
+    }
+
+    @Test
+    public void intArrayTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        Integer[] array = new Integer[] {42, 789, -123, 0};
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(array);
+        Integer[] convertedList = (Integer[]) BundleUtils.convertFromBundle(bundle);
+
+        assertArrayEquals(array, convertedList);
+    }
+
+    @Test
+    public void billingDetailsArrayTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        BillingDetails[] array = new BillingDetails[] {
+                new BillingDetails("Bugdroid", "123456789", 12, 2021, 123),
+                new BillingDetails("James bond", "987654321", 10, 2025, 159),
+                new BillingDetails("Bruce Wayne", "789456123", 5, 2032, 147)};
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(array);
+        BillingDetails[] convertedList = (BillingDetails[]) BundleUtils.convertFromBundle(bundle);
+
+        assertArrayEquals(array, convertedList);
+    }
+
+    @Test
+    public void MixObjectsClassTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        MixObjectsClass mixObjectsClass = new MixObjectsClass();
+        mixObjectsClass.initValues();
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(mixObjectsClass);
+        MixObjectsClass convertedObject = (MixObjectsClass) BundleUtils.convertFromBundle(bundle);
+
+        assertEquals(mixObjectsClass, convertedObject);
     }
 
     @Test
@@ -416,7 +462,7 @@ public class BundleUtilsTest {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            BillingDetails that = (BillingDetails) o;
+            BillingDetailsWithAnnotations that = (BillingDetailsWithAnnotations) o;
             return expirationMonth == that.expirationMonth &&
                     expirationYear == that.expirationYear &&
                     cryptogram == that.cryptogram &&
@@ -517,6 +563,90 @@ public class BundleUtilsTest {
         @Override
         public int hashCode() {
             return Objects.hash(shoppingInfos);
+        }
+    }
+
+    static class MixObjectsClass {
+        public Map<String, Integer> mapInteger;
+        public Map<String, ShippingAddress> mapShippingAddress;
+        public List<Float> listFloat;
+        public List<ShippingAddress> listShippingAddress;
+        public Integer[] arrayIntegers;
+        public ShippingAddress[] arrayShippingAddress;
+        public byte octet;
+        public boolean bool;
+
+        public MixObjectsClass() {
+            this.mapInteger = new HashMap<>();
+            this.mapShippingAddress = new HashMap<>();
+            this.listFloat = new ArrayList<>();
+            this.listShippingAddress = new ArrayList<>();
+            this.arrayIntegers = new Integer[5];
+            this.arrayShippingAddress = new ShippingAddress[3];
+        }
+
+        public void initValues() {
+            this.mapInteger.put("Premier", 5);
+            this.mapInteger.put("Deuxieme", 256);
+            this.mapInteger.put("Troisieme", 123);
+
+            this.mapShippingAddress.put("Premier", new ShippingAddress("Name", "Street", "City", "Country"));
+            this.mapShippingAddress.put("Deuxieme", new ShippingAddress("Nom", "Rue", "Ville", "Pays"));
+
+            this.listFloat.add(12f);
+            this.listFloat.add(0.3f);
+            this.listFloat.add(789.54f);
+
+            this.listShippingAddress.add(new ShippingAddress("Name", "Street", "City", "Country"));
+            this.listShippingAddress.add(new ShippingAddress("Nom", "Rue", "Ville", "Pays"));
+
+            for (int i = 0; i < 5; i++) {
+                this.arrayIntegers[i] = i;
+            }
+
+            for (int i = 0; i < 3; i++) {
+                this.arrayShippingAddress[i] = new ShippingAddress("Name" + i, "Street" + i, "City" + i, "Country" + i);
+            }
+
+            this.octet = 100;
+            this.bool = true;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            MixObjectsClass that = (MixObjectsClass) o;
+            return octet == that.octet &&
+                    bool == that.bool &&
+                    mapInteger.equals(that.mapInteger) &&
+                    mapShippingAddress.equals(that.mapShippingAddress) &&
+                    listFloat.equals(that.listFloat) &&
+                    listShippingAddress.equals(that.listShippingAddress) &&
+                    Arrays.equals(arrayIntegers, that.arrayIntegers) &&
+                    Arrays.equals(arrayShippingAddress, that.arrayShippingAddress);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Objects.hash(mapInteger, mapShippingAddress, listFloat, listShippingAddress, octet, bool);
+            result = 31 * result + Arrays.hashCode(arrayIntegers);
+            result = 31 * result + Arrays.hashCode(arrayShippingAddress);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "MixObjectsClass{" +
+                    "mapInteger=" + mapInteger +
+                    ", mapShippingAddress=" + mapShippingAddress +
+                    ", listFloat=" + listFloat +
+                    ", listShippingAddress=" + listShippingAddress +
+                    ", arrayIntegers=" + Arrays.toString(arrayIntegers) +
+                    ", arrayShippingAddress=" + Arrays.toString(arrayShippingAddress) +
+                    ", octet=" + octet +
+                    ", bool=" + bool +
+                    '}';
         }
     }
 }

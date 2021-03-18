@@ -6,12 +6,14 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
@@ -472,22 +474,23 @@ public class BundleUtils {
      * @throws IllegalAccessException if the class or its nullary constructor is not accessible
      * @throws NoSuchFieldException if a field with the specified name is not found.
      */
-    private static Object[] getArray(Bundle bundle, Object parentObject, Field parentField, Map<Integer, Object> references, Map<Object, Map<Field, Integer>> remainingObjects) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-        Object[] array = (Object[]) Class.forName(bundle.getString(CLASS_KEYWORD)).newInstance();
-
+    private static Object getArray(Bundle bundle, Object parentObject, Field parentField, Map<Integer, Object> references, Map<Object, Map<Field, Integer>> remainingObjects) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchFieldException {
         /* Removing Confroid keywords to keep list indexes only.
          * Then sorting the indexes to add elements in order in the array. */
         List<String> bundleIndexes = bundle.keySet().stream()
                 .filter(key -> !key.equals(CLASS_KEYWORD) && !key.equals(ID_KEYWORD))
                 .sorted().collect(Collectors.toList());
 
-        for (int i = 0; i < bundleIndexes.size() - 1; i++) {
+        Class<?> clazz = Class.forName(bundle.getString(CLASS_KEYWORD)).getComponentType();
+        Object array = Array.newInstance(clazz, bundleIndexes.size());
+
+        for (int i = 0; i < bundleIndexes.size(); i++) {
             Object value = bundle.get(bundleIndexes.get(i));
             if (value instanceof Bundle) {
                 value = convertFromBundleAux(bundle.getBundle(String.valueOf(i)), parentObject, parentField, references, remainingObjects);
             }
 
-            array[i] = value;
+            Array.set(array, i, value);
         }
 
         return array;
