@@ -138,6 +138,16 @@ public class BundleUtilsTest {
 
     @Test
     public void intArrayTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        int[] array = new int[] {42, 789, -123, 0};
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(array);
+        int[] convertedList = (int[]) BundleUtils.convertFromBundle(bundle);
+
+        assertArrayEquals(array, convertedList);
+    }
+
+    @Test
+    public void integerArrayTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
         Integer[] array = new Integer[] {42, 789, -123, 0};
 
         Bundle bundle = BundleUtils.convertToBundleReflection(array);
@@ -345,8 +355,8 @@ public class BundleUtilsTest {
         {
             Bundle rangeValidatorAnnotBundle = bundle.getBundle("expirationYear" + BundleUtils.ANNOTATION_SEP + RangeValidator.class.getSimpleName());
             assertEquals(2, rangeValidatorAnnotBundle.size());
-            assertEquals(2020, rangeValidatorAnnotBundle.getInt(BundleUtils.ANNOTATION_PARAM + "1"));
-            assertEquals(2040, rangeValidatorAnnotBundle.getInt(BundleUtils.ANNOTATION_PARAM + "2"));
+            assertEquals(2020, rangeValidatorAnnotBundle.getLong(BundleUtils.ANNOTATION_PARAM + "1"));
+            assertEquals(2040, rangeValidatorAnnotBundle.getLong(BundleUtils.ANNOTATION_PARAM + "2"));
         }
 
         // Testing Description annotation from cryptogram field
@@ -566,13 +576,18 @@ public class BundleUtilsTest {
         }
     }
 
-    static class MixObjectsClass {
+    public static class MixObjectsClass {
+        @Description(description = "Une map de Integers")
         public Map<String, Integer> mapInteger;
         public Map<String, ShippingAddress> mapShippingAddress;
+        @Description(description = "Une map de Float")
         public List<Float> listFloat;
         public List<ShippingAddress> listShippingAddress;
+        @ClassValidator(predicateClass = CreditCardChecker.class)
         public Integer[] arrayIntegers;
         public ShippingAddress[] arrayShippingAddress;
+        @ClassValidator(predicateClass = CreditCardChecker.class)
+        @RangeValidator(minRange = 0, maxRange = 255)
         public byte octet;
         public boolean bool;
 

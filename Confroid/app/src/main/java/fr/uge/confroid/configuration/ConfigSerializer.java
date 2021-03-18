@@ -39,8 +39,12 @@ public class ConfigSerializer implements JsonSerializer<Configuration> {
                 return new JsonPrimitive(config.getByte());
             } else if (config.isInteger()) {
                 return new JsonPrimitive(config.getInteger());
+            }  else if (config.isLong()) {
+                return new JsonPrimitive(config.getLong());
             } else if (config.isFloat()) {
                 return new JsonPrimitive(config.getFloat());
+            }  else if (config.isDouble()) {
+                return new JsonPrimitive(config.getDouble());
             } else if (config.isString()) {
                 return new JsonPrimitive(config.getString());
             } else {

@@ -20,7 +20,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import fr.uge.confroidlib.annotations.ClassValidator;
 import fr.uge.confroidlib.annotations.CustomizableView;
@@ -160,6 +162,138 @@ public class BundleUtils {
     }
 
     /**
+     * Converts this byte array to Byte Array
+     *
+     * @param array A byte array
+     * @return A Byte array
+     */
+    private static Byte[] boxArray(byte[] array) {
+        Byte[] Bytes = new Byte[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            Bytes[i] = array[i];
+        }
+
+        return Bytes;
+    }
+
+    /**
+     * Converts this char array to Char Array
+     *
+     * @param array A char array
+     * @return A Char array
+     */
+    private static Character[] boxArray(char[] array) {
+        Character[] Chars = new Character[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            Chars[i] = array[i];
+        }
+
+        return Chars;
+    }
+
+    /**
+     * Converts this short array to Short Array
+     *
+     * @param array A short array
+     * @return A Short array
+     */
+    private static Short[] boxArray(short[] array) {
+        Short[] Shorts = new Short[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            Shorts[i] = array[i];
+        }
+
+        return Shorts;
+    }
+
+    /**
+     * Converts this int array to Integer Array
+     *
+     * @param array An int array
+     * @return An Integer array
+     */
+    private static Integer[] boxArray(int[] array) {
+        return IntStream.of(array).boxed().toArray(Integer[]::new);
+    }
+
+    /**
+     * Converts this long array to Long Array
+     *
+     * @param array A long array
+     * @return A Long array
+     */
+    private static Long[] boxArray(long[] array) {
+        return LongStream.of(array).boxed().toArray(Long[]::new);
+    }
+
+    /**
+     * Converts this float array to Float Array
+     *
+     * @param array A float array
+     * @return A Float array
+     */
+    private static Float[] boxArray(float[] array) {
+        Float[] Floats = new Float[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            Floats[i] = array[i];
+        }
+
+        return Floats;
+    }
+
+    /**
+     * Converts this double array to Double Array
+     *
+     * @param array A double array
+     * @return A Double array
+     */
+    private static Double[] boxArray(double[] array) {
+        return DoubleStream.of(array).boxed().toArray(Double[]::new);
+    }
+
+    /**
+     * Converts this boolean array to Boolean Array
+     *
+     * @param array A boolean array
+     * @return A Boolean array
+     */
+    private static Boolean[] boxArray(boolean[] array) {
+        Boolean[] Booleans = new Boolean[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            Booleans[i] = array[i];
+        }
+
+        return Booleans;
+    }
+
+    private static Object[] getBoxedArray(Object array) {
+        if (byte[].class.isAssignableFrom(array.getClass())) {
+            return boxArray((byte[]) array);
+        } else if (char[].class.isAssignableFrom(array.getClass())) {
+            return boxArray((char[]) array);
+        } else if (short[].class.isAssignableFrom(array.getClass())) {
+            return boxArray((short[]) array);
+        } else if (int[].class.isAssignableFrom(array.getClass())) {
+            return boxArray((int[]) array);
+        } else if (long[].class.isAssignableFrom(array.getClass())) {
+            return boxArray((long[]) array);
+        } else if (float[].class.isAssignableFrom(array.getClass())) {
+            return boxArray((float[]) array);
+        } else if (double[].class.isAssignableFrom(array.getClass())) {
+            return boxArray((double[]) array);
+        } else if (boolean[].class.isAssignableFrom(array.getClass())) {
+            return boxArray((boolean[]) array);
+        } else {
+            return (Object[]) array;
+        }
+    }
+
+    /**
      * Determines if the given object is boxing a primitive value + String.
      * It includes :
      * Byte, Short, Integer, Long, Float, Double, Boolean, Character and String.
@@ -233,8 +367,8 @@ public class BundleUtils {
                 Bundle lst = convertToBundle((List<Object>) obj, true, references);
                 lst.remove(CLASS_KEYWORD);
                 bundle.putAll(lst);
-            } else if (Object[].class.isAssignableFrom(obj.getClass())) {
-                Bundle array = convertToBundle((Object[]) obj, true, references);
+            } else if (obj.getClass().isArray()) {
+                Bundle array = convertToBundle(getBoxedArray(obj), true, references);
                 array.remove(CLASS_KEYWORD);
                 bundle.putAll(array);
             }
@@ -330,7 +464,7 @@ public class BundleUtils {
             throw new IllegalArgumentException(String.format("The bundle (and sub-bundles) must contains key %s or key %s", REF_KEYWORD, CLASS_KEYWORD));
         }
 
-        Class clazz = Class.forName(bundle.getString(CLASS_KEYWORD));
+        Class<?> clazz = Class.forName(bundle.getString(CLASS_KEYWORD));
 
         // Special treatment for Map, List and Array
         {
@@ -338,7 +472,7 @@ public class BundleUtils {
                 return getMap(bundle, parentObject, parentField, references, remainingObjects);
             } else if (List.class.isAssignableFrom(clazz)) {
                 return getList(bundle, parentObject, parentField, references, remainingObjects);
-            } else if (Object[].class.isAssignableFrom(clazz)) {
+            } else if (clazz.isArray()) {
                 return getArray(bundle, parentObject, parentField, references, remainingObjects);
             }
         }
@@ -366,7 +500,8 @@ public class BundleUtils {
 
     /**
      * Determines if the bundle represents an array.
-     * A bundle represents an array if all of the keys are a succession of integers starting from 0.
+     * A bundle represents an array if all of the keys are a succession of integers starting from 0,
+     * ignoring keys which are Confroid-specific.
      *
      * @param bundle The bundle to test
      * @return True if the bundle represents an array. False otherwise
@@ -375,7 +510,9 @@ public class BundleUtils {
         SortedSet<String> set = new TreeSet<>(Comparator.comparing(Integer::valueOf));
 
         try {
-            set.addAll(bundle.keySet());
+            set.addAll(bundle.keySet().stream().
+                    filter(key -> !(key.equals(BundleUtils.CLASS_KEYWORD) || key.equals(BundleUtils.ID_KEYWORD)))
+                    .collect(Collectors.toSet()));
         } catch (IllegalArgumentException e) { // If one element is not an int.
             return false;
         }
@@ -513,8 +650,8 @@ public class BundleUtils {
         if (annotation instanceof RegexValidator) {
             annotBundle.putString(ANNOTATION_PARAM + "1", ((RegexValidator)annotation).pattern());
         } else if (annotation instanceof RangeValidator) {
-            annotBundle.putInt(ANNOTATION_PARAM + "1", ((RangeValidator)annotation).minRange());
-            annotBundle.putInt(ANNOTATION_PARAM + "2", ((RangeValidator)annotation).maxRange());
+            annotBundle.putLong(ANNOTATION_PARAM + "1", ((RangeValidator)annotation).minRange());
+            annotBundle.putLong(ANNOTATION_PARAM + "2", ((RangeValidator)annotation).maxRange());
         } else if (annotation instanceof ClassValidator) {
             annotBundle.putString(ANNOTATION_PARAM + "1", ((ClassValidator)annotation).predicateClass().getSimpleName());
         } else if (annotation instanceof Description) {
@@ -574,13 +711,13 @@ public class BundleUtils {
                 }
 
                 @Override
-                public int minRange() {
-                    return bundle.getInt(ANNOTATION_PARAM + "1");
+                public long minRange() {
+                    return bundle.getLong(ANNOTATION_PARAM + "1");
                 }
 
                 @Override
-                public int maxRange() {
-                    return bundle.getInt(ANNOTATION_PARAM + "2");
+                public long maxRange() {
+                    return bundle.getLong(ANNOTATION_PARAM + "2");
                 }
             };
         }

@@ -23,12 +23,20 @@ public interface Value {
         return valueType().equals(ValueTypes.FLOAT);
     }
 
+    default boolean isDouble() {
+        return valueType().equals(ValueTypes.DOUBLE);
+    }
+
     default boolean isString() {
         return valueType().equals(ValueTypes.STRING);
     }
 
     default boolean isInteger() {
         return valueType().equals(ValueTypes.INTEGER);
+    }
+
+    default boolean isLong() {
+        return valueType().equals(ValueTypes.LONG);
     }
 
     default boolean isBoolean() {
@@ -60,8 +68,16 @@ public interface Value {
         throw new ClassCastException("The literal is not a Float");
     }
 
+    default java.lang.Double getDouble() {
+        throw new ClassCastException("The literal is not a Double");
+    }
+
     default java.lang.Integer getInteger() {
         throw new ClassCastException("The literal is not an Integer");
+    }
+
+    default java.lang.Long getLong() {
+        throw new ClassCastException("The literal is not a Long");
     }
 
     default java.lang.Boolean getBoolean() {

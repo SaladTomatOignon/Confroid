@@ -8,9 +8,11 @@ public enum ValueTypes {
     BYTE(true),
     ARRAY(false),
     FLOAT(true),
+    DOUBLE(true),
     STRING(true),
     BOOLEAN(true),
-    INTEGER(true);
+    INTEGER(true),
+    LONG(true);
 
     private boolean primitive;
 

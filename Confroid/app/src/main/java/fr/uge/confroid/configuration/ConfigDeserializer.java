@@ -51,7 +51,7 @@ public class ConfigDeserializer implements JsonDeserializer<Configuration> {
                 return new Boolean(primitive.getAsBoolean());
             } else if (primitive.isNumber()) {
                 // Since JSON doesn't distinguish between integer and floating fields, we use
-                // regex expression to determine which type it is, but it excludes the fact that it can still be a Byte
+                // regex expression to determine which type it is, but it excludes the fact that it can still be a Byte, a Long or a Double
                 java.lang.String num = primitive.getAsString();
                 boolean isFloat = num.matches("[-+]?[0-9]*\\.[0-9]+");
                 if (isFloat) {

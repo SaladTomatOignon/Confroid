@@ -36,11 +36,13 @@ public class ConfigurationToBundleTest {
         map2.put("key2", new Float(852.123f));
         map2.put("key3", new Byte((byte) 5));
         map2.put("key4", new Dictionary(map1));
+        map2.put("key5", new Long(123456789L));
+        map2.put("key6", new Double(123.456789));
 
         Configuration dico = new Configuration(new Dictionary(map2));
         Bundle bundle = dico.toBundle();
 
-        assertEquals(4, bundle.size());
+        assertEquals(6, bundle.size());
         assertTrue(bundle.getBoolean("key1"));
         assertEquals(852.123f, bundle.getFloat("key2"), 0.001f);
         assertEquals(5, bundle.getByte("key3"));
@@ -54,5 +56,8 @@ public class ConfigurationToBundleTest {
         assertEquals("Ali baba", subBundleTableau.getString("1"));
         assertEquals(12.8f, subBundleTableau.getFloat("2"), 0.1f);
         assertFalse(subBundleTableau.getBoolean("3"));
+
+        assertEquals(123456789L, bundle.getLong("key5"));
+        assertEquals(123.456789, bundle.getDouble("key6"), 0.0001);
     }
 }

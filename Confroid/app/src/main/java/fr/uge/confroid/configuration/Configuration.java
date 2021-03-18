@@ -2,18 +2,23 @@ package fr.uge.confroid.configuration;
 
 import android.os.Bundle;
 
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import fr.uge.confroidlib.BundleUtils;
 
 public class Configuration {
-    private final static java.lang.String PRIMITIVE_KEY_NAME = "primitive";
+    private final static java.lang.String PRIMITIVE_KEY_NAME = BundleUtils.PRIMITIVE_KEYWORD;
+    private  final static java.lang.String KEYWORD_SEP = ":";
 
     private final Value content;
 
@@ -108,13 +113,20 @@ public class Configuration {
     private Bundle arrayToBundle(Value[] values) {
         Bundle bundle = new Bundle();
 
-        for (int i = 0; i < values.length; i++) {
-            if (values[i].isPrimitive()) {
-                addPrimitiveToBundle(bundle, java.lang.String.valueOf(i), values[i]);
+        int arrayIndex = 0;
+        for (Value value : values) {
+            if (value.isString() && (value.getString().startsWith(BundleUtils.ID_KEYWORD) || value.getString().startsWith(BundleUtils.CLASS_KEYWORD))) {
+                bundle.putString(value.getString().split(KEYWORD_SEP)[0], value.getString().split(KEYWORD_SEP)[1]);
             } else {
-                bundle.putBundle(java.lang.String.valueOf(i), valueToBundle(values[i]));
+                if (value.isPrimitive()) {
+                    addPrimitiveToBundle(bundle, java.lang.String.valueOf(arrayIndex), value);
+                } else {
+                    bundle.putBundle(java.lang.String.valueOf(arrayIndex), valueToBundle(value));
+                }
+                arrayIndex++;
             }
         }
+
         return bundle;
     }
 
@@ -132,8 +144,12 @@ public class Configuration {
             bundle.putByte(key, value.getByte());
         } else if (value.isFloat()) {
             bundle.putFloat(key, value.getFloat());
+        } else if (value.isDouble()) {
+            bundle.putDouble(key, value.getDouble());
         } else if (value.isInteger()) {
             bundle.putInt(key, value.getInteger());
+        }  else if (value.isLong()) {
+            bundle.putLong(key, value.getLong());
         } else if (value.isString()) {
             bundle.putString(key, value.getString());
         }
@@ -174,8 +190,14 @@ public class Configuration {
         if (BundleUtils.isBundleArray(bundle)) { // If the bundle represents an array
             Value[] values = new Value[keys.size()];
 
-            for (int i = 0; i < keys.size(); i++) {
-                values[i] = convertObjectToValue(bundle.get(java.lang.String.valueOf(i)));
+            int i = 0;
+            for (java.lang.String key : keys.stream().sorted().collect(Collectors.toList())) {
+                 if (key.equals(BundleUtils.ID_KEYWORD) || key.equals(BundleUtils.CLASS_KEYWORD)) {
+                    values[i] = new String(key + KEYWORD_SEP + bundle.get(key));
+                } else {
+                    values[i] = convertObjectToValue(bundle.get(key));
+                }
+                i++;
             }
 
             return new Array(values);
@@ -229,8 +251,12 @@ public class Configuration {
             return new Byte((java.lang.Byte) object);
         } else if (object instanceof java.lang.Integer) {
             return new Integer((java.lang.Integer) object);
+        } else if (object instanceof java.lang.Long) {
+            return new Long((java.lang.Long) object);
         } else if (object instanceof java.lang.Float) {
             return new Float((java.lang.Float) object);
+        } else if (object instanceof java.lang.Double) {
+            return new Double((java.lang.Double) object);
         } else if (object instanceof java.lang.String) {
             return new String((java.lang.String) object);
         } else if (object instanceof Bundle) {
