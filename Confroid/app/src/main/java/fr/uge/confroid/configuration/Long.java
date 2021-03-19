@@ -3,7 +3,7 @@ package fr.uge.confroid.configuration;
 import java.util.Objects;
 
 public class Long implements Value {
-    private final java.lang.Long value;
+    private java.lang.Long value;
 
     public Long(java.lang.Long value) {
         this.value = value;
@@ -12,6 +12,15 @@ public class Long implements Value {
     @Override
     public ValueTypes valueType() {
         return ValueTypes.LONG;
+    }
+
+    @Override
+    public void setValue(Value value) {
+        if (value.valueType() != valueType()) {
+            throw new IllegalArgumentException("The given value must be of type " + valueType());
+        }
+
+        this.value = value.getLong();
     }
 
     @Override

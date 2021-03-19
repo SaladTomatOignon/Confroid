@@ -3,7 +3,7 @@ package fr.uge.confroid.configuration;
 import java.util.Objects;
 
 public class Double implements Value {
-    private final java.lang.Double value;
+    private java.lang.Double value;
 
     public Double(java.lang.Double value) {
         this.value = value;
@@ -12,6 +12,15 @@ public class Double implements Value {
     @Override
     public ValueTypes valueType() {
         return ValueTypes.DOUBLE;
+    }
+
+    @Override
+    public void setValue(Value value) {
+        if (value.valueType() != valueType()) {
+            throw new IllegalArgumentException("The given value must be of type " + valueType());
+        }
+
+        this.value = value.getDouble();
     }
 
     @Override

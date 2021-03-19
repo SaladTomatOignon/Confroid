@@ -3,7 +3,7 @@ package fr.uge.confroid.configuration;
 import java.util.Objects;
 
 public class Integer implements Value {
-    private final java.lang.Integer value;
+    private java.lang.Integer value;
 
     public Integer(java.lang.Integer value) {
         this.value = value;
@@ -12,6 +12,15 @@ public class Integer implements Value {
     @Override
     public ValueTypes valueType() {
         return ValueTypes.INTEGER;
+    }
+
+    @Override
+    public void setValue(Value value) {
+        if (value.valueType() != valueType()) {
+            throw new IllegalArgumentException("The given value must be of type " + valueType());
+        }
+
+        this.value = value.getInteger();
     }
 
     @Override

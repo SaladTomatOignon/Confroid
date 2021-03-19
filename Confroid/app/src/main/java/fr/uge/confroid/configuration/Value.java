@@ -48,6 +48,9 @@ public interface Value {
     }
 
 
+    void setValue(Value value);
+
+
     default Map<java.lang.String, Value> getMap() {
         throw new ClassCastException("The value is not a Dictionary");
     }

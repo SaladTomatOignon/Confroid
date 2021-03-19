@@ -2,7 +2,7 @@ package fr.uge.confroid.configuration;
 import java.util.Objects;
 
 public class Byte implements Value {
-    private final byte value;
+    private byte value;
 
     public Byte(byte value) {
         this.value = value;
@@ -11,6 +11,15 @@ public class Byte implements Value {
     @Override
     public ValueTypes valueType() {
         return ValueTypes.BYTE;
+    }
+
+    @Override
+    public void setValue(Value value) {
+        if (value.valueType() != valueType()) {
+            throw new IllegalArgumentException("The given value must be of type " + valueType());
+        }
+
+        this.value = value.getByte();
     }
 
     @Override

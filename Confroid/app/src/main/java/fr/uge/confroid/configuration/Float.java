@@ -3,7 +3,7 @@ package fr.uge.confroid.configuration;
 import java.util.Objects;
 
 public class Float implements Value {
-    private final java.lang.Float value;
+    private java.lang.Float value;
 
     public Float(java.lang.Float value) {
         this.value = value;
@@ -12,6 +12,15 @@ public class Float implements Value {
     @Override
     public ValueTypes valueType() {
         return ValueTypes.FLOAT;
+    }
+
+    @Override
+    public void setValue(Value value) {
+        if (value.valueType() != valueType()) {
+            throw new IllegalArgumentException("The given value must be of type " + valueType());
+        }
+
+        this.value = value.getFloat();
     }
 
     @Override

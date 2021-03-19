@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Dictionary implements Value {
-    private final Map<java.lang.String, Value> values;
+    private Map<java.lang.String, Value> values;
 
     public Dictionary(Map<java.lang.String, Value> values) {
         this.values = Objects.requireNonNull(values);
@@ -13,6 +13,15 @@ public class Dictionary implements Value {
     @Override
     public ValueTypes valueType() {
         return ValueTypes.MAP;
+    }
+
+    @Override
+    public void setValue(Value value) {
+        if (value.valueType() != valueType()) {
+            throw new IllegalArgumentException("The given value must be of type " + valueType());
+        }
+
+        this.values = value.getMap();
     }
 
     @Override

@@ -3,7 +3,7 @@ package fr.uge.confroid.configuration;
 import java.util.Objects;
 
 public class Boolean implements Value {
-    private final java.lang.Boolean value;
+    private java.lang.Boolean value;
 
     public Boolean(java.lang.Boolean value) {
         this.value = value;
@@ -12,6 +12,15 @@ public class Boolean implements Value {
     @Override
     public ValueTypes valueType() {
         return ValueTypes.BOOLEAN;
+    }
+
+    @Override
+    public void setValue(Value value) {
+        if (value.valueType() != valueType()) {
+            throw new IllegalArgumentException("The given value must be of type " + valueType());
+        }
+
+        this.value = value.getBoolean();
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,21 @@ public class BundleUtils {
 
     public static final String ANNOTATION_SEP = "@";
     public static final String ANNOTATION_PARAM = "param";
+
+    /**
+     * Returns the list of Confroid keywords
+     *
+     * @return The list of Confroid keywords
+     */
+    public static Set<String> keywords() {
+        Set<String> keywords = new HashSet<>();
+        keywords.add(ID_KEYWORD);
+        keywords.add(CLASS_KEYWORD);
+        keywords.add(REF_KEYWORD);
+        keywords.add(PRIMITIVE_KEYWORD);
+
+        return keywords;
+    }
 
     /**
      * Convert a map to a Bundle.
@@ -271,6 +287,12 @@ public class BundleUtils {
         return Booleans;
     }
 
+    /**
+     * Converts the given array of primitives to a new array with boxed values
+     *
+     * @param array A array of primitives values
+     * @return A new array with boxed values.
+     */
     private static Object[] getBoxedArray(Object array) {
         if (byte[].class.isAssignableFrom(array.getClass())) {
             return boxArray((byte[]) array);

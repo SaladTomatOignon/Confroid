@@ -3,7 +3,7 @@ package fr.uge.confroid.configuration;
 import java.util.Arrays;
 
 public class Array implements Value {
-    private final Value[] values;
+    private Value[] values;
 
     public Array(Value[] values) {
         this.values = values;
@@ -12,6 +12,15 @@ public class Array implements Value {
     @Override
     public ValueTypes valueType() {
         return ValueTypes.ARRAY;
+    }
+
+    @Override
+    public void setValue(Value value) {
+        if (value.valueType() != valueType()) {
+            throw new IllegalArgumentException("The given value must be of type " + valueType());
+        }
+
+        this.values = value.getArray();
     }
 
     @Override

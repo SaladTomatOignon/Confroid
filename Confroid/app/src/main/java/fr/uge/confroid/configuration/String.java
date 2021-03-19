@@ -2,7 +2,7 @@ package fr.uge.confroid.configuration;
 import java.util.Objects;
 
 public class String implements Value {
-    private final java.lang.String value;
+    private java.lang.String value;
 
     public String(java.lang.String value) {
         this.value = value;
@@ -11,6 +11,15 @@ public class String implements Value {
     @Override
     public ValueTypes valueType() {
         return ValueTypes.STRING;
+    }
+
+    @Override
+    public void setValue(Value value) {
+        if (value.valueType() != valueType()) {
+            throw new IllegalArgumentException("The given value must be of type " + valueType());
+        }
+
+        this.value = value.getString();
     }
 
     @Override
