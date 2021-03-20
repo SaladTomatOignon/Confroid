@@ -2,16 +2,16 @@ package fr.uge.confroid.configuration;
 
 import java.util.Objects;
 
-public class Double implements Value {
-    private java.lang.Double value;
+public class FloatValue implements Value {
+    private Float value;
 
-    public Double(java.lang.Double value) {
+    public FloatValue(Float value) {
         this.value = value;
     }
 
     @Override
     public ValueTypes valueType() {
-        return ValueTypes.DOUBLE;
+        return ValueTypes.FLOAT;
     }
 
     @Override
@@ -20,11 +20,11 @@ public class Double implements Value {
             throw new IllegalArgumentException("The given value must be of type " + valueType());
         }
 
-        this.value = value.getDouble();
+        this.value = value.getFloat();
     }
 
     @Override
-    public java.lang.Double getDouble() {
+    public Float getFloat() {
         return value;
     }
 
@@ -32,8 +32,8 @@ public class Double implements Value {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Double aDouble = (Double) o;
-        return Objects.equals(value, aDouble.value);
+        FloatValue floatValue = (FloatValue) o;
+        return Objects.equals(value, floatValue.value);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Double implements Value {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return Objects.toString(value);
     }
 }

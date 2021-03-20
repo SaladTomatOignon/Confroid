@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 import fr.uge.confroidlib.BundleUtils;
 
 public class Configuration {
-    private final static java.lang.String PRIMITIVE_KEY_NAME = BundleUtils.PRIMITIVE_KEYWORD;
-    private final static java.lang.String KEYWORD_SEP = ":";
-    public final static java.lang.String PRIMITIVE_TYPE_KEYWORD = "confroid#type";
+    private final static String KEYWORD_SEP = ":";
+    public final static String PRIMITIVE_KEYWORD = BundleUtils.PRIMITIVE_KEYWORD;
+    public final static String PRIMITIVE_TYPE_KEYWORD = "confroid#primitiveType";
 
     private final Value content;
 
@@ -38,7 +38,7 @@ public class Configuration {
      * @param json Le json à parser
      * @return La Configuration créée depuis le Json
      */
-    public static Configuration fromJson(java.lang.String json) {
+    public static Configuration fromJson(String json) {
         Gson gson = new GsonBuilder().registerTypeAdapter(Configuration.class, new ConfigDeserializer()).create();
         return gson.fromJson(json, Configuration.class);
     }
@@ -48,7 +48,7 @@ public class Configuration {
      *
      * @return La description Json de cette configuration
      */
-    public java.lang.String toJson() {
+    public String toJson() {
         Gson gson = new GsonBuilder().registerTypeAdapter(Configuration.class, new ConfigSerializer()).create();
         return gson.toJson(this);
     }
@@ -56,7 +56,7 @@ public class Configuration {
     /**
      * Crée un Bundle à partir de cette configuration.
      * Pour un tableau on utilise comme clé de chaque entrée son indice dans le tableau.
-     * Si cette configuration ne contient qu'une valeur primitive, l'unique clé du bundle aura pour valeur {@value #PRIMITIVE_KEY_NAME}.
+     * Si cette configuration ne contient qu'une valeur primitive, l'unique clé du bundle aura pour valeur {@value #PRIMITIVE_KEYWORD}.
      *
      * @return Le Bundle créé à partir de cette configuration
      */
@@ -77,7 +77,7 @@ public class Configuration {
             return arrayToBundle(value.getArray());
         } else if (value.isPrimitive()) {
             Bundle bundle = new Bundle();
-            addPrimitiveToBundle(bundle, PRIMITIVE_KEY_NAME, value);
+            addPrimitiveToBundle(bundle, PRIMITIVE_KEYWORD, value);
             return bundle;
         } else {
             return null;
@@ -91,10 +91,10 @@ public class Configuration {
      * @param map Le dictionnaire à convertir
      * @return Le Bundle créé à partir du dictionnaire
      */
-    private Bundle mapToBundle(Map<java.lang.String, Value> map) {
+    private Bundle mapToBundle(Map<String, Value> map) {
         Bundle bundle = new Bundle();
 
-        for (Map.Entry<java.lang.String, Value> key : map.entrySet()) {
+        for (Map.Entry<String, Value> key : map.entrySet()) {
             if (key.getValue().isPrimitive()) {
                 addPrimitiveToBundle(bundle, key.getKey(), key.getValue());
             } else {
@@ -121,9 +121,9 @@ public class Configuration {
                 bundle.putString(value.getString().split(KEYWORD_SEP)[0], value.getString().split(KEYWORD_SEP)[1]);
             } else {
                 if (value.isPrimitive()) {
-                    addPrimitiveToBundle(bundle, java.lang.String.valueOf(arrayIndex), value);
+                    addPrimitiveToBundle(bundle, String.valueOf(arrayIndex), value);
                 } else {
-                    bundle.putBundle(java.lang.String.valueOf(arrayIndex), valueToBundle(value));
+                    bundle.putBundle(String.valueOf(arrayIndex), valueToBundle(value));
                 }
                 arrayIndex++;
             }
@@ -139,7 +139,7 @@ public class Configuration {
      * @param key Le nom de clé à liée à la primitive
      * @param value La primitive à ajouter
      */
-    private void addPrimitiveToBundle(Bundle bundle, java.lang.String key, Value value) {
+    private void addPrimitiveToBundle(Bundle bundle, String key, Value value) {
         if (value.isBoolean()) {
             bundle.putBoolean(key, value.getBoolean());
         } else if (value.isByte()) {
@@ -163,7 +163,7 @@ public class Configuration {
      * Si le bundle (ou un sous bundle) contient des clés dont toutes les valeurs sont une succession d'entiers démarrant à 0,
      * Alors la méthode renvoie un Array dont les valeurs sont celles associées aux clés dans l'ordre numérique croissant.
      *
-     * Si le bundle (ou un sous bundle) contient une unique clé dont la valeur est {@value #PRIMITIVE_KEY_NAME}
+     * Si le bundle (ou un sous bundle) contient une unique clé dont la valeur est {@value #PRIMITIVE_KEYWORD}
      * et que la valeur associée à cette clé est évaluée comme du type Primitive,
      * Alors la méthode renvoie un Primitive.
      *
@@ -183,7 +183,7 @@ public class Configuration {
      * @throws IllegalArgumentException Si une valeur du bundle ne peut pas être parsée dans une configuration
      */
     private static Value valueFromBundle(Bundle bundle) throws IllegalArgumentException {
-        Set<java.lang.String> keys = bundle.keySet();
+        Set<String> keys = bundle.keySet();
 
         if (keys.isEmpty()) {
             return null;
@@ -193,9 +193,9 @@ public class Configuration {
             Value[] values = new Value[keys.size()];
 
             int i = 0;
-            for (java.lang.String key : keys.stream().sorted().collect(Collectors.toList())) {
+            for (String key : keys.stream().sorted().collect(Collectors.toList())) {
                  if (key.equals(BundleUtils.ID_KEYWORD) || key.equals(BundleUtils.CLASS_KEYWORD)) {
-                    values[i] = new String(key + KEYWORD_SEP + bundle.get(key));
+                    values[i] = new StringValue(key + KEYWORD_SEP + bundle.get(key));
                 } else {
                     values[i] = convertObjectToValue(bundle.get(key));
                 }
@@ -203,8 +203,8 @@ public class Configuration {
             }
 
             return new Array(values);
-        } else if (keys.size() == 1 && bundle.containsKey(PRIMITIVE_KEY_NAME)) { // Or if it only contains a primitive
-            Value value = convertObjectToValue(bundle.get(PRIMITIVE_KEY_NAME));
+        } else if (keys.size() == 1 && bundle.containsKey(PRIMITIVE_KEYWORD)) { // Or if it only contains a primitive
+            Value value = convertObjectToValue(bundle.get(PRIMITIVE_KEYWORD));
             if (value.isPrimitive()) {
                 return value;
             }
@@ -212,9 +212,9 @@ public class Configuration {
 
         // Else it's a Dictionary
 
-        Map<java.lang.String, Value> map = new HashMap<>();
+        Map<String, Value> map = new HashMap<>();
 
-        for (java.lang.String key : keys) {
+        for (String key : keys) {
             map.put(key, convertObjectToValue(bundle.get(key)));
         }
 
@@ -253,7 +253,7 @@ public class Configuration {
      */
     public static Value getReferencedValue(int refId, Value root) {
         if (root.isMap()) {
-            for (java.lang.String key : root.getMap().keySet()) {
+            for (String key : root.getMap().keySet()) {
                 if (key.equals(BundleUtils.ID_KEYWORD) && root.getMap().get(key).getInteger().equals(refId)) {
                     return root;
                 } else {
@@ -266,7 +266,7 @@ public class Configuration {
         } else if (root.isArray()) {
             for (Value v : root.getArray()) {
                 if (v.isString() && v.getString().startsWith(BundleUtils.ID_KEYWORD) &&
-                        java.lang.Integer.valueOf(v.getString().split(KEYWORD_SEP)[1]).equals(refId)) {
+                        Integer.valueOf(v.getString().split(KEYWORD_SEP)[1]).equals(refId)) {
                     return root;
                 } else {
                     Value value = getReferencedValue(refId, v);
@@ -336,8 +336,8 @@ public class Configuration {
      * @param dicoB The second dictionary
      * @return The symmetric difference between theses 2 dictionaries, or null if there is no differences.
      */
-    private static Dictionary dictionaryDifference(Map<java.lang.String, Value> dicoA, Map<java.lang.String, Value> dicoB) {
-        Map<java.lang.String, Value> map = new HashMap<>();
+    private static Dictionary dictionaryDifference(Map<String, Value> dicoA, Map<String, Value> dicoB) {
+        Map<String, Value> map = new HashMap<>();
 
         Sets.symmetricDifference(dicoA.keySet(), dicoB.keySet()).forEach(key -> {
             if (dicoA.containsKey(key)) {
@@ -410,7 +410,7 @@ public class Configuration {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return Objects.toString(content);
     }
 
@@ -422,20 +422,20 @@ public class Configuration {
      * @throws IllegalArgumentException If the object can not be converted to Value
      */
     private static Value convertObjectToValue(Object object) throws IllegalArgumentException {
-        if (object instanceof java.lang.Boolean) {
-            return new Boolean((java.lang.Boolean) object);
-        } else if (object instanceof java.lang.Byte) {
-            return new Byte((java.lang.Byte) object);
-        } else if (object instanceof java.lang.Integer) {
-            return new Integer((java.lang.Integer) object);
-        } else if (object instanceof java.lang.Long) {
-            return new Long((java.lang.Long) object);
-        } else if (object instanceof java.lang.Float) {
-            return new Float((java.lang.Float) object);
-        } else if (object instanceof java.lang.Double) {
-            return new Double((java.lang.Double) object);
-        } else if (object instanceof java.lang.String) {
-            return new String((java.lang.String) object);
+        if (object instanceof Boolean) {
+            return new BooleanValue((Boolean) object);
+        } else if (object instanceof Byte) {
+            return new ByteValue((Byte) object);
+        } else if (object instanceof Integer) {
+            return new IntegerValue((Integer) object);
+        } else if (object instanceof Long) {
+            return new LongValue((Long) object);
+        } else if (object instanceof Float) {
+            return new FloatValue((Float) object);
+        } else if (object instanceof Double) {
+            return new DoubleValue((Double) object);
+        } else if (object instanceof String) {
+            return new StringValue((String) object);
         } else if (object instanceof Bundle) {
             return valueFromBundle((Bundle) object);
         } else {

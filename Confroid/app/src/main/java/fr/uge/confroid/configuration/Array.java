@@ -42,7 +42,7 @@ public class Array implements Value {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return Arrays.toString(values);
     }
 }

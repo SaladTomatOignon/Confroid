@@ -2,10 +2,10 @@ package fr.uge.confroid.configuration;
 
 import java.util.Objects;
 
-public class Integer implements Value {
-    private java.lang.Integer value;
+public class IntegerValue implements Value {
+    private Integer value;
 
-    public Integer(java.lang.Integer value) {
+    public IntegerValue(Integer value) {
         this.value = value;
     }
 
@@ -24,7 +24,7 @@ public class Integer implements Value {
     }
 
     @Override
-    public java.lang.Integer getInteger() {
+    public Integer getInteger() {
         return value;
     }
 
@@ -32,8 +32,8 @@ public class Integer implements Value {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Integer integer = (Integer) o;
-        return Objects.equals(value, integer.value);
+        IntegerValue integerValue = (IntegerValue) o;
+        return Objects.equals(value, integerValue.value);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Integer implements Value {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return Objects.toString(value);
     }
 }

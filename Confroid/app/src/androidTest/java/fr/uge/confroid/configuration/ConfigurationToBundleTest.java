@@ -18,26 +18,26 @@ public class ConfigurationToBundleTest {
     @Test
     public void configToBundle_nestedDictionary() {
         Array emptyArray = new Array(new Value[0]);
-        Integer a = new Integer(42);
-        String str = new String("Ali baba");
-        Float floot = new Float(12.8f);
-        Boolean bool = new Boolean(false);
+        IntegerValue a = new IntegerValue(42);
+        StringValue str = new StringValue("Ali baba");
+        FloatValue floot = new FloatValue(12.8f);
+        BooleanValue bool = new BooleanValue(false);
         Array array = new Array(new Value[]{a, str, floot, bool});
 
-        Map<java.lang.String, Value> map1 = new HashMap<>();
+        Map<String, Value> map1 = new HashMap<>();
         map1.put("int", a);
         map1.put("chaine", str);
         map1.put("Tableau vide", emptyArray);
         map1.put("boolean", bool);
         map1.put("Tableau", array);
 
-        Map<java.lang.String, Value> map2 = new HashMap<>();
-        map2.put("key1", new Boolean(true));
-        map2.put("key2", new Float(852.123f));
-        map2.put("key3", new Byte((byte) 5));
+        Map<String, Value> map2 = new HashMap<>();
+        map2.put("key1", new BooleanValue(true));
+        map2.put("key2", new FloatValue(852.123f));
+        map2.put("key3", new ByteValue((byte) 5));
         map2.put("key4", new Dictionary(map1));
-        map2.put("key5", new Long(123456789L));
-        map2.put("key6", new Double(123.456789));
+        map2.put("key5", new LongValue(123456789L));
+        map2.put("key6", new DoubleValue(123.456789));
 
         Configuration dico = new Configuration(new Dictionary(map2));
         Bundle bundle = dico.toBundle();

@@ -51,7 +51,7 @@ public interface Value {
     void setValue(Value value);
 
 
-    default Map<java.lang.String, Value> getMap() {
+    default Map<String, Value> getMap() {
         throw new ClassCastException("The value is not a Dictionary");
     }
 
@@ -59,31 +59,31 @@ public interface Value {
         throw new ClassCastException("The value is not an Array");
     }
 
-    default java.lang.String getString() {
+    default String getString() {
         throw new ClassCastException("The literal is not a String");
     }
 
-    default java.lang.Byte getByte() {
+    default Byte getByte() {
         throw new ClassCastException("The literal is not a Byte");
     }
 
-    default java.lang.Float getFloat() {
+    default Float getFloat() {
         throw new ClassCastException("The literal is not a Float");
     }
 
-    default java.lang.Double getDouble() {
+    default Double getDouble() {
         throw new ClassCastException("The literal is not a Double");
     }
 
-    default java.lang.Integer getInteger() {
+    default Integer getInteger() {
         throw new ClassCastException("The literal is not an Integer");
     }
 
-    default java.lang.Long getLong() {
+    default Long getLong() {
         throw new ClassCastException("The literal is not a Long");
     }
 
-    default java.lang.Boolean getBoolean() {
+    default Boolean getBoolean() {
         throw new ClassCastException("The literal is not a Boolean");
     }
 }

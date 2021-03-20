@@ -10,10 +10,10 @@ public class ConfigurationDeserializerTest {
 
     @Test
     public void jsonToValue_primitive() {
-        java.lang.String jsonInteger = "5";
-        java.lang.String jsonFloat = "8.25";
-        java.lang.String jsonString = "Salut";
-        java.lang.String jsonBoolean = "true";
+        String jsonInteger = "5";
+        String jsonFloat = "8.25";
+        String jsonString = "Salut";
+        String jsonBoolean = "true";
 
         Value value;
         value = Configuration.fromJson(jsonInteger).getContent();
@@ -39,8 +39,8 @@ public class ConfigurationDeserializerTest {
 
     @Test
     public void jsonToValue_array() {
-        java.lang.String jsonEmptyArray = "[]";
-        java.lang.String jsonIntegersArray = "[1, 52, 789, -45, 0]";
+        String jsonEmptyArray = "[]";
+        String jsonIntegersArray = "[1, 52, 789, -45, 0]";
         int[] integersArray = new int[] {1, 52, 789, -45, 0};
 
         Value value;
@@ -60,11 +60,11 @@ public class ConfigurationDeserializerTest {
 
     @Test
     public void jsonToValue_dictionary() {
-        java.lang.String json = "{\"key1\":42,\"key2\":\"Coco\",\"key3\":78.23,\"key4\":false}";
+        String json = "{\"key1\":42,\"key2\":\"Coco\",\"key3\":78.23,\"key4\":false}";
         Value value = Configuration.fromJson(json).getContent();
 
         assertTrue(value.isMap());
-        Map<java.lang.String, Value> map = value.getMap();
+        Map<String, Value> map = value.getMap();
 
         assertTrue(map.get("key1").isInteger());
         assertEquals((int) map.get("key1").getInteger(), 42);
@@ -81,9 +81,9 @@ public class ConfigurationDeserializerTest {
 
     @Test
     public void jsonToValue_nestedDictionary() {
-        java.lang.String subJson1 = "{\"key1\":42,\"key2\":\"Coco\",\"key3\":78.23,\"key4\":false}";
-        java.lang.String subJson2 = java.lang.String.format("{\"key5\":[%s, %s, true, 98]}", subJson1, subJson1);
-        java.lang.String json = java.lang.String.format("{\"key6\":%s,\"key7\":\"Wesh alors\"}", subJson2);
+        String subJson1 = "{\"key1\":42,\"key2\":\"Coco\",\"key3\":78.23,\"key4\":false}";
+        String subJson2 = String.format("{\"key5\":[%s, %s, true, 98]}", subJson1, subJson1);
+        String json = String.format("{\"key6\":%s,\"key7\":\"Wesh alors\"}", subJson2);
 
         Value value = Configuration.fromJson(json).getContent();
         assertTrue(value.isMap());
@@ -97,7 +97,7 @@ public class ConfigurationDeserializerTest {
         Value subJson1Value = subJson2Value.getMap().get("key5").getArray()[0];
 
         assertTrue(subJson1Value.isMap());
-        Map<java.lang.String, Value> map = subJson1Value.getMap();
+        Map<String, Value> map = subJson1Value.getMap();
 
         assertTrue(map.get("key1").isInteger());
         assertEquals((int) map.get("key1").getInteger(), 42);

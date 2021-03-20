@@ -1,17 +1,16 @@
 package fr.uge.confroid.configuration;
-
 import java.util.Objects;
 
-public class Long implements Value {
-    private java.lang.Long value;
+public class StringValue implements Value {
+    private String value;
 
-    public Long(java.lang.Long value) {
+    public StringValue(String value) {
         this.value = value;
     }
 
     @Override
     public ValueTypes valueType() {
-        return ValueTypes.LONG;
+        return ValueTypes.STRING;
     }
 
     @Override
@@ -20,11 +19,11 @@ public class Long implements Value {
             throw new IllegalArgumentException("The given value must be of type " + valueType());
         }
 
-        this.value = value.getLong();
+        this.value = value.getString();
     }
 
     @Override
-    public java.lang.Long getLong() {
+    public String getString() {
         return value;
     }
 
@@ -32,8 +31,8 @@ public class Long implements Value {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Long aLong = (Long) o;
-        return Objects.equals(value, aLong.value);
+        StringValue stringValue = (StringValue) o;
+        return Objects.equals(value, stringValue.value);
     }
 
     @Override
@@ -42,7 +41,8 @@ public class Long implements Value {
     }
 
     @Override
-    public java.lang.String toString() {
-        return Objects.toString(value);
+    public String toString() {
+        return value;
     }
 }
+

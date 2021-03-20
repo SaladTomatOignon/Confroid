@@ -1,16 +1,17 @@
 package fr.uge.confroid.configuration;
+
 import java.util.Objects;
 
-public class String implements Value {
-    private java.lang.String value;
+public class DoubleValue implements Value {
+    private Double value;
 
-    public String(java.lang.String value) {
+    public DoubleValue(Double value) {
         this.value = value;
     }
 
     @Override
     public ValueTypes valueType() {
-        return ValueTypes.STRING;
+        return ValueTypes.DOUBLE;
     }
 
     @Override
@@ -19,11 +20,11 @@ public class String implements Value {
             throw new IllegalArgumentException("The given value must be of type " + valueType());
         }
 
-        this.value = value.getString();
+        this.value = value.getDouble();
     }
 
     @Override
-    public java.lang.String getString() {
+    public Double getDouble() {
         return value;
     }
 
@@ -31,8 +32,8 @@ public class String implements Value {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        String string1 = (String) o;
-        return Objects.equals(value, string1.value);
+        DoubleValue DoubleValue = (DoubleValue) o;
+        return Objects.equals(value, DoubleValue.value);
     }
 
     @Override
@@ -41,8 +42,7 @@ public class String implements Value {
     }
 
     @Override
-    public java.lang.String toString() {
-        return value;
+    public String toString() {
+        return Objects.toString(value);
     }
 }
-

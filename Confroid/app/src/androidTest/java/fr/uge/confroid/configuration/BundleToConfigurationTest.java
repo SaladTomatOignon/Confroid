@@ -100,11 +100,11 @@ public class BundleToConfigurationTest {
 
     public static class MixObjectsClass {
         @Description(description = "Une map de Integers")
-        public Map<java.lang.String, java.lang.Integer> mapInteger;
+        public Map<String, Integer> mapInteger;
         @Description(description = "Une map de Float")
-        public List<java.lang.Float> listFloat;
+        public List<Float> listFloat;
         @ClassValidator(predicateClass = CreditCardChecker.class)
-        public java.lang.Integer[] arrayIntegers;
+        public Integer[] arrayIntegers;
         @ClassValidator(predicateClass = CreditCardChecker.class)
         @RangeValidator(minRange = 0, maxRange = 255)
         public byte octet;
@@ -114,7 +114,7 @@ public class BundleToConfigurationTest {
         public MixObjectsClass() {
             this.mapInteger = new HashMap<>();
             this.listFloat = new ArrayList<>();
-            this.arrayIntegers = new java.lang.Integer[5];
+            this.arrayIntegers = new Integer[5];
         }
 
         public void initValues() {
@@ -156,7 +156,7 @@ public class BundleToConfigurationTest {
         }
 
         @Override
-        public java.lang.String toString() {
+        public String toString() {
             return "MixObjectsClass{" +
                     "mapInteger=" + mapInteger +
                     ", listFloat=" + listFloat +

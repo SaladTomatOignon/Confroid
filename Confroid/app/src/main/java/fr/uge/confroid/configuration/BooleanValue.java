@@ -1,16 +1,17 @@
 package fr.uge.confroid.configuration;
+
 import java.util.Objects;
 
-public class Byte implements Value {
-    private byte value;
+public class BooleanValue implements Value {
+    private Boolean value;
 
-    public Byte(byte value) {
+    public BooleanValue(Boolean value) {
         this.value = value;
     }
 
     @Override
     public ValueTypes valueType() {
-        return ValueTypes.BYTE;
+        return ValueTypes.BOOLEAN;
     }
 
     @Override
@@ -19,11 +20,11 @@ public class Byte implements Value {
             throw new IllegalArgumentException("The given value must be of type " + valueType());
         }
 
-        this.value = value.getByte();
+        this.value = value.getBoolean();
     }
 
     @Override
-    public java.lang.Byte getByte() {
+    public Boolean getBoolean() {
         return value;
     }
 
@@ -31,8 +32,8 @@ public class Byte implements Value {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Byte aByte = (Byte) o;
-        return value == aByte.value;
+        BooleanValue booleanValue = (BooleanValue) o;
+        return Objects.equals(value, booleanValue.value);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class Byte implements Value {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return Objects.toString(value);
     }
 }

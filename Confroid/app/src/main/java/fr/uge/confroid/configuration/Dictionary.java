@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Dictionary implements Value {
-    private Map<java.lang.String, Value> values;
+    private Map<String, Value> values;
 
-    public Dictionary(Map<java.lang.String, Value> values) {
+    public Dictionary(Map<String, Value> values) {
         this.values = Objects.requireNonNull(values);
     }
 
@@ -25,7 +25,7 @@ public class Dictionary implements Value {
     }
 
     @Override
-    public Map<java.lang.String, Value> getMap() {
+    public Map<String, Value> getMap() {
         return values;
     }
 
@@ -48,7 +48,7 @@ public class Dictionary implements Value {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return Objects.toString(values);
     }
 }

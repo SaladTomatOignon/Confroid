@@ -2,6 +2,7 @@ package fr.uge.confroid.configuration;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
@@ -21,7 +22,7 @@ public class ConfigSerializer implements JsonSerializer<Configuration> {
 
     private JsonElement serializeValue(Value config, Type configType, JsonSerializationContext context) {
         if (config.isMap()) {
-            Map<java.lang.String, JsonElement> map = config.getMap().entrySet().stream().map(entry ->
+            Map<String, JsonElement> map = config.getMap().entrySet().stream().map(entry ->
                     new AbstractMap.SimpleEntry<>(entry.getKey(), serializeValue(entry.getValue(), configType, context))
             ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
 
@@ -33,23 +34,23 @@ public class ConfigSerializer implements JsonSerializer<Configuration> {
             Gson gson = new Gson();
             return gson.toJsonTree(array).getAsJsonArray();
         } else if (config.isPrimitive()) {
-            if (config.isBoolean()) {
-                return new JsonPrimitive(config.getBoolean());
-            } else if (config.isByte()) {
-                return new JsonPrimitive(config.getByte());
-            } else if (config.isInteger()) {
-                return new JsonPrimitive(config.getInteger());
-            }  else if (config.isLong()) {
-                return new JsonPrimitive(config.getLong());
-            } else if (config.isFloat()) {
-                return new JsonPrimitive(config.getFloat());
-            }  else if (config.isDouble()) {
-                return new JsonPrimitive(config.getDouble());
-            } else if (config.isString()) {
-                return new JsonPrimitive(config.getString());
-            } else {
-                return null;
+            JsonPrimitive primitive;
+            JsonObject wrapper = new JsonObject();
+            wrapper.add(Configuration.PRIMITIVE_TYPE_KEYWORD, new JsonPrimitive(config.valueType().name()));
+
+            switch (config.valueType()) {
+                case BYTE: primitive = new JsonPrimitive(config.getByte()); break;
+                case INTEGER: primitive = new JsonPrimitive(config.getInteger()); break;
+                case LONG: primitive = new JsonPrimitive(config.getLong()); break;
+                case FLOAT: primitive = new JsonPrimitive(config.getFloat()); break;
+                case DOUBLE: primitive = new JsonPrimitive(config.getDouble()); break;
+                case STRING: primitive = new JsonPrimitive(config.getString()); break;
+                case BOOLEAN: primitive = new JsonPrimitive(config.getBoolean()); break;
+                default: return null;
             }
+
+            wrapper.add(Configuration.PRIMITIVE_KEYWORD, primitive);
+            return wrapper;
         } else {
             return null;
         }

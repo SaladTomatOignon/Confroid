@@ -2,16 +2,16 @@ package fr.uge.confroid.configuration;
 
 import java.util.Objects;
 
-public class Boolean implements Value {
-    private java.lang.Boolean value;
+public class LongValue implements Value {
+    private Long value;
 
-    public Boolean(java.lang.Boolean value) {
+    public LongValue(Long value) {
         this.value = value;
     }
 
     @Override
     public ValueTypes valueType() {
-        return ValueTypes.BOOLEAN;
+        return ValueTypes.LONG;
     }
 
     @Override
@@ -20,11 +20,11 @@ public class Boolean implements Value {
             throw new IllegalArgumentException("The given value must be of type " + valueType());
         }
 
-        this.value = value.getBoolean();
+        this.value = value.getLong();
     }
 
     @Override
-    public java.lang.Boolean getBoolean() {
+    public Long getLong() {
         return value;
     }
 
@@ -32,8 +32,8 @@ public class Boolean implements Value {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Boolean aBoolean = (Boolean) o;
-        return Objects.equals(value, aBoolean.value);
+        LongValue longValue = (LongValue) o;
+        return Objects.equals(value, longValue.value);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Boolean implements Value {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return Objects.toString(value);
     }
 }

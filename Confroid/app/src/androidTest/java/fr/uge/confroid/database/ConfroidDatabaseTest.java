@@ -16,7 +16,7 @@ import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import fr.uge.confroid.configuration.Configuration;
-import fr.uge.confroid.configuration.Integer;
+import fr.uge.confroid.configuration.IntegerValue;
 import fr.uge.confroid.storage.ConfroidDatabase;
 import fr.uge.confroid.storage.ConfroidPackage;
 import fr.uge.confroid.storage.ConfroidPackageDao;
@@ -51,7 +51,7 @@ public class ConfroidDatabaseTest {
 
     @Test
     public void testShouldCreateAndFindByTag() {
-        ConfroidPackage p = new ConfroidPackage("p1", 0, new Date(), new Configuration(new Integer(0)), "T");
+        ConfroidPackage p = new ConfroidPackage("p1", 0, new Date(), new Configuration(new IntegerValue(0)), "T");
         dao.create(p);
 
         assertEquals(p, dao.findByTag(p.getName(), p.getTag()));
@@ -59,7 +59,7 @@ public class ConfroidDatabaseTest {
 
     @Test
     public void testShouldCreateAndFindByVersion() {
-        ConfroidPackage p1 = new ConfroidPackage("p1", 0, new Date(), new Configuration(new Integer(0)));
+        ConfroidPackage p1 = new ConfroidPackage("p1", 0, new Date(), new Configuration(new IntegerValue(0)));
         dao.create(p1);
 
         assertEquals(p1, dao.findByVersion(p1.getName(), p1.getVersion()));
@@ -69,12 +69,12 @@ public class ConfroidDatabaseTest {
     public void testShouldFindLatest() {
         assertNull(dao.findLastVersion("p1"));
 
-        ConfroidPackage p = new ConfroidPackage("p1", 0, new Date(), new Configuration(new Integer(0)));
+        ConfroidPackage p = new ConfroidPackage("p1", 0, new Date(), new Configuration(new IntegerValue(0)));
         dao.create(p);
 
         assertEquals(p, dao.findLastVersion(p.getName()));
 
-        p = new ConfroidPackage("p1", 1, new Date(), new Configuration(new Integer(1)));
+        p = new ConfroidPackage("p1", 1, new Date(), new Configuration(new IntegerValue(1)));
         dao.create(p);
     }
 
@@ -82,13 +82,13 @@ public class ConfroidDatabaseTest {
     public void testShouldNotAllowVersionConflict() {
         assertNull(dao.findLastVersion("p1"));
 
-        ConfroidPackage p = new ConfroidPackage("p1", 0, new Date(), new Configuration(new Integer(0)));
+        ConfroidPackage p = new ConfroidPackage("p1", 0, new Date(), new Configuration(new IntegerValue(0)));
         dao.create(p);
 
         assertEquals(p, dao.findLastVersion(p.getName()));
 
         exception.expect(SQLiteConstraintException.class);
-        p = new ConfroidPackage("p1", 0, new Date(), new Configuration(new Integer(1)));
+        p = new ConfroidPackage("p1", 0, new Date(), new Configuration(new IntegerValue(1)));
         dao.create(p);
     }
 }

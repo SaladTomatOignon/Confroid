@@ -1,17 +1,16 @@
 package fr.uge.confroid.configuration;
-
 import java.util.Objects;
 
-public class Float implements Value {
-    private java.lang.Float value;
+public class ByteValue implements Value {
+    private byte value;
 
-    public Float(java.lang.Float value) {
+    public ByteValue(byte value) {
         this.value = value;
     }
 
     @Override
     public ValueTypes valueType() {
-        return ValueTypes.FLOAT;
+        return ValueTypes.BYTE;
     }
 
     @Override
@@ -20,11 +19,11 @@ public class Float implements Value {
             throw new IllegalArgumentException("The given value must be of type " + valueType());
         }
 
-        this.value = value.getFloat();
+        this.value = value.getByte();
     }
 
     @Override
-    public java.lang.Float getFloat() {
+    public Byte getByte() {
         return value;
     }
 
@@ -32,8 +31,8 @@ public class Float implements Value {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Float aFloat = (Float) o;
-        return Objects.equals(value, aFloat.value);
+        ByteValue byteValue = (ByteValue) o;
+        return value == byteValue.value;
     }
 
     @Override
@@ -42,7 +41,7 @@ public class Float implements Value {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return Objects.toString(value);
     }
 }
