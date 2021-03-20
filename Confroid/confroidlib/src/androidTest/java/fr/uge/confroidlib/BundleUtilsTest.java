@@ -576,7 +576,7 @@ public class BundleUtilsTest {
         }
     }
 
-    public static class MixObjectsClass {
+    static class MixObjectsClass {
         @Description(description = "Une map de Integers")
         public Map<String, Integer> mapInteger;
         public Map<String, ShippingAddress> mapShippingAddress;

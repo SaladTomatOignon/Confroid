@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,8 @@ import fr.uge.confroidlib.BundleUtils;
 
 public class Configuration {
     private final static java.lang.String PRIMITIVE_KEY_NAME = BundleUtils.PRIMITIVE_KEYWORD;
-    private  final static java.lang.String KEYWORD_SEP = ":";
+    private final static java.lang.String KEYWORD_SEP = ":";
+    public final static java.lang.String PRIMITIVE_TYPE_KEYWORD = "confroid#type";
 
     private final Value content;
 
@@ -217,6 +219,180 @@ public class Configuration {
         }
 
         return new Dictionary(map);
+    }
+
+    /**
+     * Filters the given value to keep only non-Confroid properties.
+     * If the value is an Array, the function returns a new Array containing the filtered values,
+     * otherwise the function returns the same value object.
+     *
+     * @param value The value to filter
+     * @return The value filtered
+     */
+    public static Value filterKeywords(Value value) {
+        if (value.isMap()) {
+            value.getMap().keySet().removeIf(BundleUtils::containsConfroidKeyword);
+            return value;
+        } else if (value.isArray()) {
+            return new Array((Value[]) Arrays.stream(value.getArray()).filter(
+                    v -> !(v.isString() && BundleUtils.containsConfroidKeyword(v.getString()))
+            ).toArray());
+        }
+
+        return value;
+    }
+
+    /**
+     * Retrieves the Value node which corresponds to the ID given is parameter.
+     * The complexity of this function is O(n).
+     *
+     * @param refId The value ID to retrieve
+     * @param root The configuration root
+     * @return The Value node with ID `refId`, or null if no Value node contains this ID.
+     */
+    public static Value getReferencedValue(int refId, Value root) {
+        if (root.isMap()) {
+            for (java.lang.String key : root.getMap().keySet()) {
+                if (key.equals(BundleUtils.ID_KEYWORD) && root.getMap().get(key).getInteger().equals(refId)) {
+                    return root;
+                } else {
+                    Value value = getReferencedValue(refId, root.getMap().get(key));
+                    if (!Objects.isNull(value)) {
+                        return value;
+                    }
+                }
+            }
+        } else if (root.isArray()) {
+            for (Value v : root.getArray()) {
+                if (v.isString() && v.getString().startsWith(BundleUtils.ID_KEYWORD) &&
+                        java.lang.Integer.valueOf(v.getString().split(KEYWORD_SEP)[1]).equals(refId)) {
+                    return root;
+                } else {
+                    Value value = getReferencedValue(refId, v);
+                    if (!Objects.isNull(value)) {
+                        return value;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the difference between the both configurations, as a new configuration tree.
+     * Each nodes are compared two by two.
+     *
+     * If a node of `configA` has a different type of `configB`,
+     * then the chosen node is the one from `configB`.
+     *
+     * If an array or a dictionary contains more or less values than the other configuration,
+     * the function returns the symmetric difference of the both arrays/dictionaries.
+     *
+     * @param configA The first configuration
+     * @param configB The second configuration
+     * @return The difference between the both configurations, or null if there is no differences.
+     */
+    public static Configuration difference(Configuration configA, Configuration configB) {
+        return new Configuration(valueDifference(configA.content, configB.content));
+    }
+
+    /**
+     * Returns the symmetric difference between the both values.
+     * Null values are ignored.
+     * If the primitive of `valueB` is different of `valueA`,
+     * then the `valueB` is returned.
+     *
+     * @param valueA The first value
+     * @param valueB The second value
+     * @return The symmetric difference between theses 2 values, or null if there is no differences.
+     */
+    private static Value valueDifference(Value valueA, Value valueB) {
+        if (valueA.equals(valueB)) {
+            return null;
+        }
+
+        if (valueA.valueType() != valueB.valueType()) {
+            return valueB;
+        }
+
+        if (valueA.isMap()) {
+            return dictionaryDifference(valueA.getMap(), valueB.getMap());
+        }
+
+        if (valueA.isArray()) {
+            return arrayDifference(valueA.getArray(), valueB.getArray());
+        }
+
+        return valueB;
+    }
+
+    /**
+     * Returns the symmetric difference between the both dictionaries.
+     * Null values are ignored.
+     *
+     * @param dicoA The first dictionary
+     * @param dicoB The second dictionary
+     * @return The symmetric difference between theses 2 dictionaries, or null if there is no differences.
+     */
+    private static Dictionary dictionaryDifference(Map<java.lang.String, Value> dicoA, Map<java.lang.String, Value> dicoB) {
+        Map<java.lang.String, Value> map = new HashMap<>();
+
+        Sets.symmetricDifference(dicoA.keySet(), dicoB.keySet()).forEach(key -> {
+            if (dicoA.containsKey(key)) {
+                map.put(key, dicoA.get(key));
+            } else {
+                map.put(key, dicoB.get(key));
+            }
+        });
+
+        Sets.intersection(dicoA.keySet(), dicoB.keySet()).forEach(key -> {
+            Value value = valueDifference(dicoA.get(key), dicoB.get(key));
+            if (!Objects.isNull(value)) {
+                map.put(key, value);
+            }
+        });
+
+        if (map.isEmpty()) {
+            return null;
+        }
+
+        return new Dictionary(map);
+    }
+
+    /**
+     * Returns the symmetric difference between the both arrays.
+     * Order is maintained and null values are ignored.
+     *
+     * @param arrayA The first array
+     * @param arrayB The second array
+     * @return The symmetric difference between theses 2 arrays, or null if there is no differences.
+     */
+    private static Array arrayDifference(Value[] arrayA, Value[] arrayB) {
+        List<Value> values = new ArrayList<>();
+        int sizeMax = Math.max(arrayA.length, arrayB.length);
+
+        for (int i = 0; i < sizeMax; i++) {
+            if (i >= arrayA.length) {
+                values.add(arrayB[i]);
+            } else if (i >= arrayB.length) {
+                values.add(arrayA[i]);
+            } else {
+                Value value = valueDifference(arrayA[i], arrayB[i]);
+                if (!Objects.isNull(value)) {
+                    values.add(value);
+                }
+            }
+        }
+
+        if (values.isEmpty()) {
+            return null;
+        }
+
+        Value[] valuesArray = new Value[values.size()];
+        values.toArray(valuesArray);
+
+        return new Array(valuesArray);
     }
 
     @Override

@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
@@ -40,7 +39,7 @@ public class BundleUtils {
     public static final String REF_KEYWORD = "confroid#ref";
     public static final String PRIMITIVE_KEYWORD = "confroid#primitive";
 
-    public static final String ANNOTATION_SEP = "@";
+    public static final String ANNOTATION_SEP = "@confroid#annotation@";
     public static final String ANNOTATION_PARAM = "param";
 
     /**
@@ -48,14 +47,25 @@ public class BundleUtils {
      *
      * @return The list of Confroid keywords
      */
-    public static Set<String> keywords() {
+    private static Set<String> keywords() {
         Set<String> keywords = new HashSet<>();
         keywords.add(ID_KEYWORD);
         keywords.add(CLASS_KEYWORD);
         keywords.add(REF_KEYWORD);
         keywords.add(PRIMITIVE_KEYWORD);
+        keywords.add(ANNOTATION_SEP);
 
         return keywords;
+    }
+
+    /**
+     * Returns true if the given string containts any of the Confroid keyword
+     *
+     * @param string A string
+     * @return True if the given string contains any of the Confroid keyword
+     */
+    public static boolean containsConfroidKeyword(String string) {
+        return keywords().contains(string);
     }
 
     /**

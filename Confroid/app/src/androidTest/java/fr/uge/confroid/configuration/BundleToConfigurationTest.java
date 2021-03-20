@@ -84,6 +84,20 @@ public class BundleToConfigurationTest {
         assertEquals(mixObjectsClass, mixObjectsClassConverted);
     }
 
+    @Test
+    public void getReferencedIdTest() {
+        MixObjectsClass mixObjectsClass = new MixObjectsClass();
+        mixObjectsClass.initValues();
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(mixObjectsClass);
+        Configuration config = Configuration.fromBundle(bundle);
+
+        Value referencedValue = Configuration.getReferencedValue(1, config.getContent());
+
+        assertEquals(config.getContent(), referencedValue);
+        assertNull(Configuration.getReferencedValue(2, config.getContent()));
+    }
+
     public static class MixObjectsClass {
         @Description(description = "Une map de Integers")
         public Map<java.lang.String, java.lang.Integer> mapInteger;
@@ -95,6 +109,7 @@ public class BundleToConfigurationTest {
         @RangeValidator(minRange = 0, maxRange = 255)
         public byte octet;
         public boolean bool;
+        public MixObjectsClass self;
 
         public MixObjectsClass() {
             this.mapInteger = new HashMap<>();
@@ -117,6 +132,8 @@ public class BundleToConfigurationTest {
 
             this.octet = 100;
             this.bool = true;
+
+            this.self = this;
         }
 
         @Override

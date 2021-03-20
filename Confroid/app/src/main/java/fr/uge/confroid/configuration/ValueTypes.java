@@ -14,7 +14,7 @@ public enum ValueTypes {
     INTEGER(true),
     LONG(true);
 
-    private boolean primitive;
+    private final boolean primitive;
 
     ValueTypes(boolean primitive) {
         this.primitive = primitive;
