@@ -231,8 +231,9 @@ public class Configuration {
      */
     public static Value filterKeywords(Value value) {
         if (value.isMap()) {
-            value.getMap().keySet().removeIf(BundleUtils::containsConfroidKeyword);
-            return value;
+            return new Dictionary(value.getMap().entrySet().stream().filter(entry ->
+                    !BundleUtils.containsConfroidKeyword(entry.getKey()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         } else if (value.isArray()) {
             return new Array((Value[]) Arrays.stream(value.getArray()).filter(
                     v -> !(v.isString() && BundleUtils.containsConfroidKeyword(v.getString()))
