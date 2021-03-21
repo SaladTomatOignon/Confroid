@@ -10,14 +10,14 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
-import fr.uge.confroid.front.holders.ConfigNameItemHolder;
-import fr.uge.confroid.front.models.ConfigNameItem;
+import fr.uge.confroid.front.holders.ConfigNameHolder;
+import fr.uge.confroid.front.models.ConfigName;
 
 
-public class ConfigNamesAdapter extends RecyclerView.Adapter<ConfigNameItemHolder> {
-    private List<ConfigNameItem> items = new ArrayList();
+public class ConfigNamesAdapter extends RecyclerView.Adapter<ConfigNameHolder> {
+    private List<ConfigName> items = new ArrayList();
 
-    public ConfigNamesAdapter(List<ConfigNameItem> items) {
+    public ConfigNamesAdapter(List<ConfigName> items) {
         this.items = Objects.requireNonNull(items);
     }
 
@@ -28,14 +28,14 @@ public class ConfigNamesAdapter extends RecyclerView.Adapter<ConfigNameItemHolde
 
     @NonNull
     @Override
-    public ConfigNameItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ConfigNameItemHolder(
+    public ConfigNameHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ConfigNameHolder(
             LayoutInflater.from(parent.getContext()).inflate(R.layout.item_config_list, parent, false)
         );
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ConfigNameItemHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ConfigNameHolder holder, int position) {
         holder.bind(items.get(position));
     }
 }

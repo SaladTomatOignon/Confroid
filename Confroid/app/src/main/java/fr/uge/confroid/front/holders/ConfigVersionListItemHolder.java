@@ -7,26 +7,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
-import fr.uge.confroid.front.models.ConfigVersionItem;
+import fr.uge.confroid.front.models.ConfigVersionListItem;
 
-public class ConfigVersionItemHolder extends RecyclerView.ViewHolder {
+public class ConfigVersionHolder extends RecyclerView.ViewHolder {
     private final ImageView imageIcon;
     private final TextView labelDate;
     private final TextView labelVersion;
 
-    public ConfigVersionItemHolder(@NonNull View itemView) {
+    public ConfigVersionHolder(@NonNull View itemView) {
         super(itemView);
         imageIcon = itemView.findViewById(R.id.image_config_icon);
         labelDate = itemView.findViewById(R.id.label_config_date);
         labelVersion = itemView.findViewById(R.id.label_config_version);
     }
 
-    public void bind(ConfigVersionItem item) {
+    public void bind(ConfigVersionListItem item) {
         labelDate.setText(item.getDate());
         labelVersion.setText(item.getVersion());
         imageIcon.setImageDrawable(item.getIcon());
-        itemView.setOnClickListener(__ -> {
-            item.click();
-        });
+        itemView.setOnClickListener(__ -> item.click());
     }
 }
