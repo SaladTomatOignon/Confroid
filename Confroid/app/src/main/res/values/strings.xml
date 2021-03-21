@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Confroid</string>
-    <string name="explore">Explore</string>
-    <string name="nothing_to_show">Nothing to show</string>
+    <string name="title_explore">Explore</string>
+    <string name="label_delete">Supprimer</string>
+    <string name="label_rename">Renommer</string>
+    <string name="label_cancel">Annuler</string>
+    <string name="title_rename">Entrez un nouveau nom</string>
+    <string name="label_no_result">Aucun résultat trouvé !</string>
 </resources>
