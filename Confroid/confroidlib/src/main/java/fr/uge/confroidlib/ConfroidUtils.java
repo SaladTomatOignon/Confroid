@@ -34,13 +34,13 @@ public class ConfroidUtils {
      */
     public static void saveConfiguration(Context context, String name, Object value, String versionName) {
         withAuth(context, token -> {
+            String appId = context.getApplicationContext().getPackageName();
+
             Intent intent = new Intent();
             intent.setAction(ConfroidIntents.INTENT_CONFIGURATION_PUSHER);
             intent.setPackage(ConfroidIntents.PACKAGE_NAME);
             intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-
-            String appId = context.getApplicationContext().getPackageName();
-            intent.putExtra(ConfroidIntents.EXTRA_NAME, appId + "." + name);
+            intent.putExtra(ConfroidIntents.EXTRA_NAME, normalizeName(appId, name));
             intent.putExtra(ConfroidIntents.EXTRA_TAG, versionName);
             intent.putExtra(ConfroidIntents.EXTRA_TOKEN, token);
             intent.putExtra(ConfroidIntents.EXTRA_CONTENT, BundleUtils.convertToBundleReflection(value));
@@ -67,7 +67,7 @@ public class ConfroidUtils {
             intent.setPackage(ConfroidIntents.PACKAGE_NAME);
             intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
 
-            intent.putExtra(ConfroidIntents.EXTRA_NAME, appId + "." + name);
+            intent.putExtra(ConfroidIntents.EXTRA_NAME, normalizeName(appId, name));
             intent.putExtra(ConfroidIntents.EXTRA_TOKEN, token);
             intent.putExtra(ConfroidIntents.EXTRA_REQUEST_ID, requestId);
             intent.putExtra(ConfroidIntents.EXTRA_VERSION, version);
@@ -136,7 +136,7 @@ public class ConfroidUtils {
         });
     }
 
-    // TODO
+
     /**
      * Subscribes to the changes occurred to the configuration identified by `name`.
      * @param context Target application context.
@@ -145,12 +145,9 @@ public class ConfroidUtils {
      * @param <T>
      */
     public static <T> void subscribeConfiguration(Context context, String name, Consumer<T> callback) {
-        withAuth(context, token -> {
-            Toast.makeText(context, token, Toast.LENGTH_LONG).show();
-        });
+        // TODO
     }
 
-    // TODO
     /**
      *
      * @param context Target application context.
@@ -158,8 +155,43 @@ public class ConfroidUtils {
      * @param <T>
      */
     public static <T> void cancelConfigurationSubscription(Context context, Consumer<T> callback) {
-        withAuth(context, token -> {
-            Toast.makeText(context, token, Toast.LENGTH_LONG).show();
+        // TODO
+    }
+
+    public static <T> void editObject(Context context, T originalObject, Consumer<T> callback) {
+        String receiver = UUID.randomUUID().toString();
+        context.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                context.unregisterReceiver(this);
+            }
+        }, new IntentFilter(receiver));
+
+        Intent intent = new Intent();
+        intent.setAction(ConfroidIntents.INTENT_CONFIG_EDITOR);
+        intent.setPackage(ConfroidIntents.PACKAGE_NAME);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.putExtra(ConfroidIntents.EXTRA_RECEIVER, receiver);
+        intent.putExtra(
+            ConfroidIntents.EXTRA_CONTENT,
+            BundleUtils.convertToBundleReflection(originalObject)
+        );
+
+        context.startActivity(intent);
+    }
+
+    public static <T> void updateObject(Context context, String name, String version, Consumer<T> callback) {
+        loadConfiguration(context, name, version, (T originalObject) -> {
+            if (originalObject != null) {
+                editObject(context, originalObject, editedObject -> {
+                    if (editedObject != null) {
+                        saveConfiguration(context, name, editedObject, null);
+                        if (callback != null) {
+                            callback.accept(editedObject);
+                        }
+                    }
+                });
+            }
         });
     }
 
@@ -179,6 +211,7 @@ public class ConfroidUtils {
         String pref = appId + ".confroid-auth-token";
         String token = preferences.getString(pref, null);
         if (token != null) {
+
             callback.accept(token);
             return;
         }
@@ -206,6 +239,13 @@ public class ConfroidUtils {
         intent.putExtra(ConfroidIntents.EXTRA_NAME, appId);
         intent.putExtra(ConfroidIntents.EXTRA_RECEIVER, receiver);
         context.sendBroadcast(intent);
+    }
+
+    private static String normalizeName(String appId, String name) {
+        if (!name.startsWith(appId + ".")) {
+            return appId + "." + name;
+        }
+        return name;
     }
 
     private static void startService(Context context, Intent intent) {

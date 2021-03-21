@@ -2,6 +2,7 @@ package fr.uge.confroidlib;
 
 public class ConfroidIntents {
     public static final String PACKAGE_NAME = "fr.uge.confroid";
+    public static final String INTENT_CONFIG_EDITOR = "fr.uge.confroid.activity.ConfigEditorActivity";
     public static final String INTENT_TOKEN_DISPENSER = "fr.uge.confroid.receivers.TokenDispenser";
     public static final String INTENT_CONFIGURATION_PUSHER = "fr.uge.confroid.services.ConfigurationPusher";
     public static final String INTENT_CONFIGURATION_PULLER = "fr.uge.confroid.services.ConfigurationPuller";

@@ -9,13 +9,13 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
-import fr.uge.confroid.front.holders.ConfigVersionHolder;
+import fr.uge.confroid.front.holders.ConfigVersionListItemHolder;
 import fr.uge.confroid.front.models.ConfigVersionListItem;
 
-public class ConfigVersionsAdapter extends RecyclerView.Adapter<ConfigVersionHolder> {
+public class ConfigVersionListAdapter extends RecyclerView.Adapter<ConfigVersionListItemHolder> {
     private List<ConfigVersionListItem> items;
 
-    public ConfigVersionsAdapter(List<ConfigVersionListItem> items) {
+    public ConfigVersionListAdapter(List<ConfigVersionListItem> items) {
         this.items = Objects.requireNonNull(items);
     }
 
@@ -26,14 +26,14 @@ public class ConfigVersionsAdapter extends RecyclerView.Adapter<ConfigVersionHol
 
     @NonNull
     @Override
-    public ConfigVersionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ConfigVersionHolder(
+    public ConfigVersionListItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ConfigVersionListItemHolder(
             LayoutInflater.from(parent.getContext()).inflate(R.layout.item_config_version, parent, false)
         );
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ConfigVersionHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ConfigVersionListItemHolder holder, int position) {
         holder.bind(items.get(position));
     }
 }

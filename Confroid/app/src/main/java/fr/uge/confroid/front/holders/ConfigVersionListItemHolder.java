@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
 import fr.uge.confroid.front.models.ConfigVersionListItem;
 
-public class ConfigVersionHolder extends RecyclerView.ViewHolder {
+public class ConfigVersionListItemHolder extends RecyclerView.ViewHolder {
     private final ImageView imageIcon;
     private final TextView labelDate;
     private final TextView labelVersion;
 
-    public ConfigVersionHolder(@NonNull View itemView) {
+    public ConfigVersionListItemHolder(@NonNull View itemView) {
         super(itemView);
         imageIcon = itemView.findViewById(R.id.image_config_icon);
         labelDate = itemView.findViewById(R.id.label_config_date);

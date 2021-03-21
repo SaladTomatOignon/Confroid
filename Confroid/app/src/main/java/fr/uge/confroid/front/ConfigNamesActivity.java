@@ -4,8 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
-import fr.uge.confroid.front.adapters.ConfigNamesAdapter;
-import fr.uge.confroid.front.models.ConfigNameItem;
+import fr.uge.confroid.front.adapters.ConfigNameListAdapter;
+import fr.uge.confroid.front.models.ConfigNameListItem;
 import fr.uge.confroid.storage.ConfroidDatabase;
 
 import android.os.Bundle;
@@ -21,7 +21,7 @@ public class ConfigNamesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config_names);
 
-        getSupportActionBar().setTitle(R.string.explore);
+        getSupportActionBar().setTitle(R.string.title_explore);
 
         RecyclerView recycler = findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -30,15 +30,15 @@ public class ConfigNamesActivity extends AppCompatActivity {
         emptyState.setVisibility(View.GONE);
 
         ConfroidDatabase.exec(this, dao -> {
-            List<ConfigNameItem> items = dao.findAllNames()
+            List<ConfigNameListItem> items = dao.findAllNames()
                 .stream()
-                .map(name -> ConfigNameItem.create(this, name))
+                .map(name -> ConfigNameListItem.create(this, name))
                 .collect(Collectors.toList());
 
             if (items.isEmpty()) {
                 emptyState.setVisibility(View.VISIBLE);
             }
-            recycler.setAdapter(new ConfigNamesAdapter(items));
+            recycler.setAdapter(new ConfigNameListAdapter(items));
         });
     }
 }

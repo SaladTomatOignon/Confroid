@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
 import fr.uge.confroid.front.models.ConfigNameListItem;
 
-public class ConfigNameHolder extends RecyclerView.ViewHolder {
+public class ConfigNameListItemHolder extends RecyclerView.ViewHolder {
     private final ImageView imageIcon;
     private final TextView labelName;
 
-    public ConfigNameHolder(@NonNull View itemView) {
+    public ConfigNameListItemHolder(@NonNull View itemView) {
         super(itemView);
         imageIcon = itemView.findViewById(R.id.image_config_icon);
         labelName = itemView.findViewById(R.id.label_config_name);

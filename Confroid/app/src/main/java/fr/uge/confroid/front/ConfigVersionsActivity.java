@@ -4,21 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
-import fr.uge.confroid.front.adapters.ConfigVersionsAdapter;
-import fr.uge.confroid.front.models.ConfigVersionItem;
+import fr.uge.confroid.front.adapters.ConfigVersionListAdapter;
+import fr.uge.confroid.front.models.ConfigVersionListItem;
 import fr.uge.confroid.storage.ConfroidDatabase;
 import fr.uge.confroid.storage.ConfroidPackage;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ConfigVersionsActivity extends AppCompatActivity {
+    private static final String TAG = "ConfigVersionsActivity";
     private static final String EXTRA_NAME = "EXTRA_NAME";
 
     public static void present(Context context, String name) {
@@ -33,19 +34,15 @@ public class ConfigVersionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_config_versions);
 
         Intent intent = getIntent();
-        if (intent == null) {
-            finish();
-            return;
-        }
 
         String name = intent.getStringExtra(EXTRA_NAME);
         if (name == null || name.trim().length() == 0) {
+            Log.e(TAG, "Missing extra " + EXTRA_NAME);
             finish();
             return;
         }
 
         getSupportActionBar().setTitle(name);
-
 
         RecyclerView recycler = findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -55,17 +52,17 @@ public class ConfigVersionsActivity extends AppCompatActivity {
 
         ConfroidDatabase.exec(this, dao -> {
             List<ConfroidPackage> versions = dao.findAllVersions(name);
-            List<ConfigVersionItem> items = versions
+            List<ConfigVersionListItem> items = versions
                     .stream()
                     .sorted((a, b) -> b.getDate().compareTo(a.getDate()))
-                    .map(version -> ConfigVersionItem.create(this, version))
+                    .map(version -> ConfigVersionListItem.create(this, version))
                     .collect(Collectors.toList());
 
             if (items.isEmpty()) {
                 emptyState.setVisibility(View.VISIBLE);
             }
 
-            recycler.setAdapter(new ConfigVersionsAdapter(items));
+            recycler.setAdapter(new ConfigVersionListAdapter(items));
         });
     }
 }

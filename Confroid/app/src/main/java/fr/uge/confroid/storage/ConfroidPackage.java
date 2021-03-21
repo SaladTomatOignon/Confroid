@@ -8,6 +8,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import fr.uge.confroid.configuration.Configuration;
+import fr.uge.confroid.configuration.Value;
 
 @Entity( tableName = "packages", primaryKeys = { "name", "version" })
 public class ConfroidPackage {
@@ -63,6 +64,10 @@ public class ConfroidPackage {
 
     public Configuration getConfig() {
         return config;
+    }
+
+    public Value getContent() {
+        return config.getContent();
     }
 
     public void setConfig(Configuration config) {

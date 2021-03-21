@@ -9,12 +9,12 @@ import androidx.core.content.ContextCompat;
 import fr.uge.confroid.R;
 import fr.uge.confroid.front.ConfigVersionsActivity;
 
-public class ConfigName {
+public class ConfigNameListItem {
     private final Context context;
     private final String name;
     private final Drawable icon;
 
-    private ConfigName(Context context, String name, Drawable icon) {
+    private ConfigNameListItem(Context context, String name, Drawable icon) {
         this.context = Objects.requireNonNull(context);
         this.name = Objects.requireNonNull(name);
         this.icon = Objects.requireNonNull(icon);
@@ -32,7 +32,7 @@ public class ConfigName {
         ConfigVersionsActivity.present(context, name);
     }
 
-    public static ConfigName create(Context context, String name) {
+    public static ConfigNameListItem create(Context context, String name) {
         String id = name.substring(0, name.lastIndexOf("."));
         Drawable icon = null;
         try {
@@ -41,6 +41,6 @@ public class ConfigName {
             icon = ContextCompat.getDrawable(context, R.mipmap.ic_android);
         }
 
-        return new ConfigName(context, name, icon);
+        return new ConfigNameListItem(context, name, icon);
     }
 }

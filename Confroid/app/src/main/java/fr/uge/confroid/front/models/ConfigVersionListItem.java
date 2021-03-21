@@ -9,12 +9,12 @@ import fr.uge.confroid.R;
 import fr.uge.confroid.front.ConfigEditorActivity;
 import fr.uge.confroid.storage.ConfroidPackage;
 
-public class ConfigVersion {
+public class ConfigVersionListItem {
     private final Context context;
     private final Drawable icon;
     private final ConfroidPackage confroidPackage;
 
-    private ConfigVersion(Context context, ConfroidPackage confroidPackage, Drawable icon) {
+    private ConfigVersionListItem(Context context, ConfroidPackage confroidPackage, Drawable icon) {
         this.context = Objects.requireNonNull(context);
         this.confroidPackage = Objects.requireNonNull(confroidPackage);
         this.icon = Objects.requireNonNull(icon);
@@ -41,7 +41,7 @@ public class ConfigVersion {
         ConfigEditorActivity.present(context, confroidPackage);
     }
 
-    public static ConfigVersion create(Context context, ConfroidPackage confroidPackage) {
+    public static ConfigVersionListItem create(Context context, ConfroidPackage confroidPackage) {
         String name = confroidPackage.getName();
         String id = name.substring(0, name.lastIndexOf("."));
         Drawable icon = null;
@@ -50,6 +50,6 @@ public class ConfigVersion {
         } catch (Exception e) {
             icon = ContextCompat.getDrawable(context, R.mipmap.ic_android);
         }
-        return new ConfigVersion(context, confroidPackage, icon);
+        return new ConfigVersionListItem(context, confroidPackage, icon);
     }
 }

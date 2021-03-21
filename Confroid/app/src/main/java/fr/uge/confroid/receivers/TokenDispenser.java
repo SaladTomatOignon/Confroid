@@ -3,6 +3,7 @@ package fr.uge.confroid.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import fr.uge.confroid.utils.AuthUtils;
 import fr.uge.confroidlib.ConfroidIntents;
