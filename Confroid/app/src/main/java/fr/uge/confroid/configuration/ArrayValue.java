@@ -2,10 +2,10 @@ package fr.uge.confroid.configuration;
 
 import java.util.Arrays;
 
-public class Array implements Value {
+public class ArrayValue implements Value {
     private Value[] values;
 
-    public Array(Value[] values) {
+    public ArrayValue(Value[] values) {
         this.values = values;
     }
 
@@ -29,10 +29,16 @@ public class Array implements Value {
     }
 
     @Override
+    public String preview() {
+        int size = Configuration.filterKeywords(this).getArray().length;
+        return size + " items";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Array array1 = (Array) o;
+        ArrayValue array1 = (ArrayValue) o;
         return Arrays.equals(values, array1.values);
     }
 

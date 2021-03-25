@@ -17,12 +17,12 @@ public class ConfigurationToBundleTest {
 
     @Test
     public void configToBundle_nestedDictionary() {
-        Array emptyArray = new Array(new Value[0]);
+        ArrayValue emptyArray = new ArrayValue(new Value[0]);
         IntegerValue a = new IntegerValue(42);
         StringValue str = new StringValue("Ali baba");
         FloatValue floot = new FloatValue(12.8f);
         BooleanValue bool = new BooleanValue(false);
-        Array array = new Array(new Value[]{a, str, floot, bool});
+        ArrayValue array = new ArrayValue(new Value[]{a, str, floot, bool});
 
         Map<String, Value> map1 = new HashMap<>();
         map1.put("int", a);
@@ -35,11 +35,11 @@ public class ConfigurationToBundleTest {
         map2.put("key1", new BooleanValue(true));
         map2.put("key2", new FloatValue(852.123f));
         map2.put("key3", new ByteValue((byte) 5));
-        map2.put("key4", new Dictionary(map1));
+        map2.put("key4", new MapValue(map1));
         map2.put("key5", new LongValue(123456789L));
         map2.put("key6", new DoubleValue(123.456789));
 
-        Configuration dico = new Configuration(new Dictionary(map2));
+        Configuration dico = new Configuration(new MapValue(map2));
         Bundle bundle = dico.toBundle();
 
         assertEquals(6, bundle.size());

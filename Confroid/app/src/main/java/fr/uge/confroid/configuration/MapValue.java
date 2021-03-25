@@ -3,10 +3,10 @@ package fr.uge.confroid.configuration;
 import java.util.Map;
 import java.util.Objects;
 
-public class Dictionary implements Value {
+public class MapValue implements Value {
     private Map<String, Value> values;
 
-    public Dictionary(Map<String, Value> values) {
+    public MapValue(Map<String, Value> values) {
         this.values = Objects.requireNonNull(values);
     }
 
@@ -30,15 +30,16 @@ public class Dictionary implements Value {
     }
 
     @Override
-    public boolean isMap() {
-        return true;
+    public String preview() {
+        int size = Configuration.filterKeywords(this).getMap().size();
+        return size + " keys";
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Dictionary that = (Dictionary) o;
+        MapValue that = (MapValue) o;
         return Objects.equals(values, that.values);
     }
 

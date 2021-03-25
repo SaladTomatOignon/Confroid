@@ -202,7 +202,7 @@ public class Configuration {
                 i++;
             }
 
-            return new Array(values);
+            return new ArrayValue(values);
         } else if (keys.size() == 1 && bundle.containsKey(PRIMITIVE_KEYWORD)) { // Or if it only contains a primitive
             Value value = convertObjectToValue(bundle.get(PRIMITIVE_KEYWORD));
             if (value.isPrimitive()) {
@@ -218,7 +218,7 @@ public class Configuration {
             map.put(key, convertObjectToValue(bundle.get(key)));
         }
 
-        return new Dictionary(map);
+        return new MapValue(map);
     }
 
     /**
@@ -231,11 +231,11 @@ public class Configuration {
      */
     public static Value filterKeywords(Value value) {
         if (value.isMap()) {
-            return new Dictionary(value.getMap().entrySet().stream().filter(entry ->
+            return new MapValue(value.getMap().entrySet().stream().filter(entry ->
                     !BundleUtils.containsConfroidKeyword(entry.getKey()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         } else if (value.isArray()) {
-            return new Array((Value[]) Arrays.stream(value.getArray()).filter(
+            return new ArrayValue((Value[]) Arrays.stream(value.getArray()).filter(
                     v -> !(v.isString() && BundleUtils.containsConfroidKeyword(v.getString()))
             ).toArray());
         }
@@ -336,7 +336,7 @@ public class Configuration {
      * @param dicoB The second dictionary
      * @return The symmetric difference between theses 2 dictionaries, or null if there is no differences.
      */
-    private static Dictionary dictionaryDifference(Map<String, Value> dicoA, Map<String, Value> dicoB) {
+    private static MapValue dictionaryDifference(Map<String, Value> dicoA, Map<String, Value> dicoB) {
         Map<String, Value> map = new HashMap<>();
 
         Sets.symmetricDifference(dicoA.keySet(), dicoB.keySet()).forEach(key -> {
@@ -358,7 +358,7 @@ public class Configuration {
             return null;
         }
 
-        return new Dictionary(map);
+        return new MapValue(map);
     }
 
     /**
@@ -369,7 +369,7 @@ public class Configuration {
      * @param arrayB The second array
      * @return The symmetric difference between theses 2 arrays, or null if there is no differences.
      */
-    private static Array arrayDifference(Value[] arrayA, Value[] arrayB) {
+    private static ArrayValue arrayDifference(Value[] arrayA, Value[] arrayB) {
         List<Value> values = new ArrayList<>();
         int sizeMax = Math.max(arrayA.length, arrayB.length);
 
@@ -393,7 +393,7 @@ public class Configuration {
         Value[] valuesArray = new Value[values.size()];
         values.toArray(valuesArray);
 
-        return new Array(valuesArray);
+        return new ArrayValue(valuesArray);
     }
 
     @Override

@@ -44,7 +44,7 @@ public class ConfigurationDifferencesTest {
 
     @Test
     public void arrayNoDifferenceTest() {
-        Configuration config1 = new Configuration(new Array(new Value[] {
+        Configuration config1 = new Configuration(new ArrayValue(new Value[] {
                 new IntegerValue(5),
                 new StringValue("Salut"),
                 new FloatValue(0.23f),
@@ -52,7 +52,7 @@ public class ConfigurationDifferencesTest {
                 new ByteValue((byte) 8)
         }));
 
-        Configuration config2 = new Configuration(new Array(new Value[] {
+        Configuration config2 = new Configuration(new ArrayValue(new Value[] {
                 new IntegerValue(5),
                 new StringValue("Salut"),
                 new FloatValue(0.23f),
@@ -65,13 +65,13 @@ public class ConfigurationDifferencesTest {
 
     @Test
     public void arrayDifferenceTest_add() {
-        Configuration config1 = new Configuration(new Array(new Value[] {
+        Configuration config1 = new Configuration(new ArrayValue(new Value[] {
                 new FloatValue(0.23f),
                 new BooleanValue(true),
                 new ByteValue((byte) 8)
         }));
 
-        Configuration config2 = new Configuration(new Array(new Value[] {
+        Configuration config2 = new Configuration(new ArrayValue(new Value[] {
                 new FloatValue(0.23f),
                 new BooleanValue(true),
                 new ByteValue((byte) 8),
@@ -80,7 +80,7 @@ public class ConfigurationDifferencesTest {
         }));
 
         Configuration diffConfig = Configuration.difference(config1, config2);
-        assertEquals(new Configuration(new Array(new Value[] {
+        assertEquals(new Configuration(new ArrayValue(new Value[] {
                 new IntegerValue(5),
                 new StringValue("Salut")
         })), diffConfig);
@@ -88,7 +88,7 @@ public class ConfigurationDifferencesTest {
 
     @Test
     public void arrayDifferenceTest_remove() {
-        Configuration config1 = new Configuration(new Array(new Value[] {
+        Configuration config1 = new Configuration(new ArrayValue(new Value[] {
                 new IntegerValue(5),
                 new StringValue("Salut"),
                 new ByteValue((byte) 8),
@@ -96,14 +96,14 @@ public class ConfigurationDifferencesTest {
                 new BooleanValue(true)
         }));
 
-        Configuration config2 = new Configuration(new Array(new Value[] {
+        Configuration config2 = new Configuration(new ArrayValue(new Value[] {
                 new IntegerValue(5),
                 new StringValue("Salut"),
                 new ByteValue((byte) 8)
         }));
 
         Configuration diffConfig = Configuration.difference(config1, config2);
-        assertEquals(new Configuration(new Array(new Value[] {
+        assertEquals(new Configuration(new ArrayValue(new Value[] {
                 new FloatValue(0.23f),
                 new BooleanValue(true)
         })), diffConfig);
@@ -111,7 +111,7 @@ public class ConfigurationDifferencesTest {
 
     @Test
     public void arrayDifferenceTest_order() {
-        Configuration config1 = new Configuration(new Array(new Value[] {
+        Configuration config1 = new Configuration(new ArrayValue(new Value[] {
                 new IntegerValue(5),
                 new StringValue("Salut"),
                 new FloatValue(0.23f),
@@ -119,7 +119,7 @@ public class ConfigurationDifferencesTest {
                 new ByteValue((byte) 8)
         }));
 
-        Configuration config2 = new Configuration(new Array(new Value[] {
+        Configuration config2 = new Configuration(new ArrayValue(new Value[] {
                 new ByteValue((byte) 8),
                 new FloatValue(0.23f),
                 new IntegerValue(5),
@@ -128,7 +128,7 @@ public class ConfigurationDifferencesTest {
         }));
 
         Configuration diffConfig = Configuration.difference(config1, config2);
-        assertEquals(new Configuration(new Array(new Value[] {
+        assertEquals(new Configuration(new ArrayValue(new Value[] {
                 new ByteValue((byte) 8),
                 new FloatValue(0.23f),
                 new IntegerValue(5),
@@ -138,7 +138,7 @@ public class ConfigurationDifferencesTest {
 
     @Test
     public void arrayDifferenceTest_mix() {
-        Configuration config1 = new Configuration(new Array(new Value[] {
+        Configuration config1 = new Configuration(new ArrayValue(new Value[] {
                 new IntegerValue(5),
                 new StringValue("Salut"),
                 new BooleanValue(false),
@@ -147,7 +147,7 @@ public class ConfigurationDifferencesTest {
                 new ByteValue((byte) 8)
         }));
 
-        Configuration config2 = new Configuration(new Array(new Value[] {
+        Configuration config2 = new Configuration(new ArrayValue(new Value[] {
                 new ByteValue((byte) 8),
                 new FloatValue(0.23f),
                 new IntegerValue(5),
@@ -156,7 +156,7 @@ public class ConfigurationDifferencesTest {
         }));
 
         Configuration diffConfig = Configuration.difference(config1, config2);
-        assertEquals(new Configuration(new Array(new Value[] {
+        assertEquals(new Configuration(new ArrayValue(new Value[] {
                 new ByteValue((byte) 8),
                 new FloatValue(0.23f),
                 new IntegerValue(5),
@@ -168,7 +168,7 @@ public class ConfigurationDifferencesTest {
     @Test
     public void dictionaryNoDifferenceTest() {
         Configuration config1 = new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Salut", new IntegerValue(5));
                         put("Coco", new StringValue("Wesh"));
@@ -176,7 +176,7 @@ public class ConfigurationDifferencesTest {
                     }}));
 
         Configuration config2 = new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Salut", new IntegerValue(5));
                         put("Coco", new StringValue("Wesh"));
@@ -189,7 +189,7 @@ public class ConfigurationDifferencesTest {
     @Test
     public void dictionaryDifferenceTest_add() {
         Configuration config1 = new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Salut", new IntegerValue(5));
                         put("Coco", new StringValue("Wesh"));
@@ -197,7 +197,7 @@ public class ConfigurationDifferencesTest {
                     }}));
 
         Configuration config2 = new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Salut", new IntegerValue(5));
                         put("Vasy", new ByteValue((byte) 5));
@@ -208,7 +208,7 @@ public class ConfigurationDifferencesTest {
 
         Configuration diffConfig = Configuration.difference(config1, config2);
         assertEquals(new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Vasy", new ByteValue((byte) 5));
                         put("Ok", new FloatValue(42.58f));
@@ -218,7 +218,7 @@ public class ConfigurationDifferencesTest {
     @Test
     public void dictionaryDifferenceTest_remove() {
         Configuration config1 = new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Salut", new IntegerValue(5));
                         put("Vasy", new ByteValue((byte) 5));
@@ -228,7 +228,7 @@ public class ConfigurationDifferencesTest {
                     }}));
 
         Configuration config2 = new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Salut", new IntegerValue(5));
                         put("Coco", new StringValue("Wesh"));
@@ -237,7 +237,7 @@ public class ConfigurationDifferencesTest {
 
         Configuration diffConfig = Configuration.difference(config1, config2);
         assertEquals(new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Vasy", new ByteValue((byte) 5));
                         put("Ok", new FloatValue(42.58f));
@@ -247,7 +247,7 @@ public class ConfigurationDifferencesTest {
     @Test
     public void dictionaryDifferenceTest_mix() {
         Configuration config1 = new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Salut", new IntegerValue(789));
                         put("Coco", new ByteValue((byte) 100));
@@ -256,7 +256,7 @@ public class ConfigurationDifferencesTest {
                     }}));
 
         Configuration config2 = new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Coco", new StringValue("Wesh"));
                         put("Salut", new IntegerValue(5));
@@ -267,7 +267,7 @@ public class ConfigurationDifferencesTest {
 
         Configuration diffConfig = Configuration.difference(config1, config2);
         assertEquals(new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Vasy", new ByteValue((byte) 5));
                         put("Coco", new StringValue("Wesh"));
@@ -280,16 +280,16 @@ public class ConfigurationDifferencesTest {
     @Test
     public void mixDifferenceTest() {
         Configuration config1 = new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
                         put("Salut", new IntegerValue(789));
-                        put("Coco", new Array(new Value[] {
+                        put("Coco", new ArrayValue(new Value[] {
                                 new IntegerValue(5),
                                 new IntegerValue(42),
                                 new ByteValue((byte) 100)
                         }));
                         put("Mdr", new BooleanValue(true));
-                        put("Ok", new Dictionary(new HashMap<String, Value>() {
+                        put("Ok", new MapValue(new HashMap<String, Value>() {
                             {
                                 put("Mdr", new FloatValue(42.5f));
                                 put("Finally", new BooleanValue(false));
@@ -298,14 +298,14 @@ public class ConfigurationDifferencesTest {
                     }}));
 
         Configuration config2 = new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
-                        put("Coco", new Array(new Value[] {
+                        put("Coco", new ArrayValue(new Value[] {
                                 new IntegerValue(5),
                                 new IntegerValue(42),
                                 new ByteValue((byte) 101)
                         }));
-                        put("Ok", new Dictionary(new HashMap<String, Value>() {
+                        put("Ok", new MapValue(new HashMap<String, Value>() {
                             {
                                 put("Mdr", new FloatValue(42.3f));
                                 put("Finally", new BooleanValue(false));
@@ -318,12 +318,12 @@ public class ConfigurationDifferencesTest {
 
         Configuration diffConfig = Configuration.difference(config1, config2);
         assertEquals(new Configuration(
-                new Dictionary(new HashMap<String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
-                        put("Coco", new Array(new Value[] {
+                        put("Coco", new ArrayValue(new Value[] {
                                 new ByteValue((byte) 101)
                         }));
-                        put("Ok", new Dictionary(new HashMap<String, Value>() {
+                        put("Ok", new MapValue(new HashMap<String, Value>() {
                             {
                                 put("Mdr", new FloatValue(42.3f));
                             }}));

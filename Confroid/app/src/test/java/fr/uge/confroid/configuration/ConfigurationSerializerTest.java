@@ -24,12 +24,12 @@ public class ConfigurationSerializerTest {
 
     @Test
     public void valueToJson_array() {
-        Configuration emptyArray = new Configuration(new Array(new Value[0]));
+        Configuration emptyArray = new Configuration(new ArrayValue(new Value[0]));
         IntegerValue a = new IntegerValue(42);
         StringValue str = new StringValue("Ali baba");
         FloatValue floot = new FloatValue(12.8f);
         BooleanValue bool = new BooleanValue(false);
-        Configuration array = new Configuration(new Array(new Value[]{a, str, floot, bool}));
+        Configuration array = new Configuration(new ArrayValue(new Value[]{a, str, floot, bool}));
 
         assertEquals("[]", emptyArray.toJson());
         assertEquals("[{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.INTEGER + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":42},{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.STRING + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":\"Ali baba\"},{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.FLOAT + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":12.8},{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.BOOLEAN + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":false}]", array.toJson());
@@ -37,12 +37,12 @@ public class ConfigurationSerializerTest {
 
     @Test
     public void valueToJson_dictionary() {
-        Array emptyArray = new Array(new Value[0]);
+        ArrayValue emptyArray = new ArrayValue(new Value[0]);
         IntegerValue a = new IntegerValue(42);
         StringValue str = new StringValue("Ali baba");
         FloatValue floot = new FloatValue(12.8f);
         BooleanValue bool = new BooleanValue(false);
-        Array array = new Array(new Value[]{a, str, floot, bool});
+        ArrayValue array = new ArrayValue(new Value[]{a, str, floot, bool});
 
         Map<String, Value> map = new HashMap<String, Value>();
         map.put("int", a);
@@ -51,19 +51,19 @@ public class ConfigurationSerializerTest {
         map.put("boolean", bool);
         map.put("Tableau", array);
 
-        Configuration dico = new Configuration(new Dictionary(map));
+        Configuration dico = new Configuration(new MapValue(map));
 
         assertEquals("{\"Tableau vide\":[],\"boolean\":{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.BOOLEAN + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":false},\"chaine\":{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.STRING + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":\"Ali baba\"},\"Tableau\":[{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.INTEGER + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":42},{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.STRING + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":\"Ali baba\"},{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.FLOAT + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":12.8},{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.BOOLEAN + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":false}],\"int\":{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.INTEGER + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":42}}", dico.toJson());
     }
 
     @Test
     public void valueToJson_nestedDictionary() {
-        Array emptyArray = new Array(new Value[0]);
+        ArrayValue emptyArray = new ArrayValue(new Value[0]);
         IntegerValue a = new IntegerValue(42);
         StringValue str = new StringValue("Ali baba");
         FloatValue floot = new FloatValue(12.8f);
         BooleanValue bool = new BooleanValue(false);
-        Array array = new Array(new Value[]{a, str, floot, bool});
+        ArrayValue array = new ArrayValue(new Value[]{a, str, floot, bool});
 
         Map<String, Value> map1 = new HashMap<String, Value>();
         map1.put("int", a);
@@ -76,9 +76,9 @@ public class ConfigurationSerializerTest {
         map2.put("key1", new BooleanValue(true));
         map2.put("key2", new FloatValue(852.123f));
         map2.put("key3", new ByteValue((byte) 5));
-        map2.put("key4", new Dictionary(map1));
+        map2.put("key4", new MapValue(map1));
 
-        Configuration dico = new Configuration(new Dictionary(map2));
+        Configuration dico = new Configuration(new MapValue(map2));
 
         assertEquals("{\"key1\":{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.BOOLEAN + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":true},\"key2\":{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.FLOAT + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":852.123},\"key3\":{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.BYTE + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":5},\"key4\":{\"Tableau vide\":[],\"boolean\":{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.BOOLEAN + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":false},\"chaine\":{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.STRING + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":\"Ali baba\"},\"Tableau\":[{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.INTEGER + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":42},{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.STRING + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":\"Ali baba\"},{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.FLOAT + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":12.8},{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.BOOLEAN + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":false}],\"int\":{\"" + Configuration.PRIMITIVE_TYPE_KEYWORD + "\":\"" + ValueTypes.INTEGER + "\",\"" + Configuration.PRIMITIVE_KEYWORD + "\":42}}}",
                 dico.toJson());

@@ -35,7 +35,7 @@ public class ConfigDeserializer implements JsonDeserializer<Configuration> {
                 new AbstractMap.SimpleEntry<String, Value>(entry.getKey(), deserializeValue(entry.getValue(), configType, context))
             ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
 
-            return new Dictionary(map);
+            return new MapValue(map);
         } else if (json.isJsonArray()) {
             JsonArray jsonArray = json.getAsJsonArray();
             Value[] array = new Value[jsonArray.size()];
@@ -44,7 +44,7 @@ public class ConfigDeserializer implements JsonDeserializer<Configuration> {
                 array[i] = deserializeValue(jsonArray.get(i), configType, context);
             }
 
-            return new Array(array);
+            return new ArrayValue(array);
         } else if (json.isJsonPrimitive()) {
             return deserializePrimitive(json.getAsJsonPrimitive(), null, configType, context);
         } else {
