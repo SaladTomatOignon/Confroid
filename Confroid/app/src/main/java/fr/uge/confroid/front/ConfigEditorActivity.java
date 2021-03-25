@@ -17,6 +17,7 @@ import fr.uge.confroid.front.models.EditorPage;
 import fr.uge.confroid.storage.ConfroidPackage;
 import fr.uge.confroidlib.BundleUtils;
 import fr.uge.confroidlib.ConfroidIntents;
+import fr.uge.confroidlib.ConfroidUtils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.function.Function;
 
@@ -35,12 +37,15 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
     private Stack<EditorPage> pages = new Stack<>();
     private ActionBar actionBar;
     private FragmentManager fragmentManager;
+    private boolean changed;
 
     public static void present(Context context, ConfroidPackage confroidPackage) {
-        Intent intent = new Intent(context, ConfigEditorActivity.class);
-        Bundle content = confroidPackage.getConfig().toBundle();
-        intent.putExtra(ConfroidIntents.EXTRA_CONTENT, content);
-        context.startActivity(intent);
+        ConfroidUtils.updateObject(
+            context,
+            confroidPackage.getName(),
+            Integer.toString(confroidPackage.getVersion()),
+            o -> Log.v("????", Objects.toString(o))
+        );
     }
 
     @Override
@@ -69,6 +74,11 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
         pushPage(new EditorPage(getString(R.string.app_name), root));
     }
 
+
+    @Override
+    public void onChange() {
+        changed = true;
+    }
 
     @Override
     public void pushPage(EditorPage page) {
@@ -130,6 +140,14 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
         int count = fragmentManager.getBackStackEntryCount();
         if (count == 0) {
             finish();
+            String receiver = getIntent().getStringExtra(ConfroidIntents.EXTRA_RECEIVER);
+            if (receiver != null) {
+                Intent response = new Intent(receiver);
+                if (changed) {
+                    response.putExtra(ConfroidIntents.EXTRA_CONTENT, new Configuration(root).toBundle());
+                }
+                sendBroadcast(response);
+            }
         }
     }
 

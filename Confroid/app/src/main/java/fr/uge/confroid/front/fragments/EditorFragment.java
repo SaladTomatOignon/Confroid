@@ -48,12 +48,22 @@ abstract class EditorFragment extends Fragment {
      */
     public void update(Value newValue) {
         mapValue.setValue(newValue);
+        editor.onChange();
+    }
+
+    /**
+     * Updates the {@link Value} associated the current page and recall {@link EditorFragment#onUpdateValue}.
+     * @param newValue New value.
+     */
+    public void updateAndRefresh(Value newValue) {
+        mapValue.setValue(newValue);
         onUpdateValue(mapValue);
+        editor.onChange();
     }
 
     /**
      * Lifecycle hook called once the page data is initialized and after
-     * each time {@link EditorFragment#update(Value)} is method is called.
+     * each time {@link EditorFragment#updateAndRefresh(Value)} is method is called.
      * @param value The value associated to the page.
      */
     abstract void onUpdateValue(Value value);

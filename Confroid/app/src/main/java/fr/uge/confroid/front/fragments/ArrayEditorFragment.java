@@ -16,6 +16,7 @@ import fr.uge.confroid.configuration.ArrayValue;
 import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.adapters.ConfigValueListAdapter;
 import fr.uge.confroid.front.models.ConfigValueListItem;
+import fr.uge.confroid.front.models.EditorPage;
 
 public class ArrayEditorFragment extends EditorFragment {
     private RecyclerView recycler;
@@ -61,6 +62,10 @@ public class ArrayEditorFragment extends EditorFragment {
             entry
         );
 
+        item.setOnEditListener(() -> {
+            push(new EditorPage(Integer.toString(index), entry));
+        });
+
         item.setOnDeleteListener(() -> {
             entries.remove(index);
             mergeAndUpdate();
@@ -77,7 +82,7 @@ public class ArrayEditorFragment extends EditorFragment {
         }
         */
 
-        update(new ArrayValue(entries.toArray(new Value[0])));
+        updateAndRefresh(new ArrayValue(entries.toArray(new Value[0])));
     }
 
 }

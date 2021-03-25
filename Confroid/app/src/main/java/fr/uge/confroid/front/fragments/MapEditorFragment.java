@@ -72,13 +72,13 @@ public class MapEditorFragment extends EditorFragment {
         if (mapValue.isSubClassOfMap()) {
             item.setOnDeleteListener(() -> {
                 entries.remove(entry.getKey());
-                update(new MapValue(entries));
+                updateAndRefresh(new MapValue(entries));
             });
 
             item.setOnRenameListener(newName -> {
                 entries.remove(entry.getKey());
                 entries.put(newName, entry.getValue());
-                update(new MapValue(entries));
+                updateAndRefresh(new MapValue(entries));
             });
         }
 

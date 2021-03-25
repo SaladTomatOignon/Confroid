@@ -164,6 +164,16 @@ public class ConfroidUtils {
             @Override
             public void onReceive(Context context, Intent intent) {
                 context.unregisterReceiver(this);
+                Bundle content = intent.getBundleExtra(ConfroidIntents.EXTRA_CONTENT);
+                if (content == null) {
+                    return;
+                }
+                try {
+                    callback.accept((T) BundleUtils.convertFromBundle(content));
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
+                    callback.accept(null);
+                }
             }
         }, new IntentFilter(receiver));
 

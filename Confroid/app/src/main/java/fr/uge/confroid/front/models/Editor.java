@@ -8,6 +8,11 @@ import fr.uge.confroid.configuration.Value;
  */
 public interface Editor {
     /**
+     * Called when node of the page tree change.
+     */
+    void onChange();
+
+    /**
      * Push new page to the editor history.
      * @param page The page to push.
      */
