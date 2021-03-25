@@ -1,5 +1,6 @@
 package fr.uge.confroid.front;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -12,8 +13,9 @@ import fr.uge.confroid.front.fragments.BoolEditorFragment;
 import fr.uge.confroid.front.fragments.MapEditorFragment;
 import fr.uge.confroid.front.fragments.TextEditorFragment;
 import fr.uge.confroid.front.models.Editor;
-import fr.uge.confroid.front.models.EditorSession;
+import fr.uge.confroid.front.models.EditorPage;
 import fr.uge.confroid.storage.ConfroidPackage;
+import fr.uge.confroidlib.BundleUtils;
 import fr.uge.confroidlib.ConfroidIntents;
 
 import android.content.Context;
@@ -30,7 +32,8 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
     private final ArrayList<Function<Value, Fragment>> fragments = new ArrayList<>();
 
     private Value root;
-    private Stack<EditorSession> stack = new Stack<>();
+    private Stack<EditorPage> pages = new Stack<>();
+    private ActionBar actionBar;
     private FragmentManager fragmentManager;
 
     public static void present(Context context, ConfroidPackage confroidPackage) {
@@ -45,6 +48,7 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config_editor);
 
+        actionBar = getSupportActionBar();
         fragmentManager = getSupportFragmentManager();
         fragmentManager.addOnBackStackChangedListener(this);
 
@@ -62,21 +66,18 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
         fragments.add(ArrayEditorFragment::newInstance);
 
         root = Configuration.fromBundle(content).getContent();
-        push(new EditorSession(getString(R.string.app_name), root));
+        pushPage(new EditorPage(getString(R.string.app_name), root));
     }
 
-    @Override
-    public void save() {
-    }
 
     @Override
-    public void push(EditorSession session) {
-        getSupportActionBar().setTitle(session.getName());
+    public void pushPage(EditorPage page) {
+        actionBar.setTitle(page.getName());
 
         for (Function<Value, Fragment> fn : fragments) {
-            Fragment editor = fn.apply(session.getValue());
+            Fragment editor = fn.apply(page.getValue());
             if (editor != null) {
-                stack.push(session);
+                pages.push(page);
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.fragment_container, editor);
                 transaction.addToBackStack(null);
@@ -86,23 +87,39 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
         }
 
         throw new IllegalArgumentException(
-            "There is no registered editor to handle " + session.getValue().toString()
+            "There is no registered editor to handle " + page.getValue().toString()
         );
     }
 
+
     @Override
-    public EditorSession pop() {
-        return stack.peek();
+    public EditorPage peekPage() {
+        return pages.peek();
     }
 
     @Override
+    public Value resolveReference(Value value) {
+        if (value.isMap()) {
+            Value ref = value.getMap().get(BundleUtils.REF_KEYWORD);
+            if (ref != null) {
+                value = Configuration.getReferencedValue(
+                    ref.getInteger(),
+                    root
+                );
+            }
+        }
+        return value;
+    }
+
+
+    @Override
     public void onBackPressed() {
-        if (!stack.isEmpty()) {
-            stack.pop();
+        if (!pages.isEmpty()) {
+            pages.pop();
         }
 
-        if (!stack.isEmpty()) {
-            getSupportActionBar().setTitle(stack.peek().getName());
+        if (!pages.isEmpty()) {
+            actionBar.setTitle(pages.peek().getName());
         }
 
         super.onBackPressed();

@@ -4,11 +4,11 @@ import java.util.Objects;
 
 import fr.uge.confroid.configuration.Value;
 
-public class EditorSession {
+public class EditorPage {
     private final String name;
     private final Value value;
 
-    public EditorSession(String name, Value value) {
+    public EditorPage(String name, Value value) {
         this.name = Objects.requireNonNull(name);
         this.value = Objects.requireNonNull(value);
     }
@@ -29,7 +29,7 @@ public class EditorSession {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EditorSession that = (EditorSession) o;
+        EditorPage that = (EditorPage) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(value, that.value);
     }

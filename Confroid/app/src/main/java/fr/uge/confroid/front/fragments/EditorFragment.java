@@ -7,11 +7,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.models.Editor;
-import fr.uge.confroid.front.models.EditorSession;
+import fr.uge.confroid.front.models.EditorPage;
 
+/**
+ * Base fragment that handle logic shared by all editors.
+ */
 abstract class EditorFragment extends Fragment {
     private Editor editor;
-    private EditorSession session;
+    private Value mapValue;
 
     @Override
     public void onAttach(Context context) {
@@ -26,18 +29,32 @@ abstract class EditorFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        session = editor.pop();
-        this.onReady(session.getValue());
+        EditorPage session = editor.peekPage();
+        mapValue = editor.resolveReference(session.getValue());
+        this.onUpdateValue(mapValue);
     }
 
-    public void push(EditorSession session) {
-        editor.push(session);
+    /**
+     * Push the given {@code page} to the editor history.
+     * @param page Page to push.
+     */
+    public void push(EditorPage page) {
+        editor.pushPage(page);
     }
 
-    public void emitChange(Value newValue) {
-        session.setValue(newValue);
-        editor.save();
+    /**
+     * Updates the {@link Value} associated the current page.
+     * @param newValue New value.
+     */
+    public void update(Value newValue) {
+        mapValue.setValue(newValue);
+        onUpdateValue(mapValue);
     }
 
-    abstract void onReady(Value value);
+    /**
+     * Lifecycle hook called once the page data is initialized and after
+     * each time {@link EditorFragment#update(Value)} is method is called.
+     * @param value The value associated to the page.
+     */
+    abstract void onUpdateValue(Value value);
 }

@@ -48,7 +48,7 @@ public class TextEditorFragment extends EditorFragment implements TextWatcher {
     }
 
     @Override
-    public void onReady(Value value) {
+    public void onUpdateValue(Value value) {
         this.value = value;
 
         switch (value.valueType()) {
@@ -91,29 +91,29 @@ public class TextEditorFragment extends EditorFragment implements TextWatcher {
         try {
             switch (value.valueType()) {
                 case STRING:
-                    emitChange(new StringValue(s.toString()));
+                    update(new StringValue(s.toString()));
                     break;
                 case BYTE:
-                    emitChange(new ByteValue(
+                    update(new ByteValue(
                         Byte.parseByte(s.toString())
                     ));
                 case LONG:
-                    emitChange(new LongValue(
+                    update(new LongValue(
                         Long.parseLong(s.toString())
                     ));
                     break;
                 case INTEGER:
-                    emitChange(new IntegerValue(
+                    update(new IntegerValue(
                         Integer.parseInt(s.toString())
                     ));
                     break;
                 case FLOAT:
-                    emitChange(new FloatValue(
+                    update(new FloatValue(
                         Float.parseFloat(s.toString())
                     ));
                     break;
                 case DOUBLE:
-                    emitChange(new DoubleValue(
+                    update(new DoubleValue(
                         Double.parseDouble(s.toString())
                     ));
                     break;

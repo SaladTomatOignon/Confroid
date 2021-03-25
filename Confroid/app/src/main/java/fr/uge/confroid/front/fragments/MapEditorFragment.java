@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,17 +12,17 @@ import java.util.stream.Collectors;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
-import fr.uge.confroid.configuration.Configuration;
-import fr.uge.confroid.configuration.Dictionary;
+import fr.uge.confroid.configuration.MapValue;
 import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.adapters.ConfigValueListAdapter;
 import fr.uge.confroid.front.models.ConfigValueListItem;
-import fr.uge.confroid.front.models.EditorSession;
-import fr.uge.confroidlib.BundleUtils;
+import fr.uge.confroid.front.models.EditorPage;
 
 public class MapEditorFragment extends EditorFragment {
     private final ConfigValueListAdapter adapter = new ConfigValueListAdapter();
-    private Value value;
+
+    private MapValue mapValue;
+    private Map<String, Value> entries;
 
     public static MapEditorFragment newInstance(Value value) {
         if (value.isMap()) {
@@ -46,64 +45,43 @@ public class MapEditorFragment extends EditorFragment {
     }
 
     @Override
-    public void onReady(Value value) {
-        this.value = value;
+    public void onUpdateValue(Value value) {
+        entries = value.getMap();
+        mapValue = (MapValue) value;
 
-        Map<String, Value> map = value.getMap();
-        if (map.isEmpty()) {
-            return;
-        }
-
-        String className = map.get(BundleUtils.CLASS_KEYWORD).getString();
-        // TODO check if className is a subtype of Map instead
-        boolean readonly = !className.equals(HashMap.class.getName());
-
-        List<ConfigValueListItem> items = (
-                Configuration.filterKeywords(value)
-                        .getMap()
-                        .entrySet()
-                        .stream()
-                        .map(entry -> entryToListItem(entry, readonly))
-                        .collect(Collectors.toList()
-                        )
-        );
+        List<ConfigValueListItem> items = mapValue
+                .editableEntries()
+                .stream()
+                .map(this::entryToListItem)
+                .collect(Collectors.toList());
 
         adapter.setItems(items);
     }
 
-    private ConfigValueListItem entryToListItem(Map.Entry<String, Value> entry, boolean readonly) {
+    private ConfigValueListItem entryToListItem(Map.Entry<String, Value> entry) {
         ConfigValueListItem item = ConfigValueListItem.create(
-            getActivity(),
+            getContext(),
             entry.getKey(),
             entry.getValue()
         );
 
         item.setOnEditListener(() -> {
-            push(new EditorSession(entry.getKey(), entry.getValue()));
+            push(new EditorPage(entry.getKey(), entry.getValue()));
         });
 
-        if (!readonly) {
+        if (mapValue.isSubClassOfMap()) {
             item.setOnDeleteListener(() -> {
-                Map<String, Value> map = value.getMap();
-                map.remove(entry.getKey());
-
-                onReady(value);
-
-                emitChange(new Dictionary(map));
+                entries.remove(entry.getKey());
+                update(new MapValue(entries));
             });
 
             item.setOnRenameListener(newName -> {
-                Map<String, Value> map = value.getMap();
-                map.remove(entry.getKey());
-                map.put(newName, entry.getValue());
-
-                onReady(value);
-
-                emitChange(new Dictionary(map));
+                entries.remove(entry.getKey());
+                entries.put(newName, entry.getValue());
+                update(new MapValue(entries));
             });
         }
 
         return item;
     }
-
 }

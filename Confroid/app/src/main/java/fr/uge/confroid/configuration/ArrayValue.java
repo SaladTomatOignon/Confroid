@@ -1,12 +1,20 @@
 package fr.uge.confroid.configuration;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArrayValue implements Value {
     private Value[] values;
 
     public ArrayValue(Value[] values) {
         this.values = values;
+    }
+
+    public List<Value> editableEntries() {
+        return Arrays.stream(
+            Configuration.filterKeywords(this).getArray()
+        ).collect(Collectors.toList());
     }
 
     @Override

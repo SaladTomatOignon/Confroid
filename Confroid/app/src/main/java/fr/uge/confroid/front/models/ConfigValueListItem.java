@@ -11,9 +11,7 @@ import java.util.function.Consumer;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import fr.uge.confroid.R;
-import fr.uge.confroid.configuration.Configuration;
 import fr.uge.confroid.configuration.Value;
-import fr.uge.confroidlib.BundleUtils;
 
 /**
  * Representation of a data shown inside
@@ -22,37 +20,36 @@ import fr.uge.confroidlib.BundleUtils;
 public class ConfigValueListItem {
     private final Context context;
     private final String name;
-    private final String preview;
-    private final Drawable icon;
     private final Value value;
 
     private Runnable editListener;
     private Runnable deleteListener;
     private Consumer<String> renameListener;
 
-    private ConfigValueListItem(
-        Context context,
-        String name,
-        String preview,
-        Drawable icon,
-        Value value
-    ) {
+    private ConfigValueListItem(Context context, String name, Value value) {
         this.context = Objects.requireNonNull(context);
         this.name = Objects.requireNonNull(name);
-        this.icon = Objects.requireNonNull(icon);
-        this.preview = Objects.requireNonNull(preview);
         this.value = Objects.requireNonNull(value);
     }
 
+    /**
+     * Gets a value indicating whether the item can be renamed.
+     */
     public boolean canBeRenamed() {
         return renameListener != null;
     }
 
+    /**
+     * Gets a value indicating whether the item can be deleted.
+     */
     public boolean canBeDeleted() {
         return deleteListener != null;
     }
 
 
+    /**
+     * Push the item value to the editor history.
+     */
     public void edit() {
         if (editListener == null) {
             throw new AssertionError("Missing editListener");
@@ -61,14 +58,21 @@ public class ConfigValueListItem {
         editListener.run();
     }
 
+    /**
+     * Deletes the item.
+     */
     public void delete() {
-        if (renameListener == null) {
-            throw new AssertionError("Missing renameListener");
+        if (deleteListener == null) {
+            throw new AssertionError("Missing deleteListener");
         }
 
         deleteListener.run();
     }
 
+    /**
+     * Show an {@link AlertDialog} to ask the user to enter new
+     * name for the item and edit the name if possible.
+     */
     public void rename() {
         if (renameListener == null) {
             throw new AssertionError("Missing renameListener");
@@ -95,7 +99,7 @@ public class ConfigValueListItem {
 
 
     public Drawable getIcon() {
-        return icon;
+        return ContextCompat.getDrawable(context, value.drawable());
     }
 
     public String getName() {
@@ -107,48 +111,53 @@ public class ConfigValueListItem {
     }
 
     public String getPreview() {
-        return preview;
+        return value.preview();
     }
 
 
+    /**
+     * Call the given {@code editListener} when
+     * the item is clicked.
+     * @param editListener Listener to register.
+     */
     public void setOnEditListener(Runnable editListener) {
         this.editListener = editListener;
     }
 
+    /**
+     * Allow the item to be deleted and call the given {@code deleteListener} when
+     * the item is deleted.
+     * @param deleteListener Listener to register.
+     */
     public void setOnDeleteListener(Runnable deleteListener) {
         this.deleteListener = deleteListener;
     }
 
+    /**
+     * Allow the item to be renamed and call the given {@code renameListener} when
+     * the item is renamed.
+     * @param renameListener Listener to register.
+     */
     public void setOnRenameListener(Consumer<String> renameListener) {
         this.renameListener = renameListener;
     }
 
 
+    /**
+     * Creates new instance of {@link ConfigValueListItem} object.
+     *
+     * Note:
+     *  This method will resolve the reference of the given {@code value} if its
+     *  a reference.
+     *
+     * @param context Current activity context.
+     * @param name Name of the item.
+     * @param value Value to edit when the item is clicked.
+     * @return new {@link ConfigValueListItem} object
+     */
     public static ConfigValueListItem create(Context context, String name, Value value) {
-        Drawable icon;
-        String preview = value.toString();
-        switch (value.valueType()) {
-            case MAP:
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_type_object);
-                int size = Configuration.filterKeywords(value).getMap().size();
-                preview = size + " keys";
-                break;
-            case ARRAY:
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_type_array);
-                int length = Configuration.filterKeywords(value).getArray().length;
-                preview = length + " items";
-                break;
-            case STRING:
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_type_text);
-                break;
-            case BOOLEAN:
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_type_boolean);
-                break;
-            default:
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_type_number);
-                break;
-        }
-
-        return new ConfigValueListItem(context, name, preview, icon, value);
+        Editor editor = (Editor) context;
+        value = editor.resolveReference(value);
+        return new ConfigValueListItem(context, name, value);
     }
 }

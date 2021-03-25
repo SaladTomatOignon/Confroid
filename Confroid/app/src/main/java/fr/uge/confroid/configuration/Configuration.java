@@ -235,9 +235,9 @@ public class Configuration {
                     !BundleUtils.containsConfroidKeyword(entry.getKey()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         } else if (value.isArray()) {
-            return new ArrayValue((Value[]) Arrays.stream(value.getArray()).filter(
-                    v -> !(v.isString() && BundleUtils.containsConfroidKeyword(v.getString()))
-            ).toArray());
+            return new ArrayValue(Arrays.stream(value.getArray()).filter(
+                v -> !(v.isString() && BundleUtils.containsConfroidKeyword(v.getString()))
+            ).toArray(Value[]::new));
         }
 
         return value;

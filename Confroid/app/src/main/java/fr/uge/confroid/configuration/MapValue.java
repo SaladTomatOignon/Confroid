@@ -1,13 +1,37 @@
 package fr.uge.confroid.configuration;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+
+import fr.uge.confroidlib.BundleUtils;
 
 public class MapValue implements Value {
     private Map<String, Value> values;
 
     public MapValue(Map<String, Value> values) {
         this.values = Objects.requireNonNull(values);
+    }
+
+    public boolean isSubClassOfMap() {
+        Value className = values.get(BundleUtils.CLASS_KEYWORD);
+        if (className == null) {
+            return false;
+        }
+
+        // TODO check if className is a subtype of Map instead
+        return className.getString().equals(HashMap.class.getName());
+    }
+
+    /**
+     * Gets the entries of the map without confroid keywords.
+     * @return A stream of the entries.
+     */
+    public Set<Map.Entry<String, Value>> editableEntries() {
+        return Configuration.filterKeywords(this)
+                .getMap()
+                .entrySet();
     }
 
     @Override

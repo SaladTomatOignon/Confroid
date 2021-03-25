@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
@@ -36,7 +35,7 @@ public class BoolEditorFragment extends EditorFragment implements CompoundButton
     }
 
     @Override
-    void onReady(Value value) {
+    void onUpdateValue(Value value) {
         toggle.setChecked(value.getBoolean());
         toggle.setText(value.getBoolean() ? "true" : "false");
     }
@@ -44,6 +43,6 @@ public class BoolEditorFragment extends EditorFragment implements CompoundButton
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         toggle.setText(isChecked ? "true" : "false");
-        emitChange(new BooleanValue(isChecked));
+        update(new BooleanValue(isChecked));
     }
 }
