@@ -19,6 +19,8 @@ import javax.crypto.spec.SecretKeySpec;
 public class CryptUtils {
     private static final int IV_SIZE = 16;
     private static final byte[] IV = { 42, 89, 105, 1, 0, 125, 127, 100, 70, 12, 96, 25, 12, 0, 9, 124 };
+    private static final int HASH_ITERATIONS = 2048;
+    private static final int KEY_LENGTH = 256;
 
     /**
      * Encode the given string using the SHA-256 algorithm.
@@ -40,7 +42,7 @@ public class CryptUtils {
     public static SecretKey getKeyFromPassword(String password, String salt) {
         try {
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), 65536, 256);
+            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), HASH_ITERATIONS, KEY_LENGTH);
             SecretKey secret = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
 
             return secret;

@@ -20,6 +20,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".front.SettingsActivity"
+            android:label="@string/title_activity_settings">
+        </activity>
         <activity android:name=".front.ConfigVersionsActivity" />
         <activity android:name=".front.ConfigNamesActivity" />
         <activity

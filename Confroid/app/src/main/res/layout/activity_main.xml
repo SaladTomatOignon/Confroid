@@ -7,6 +7,16 @@
     android:theme="@style/Theme.AppCompat.Light.NoActionBar"
     tools:context=".front.MainActivity">
 
+    <ImageButton
+        android:id="@+id/btn_settings"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/ic_settings"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ImageView
         android:id="@+id/logo"
         android:layout_width="128dp"
@@ -26,6 +36,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:text="@string/app_name"
+        android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"

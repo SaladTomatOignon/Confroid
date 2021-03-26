@@ -32,7 +32,7 @@ public class UploadWorker extends Worker {
         ConfroidDatabase.exec(getApplicationContext(), dao -> {
             dao.findAllNames().forEach(name -> {
                 dao.findAllVersions(name).forEach(pkg -> {
-                    Client.INSTANCE.sendConfig(pkg.getConfig(), pkg.getName(), pkg.getVersion(), pkg.getTag(), LocalDateTime.ofInstant(pkg.getDate().toInstant(), ZoneId.systemDefault()),
+                    Client.getInstance().sendConfig(pkg.getConfig(), pkg.getName(), pkg.getVersion(), pkg.getTag(), LocalDateTime.ofInstant(pkg.getDate().toInstant(), ZoneId.systemDefault()),
                             (response) -> Log.v(LOG_TAG, String.join(" ", "SUCCESS", pkg.getName(), String.valueOf(pkg.getVersion()), pkg.getTag())),
                             (error) -> Log.w(LOG_TAG, String.join(" ", "FAIL", pkg.getName(), String.valueOf(pkg.getVersion()), pkg.getTag(), error.toString())));
                 });
