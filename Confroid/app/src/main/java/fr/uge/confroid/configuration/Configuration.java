@@ -232,11 +232,12 @@ public class Configuration {
     public static Value filterKeywords(Value value) {
         if (value.isMap()) {
             return new MapValue(value.getMap().entrySet().stream().filter(entry ->
-                    !BundleUtils.containsConfroidKeyword(entry.getKey()))
+                    !BundleUtils.confroidKeywords().contains(entry.getKey()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         } else if (value.isArray()) {
             return new ArrayValue(Arrays.stream(value.getArray()).filter(
-                v -> !(v.isString() && BundleUtils.containsConfroidKeyword(v.getString()))
+                v -> !(v.isString() && BundleUtils.confroidKeywords().stream().
+                        anyMatch(keyword -> v.getString().contains(keyword)))
             ).toArray(Value[]::new));
         }
 

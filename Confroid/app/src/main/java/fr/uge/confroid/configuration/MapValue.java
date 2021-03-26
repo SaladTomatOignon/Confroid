@@ -1,6 +1,5 @@
 package fr.uge.confroid.configuration;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -20,8 +19,11 @@ public class MapValue implements Value {
             return false;
         }
 
-        // TODO check if className is a subtype of Map instead
-        return className.getString().equals(HashMap.class.getName());
+        try {
+            return Map.class.isAssignableFrom(Class.forName(className.getString()));
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     /**

@@ -9,6 +9,7 @@ import androidx.work.WorkerParameters;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Objects;
 
 import fr.uge.confroid.storage.ConfroidDatabase;
 import fr.uge.confroid.web.Client;
@@ -27,6 +28,11 @@ public class UploadWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        if (Objects.isNull(Client.getInstance())) {
+            Log.w(LOG_TAG, "Impossible to upload configs to web service : Client is not initialized");
+            return Result.failure();
+        }
+
         Log.i(LOG_TAG, "Starting uploading all configs from database");
 
         ConfroidDatabase.exec(getApplicationContext(), dao -> {

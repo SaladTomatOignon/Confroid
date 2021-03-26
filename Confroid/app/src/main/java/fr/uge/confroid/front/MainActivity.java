@@ -2,12 +2,10 @@ package fr.uge.confroid.front;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-
-import java.util.Arrays;
 
 import androidx.appcompat.app.AppCompatActivity;
-import fr.uge.confroidlib.ConfroidUtils;
+import androidx.work.WorkManager;
+
 import java.util.Objects;
 
 import fr.uge.confroid.R;

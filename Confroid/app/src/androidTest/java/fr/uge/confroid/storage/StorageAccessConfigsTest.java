@@ -18,13 +18,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.uge.confroid.configuration.Array;
-import fr.uge.confroid.configuration.Boolean;
+import fr.uge.confroid.configuration.ArrayValue;
+import fr.uge.confroid.configuration.BooleanValue;
 import fr.uge.confroid.configuration.Configuration;
-import fr.uge.confroid.configuration.Dictionary;
-import fr.uge.confroid.configuration.Float;
-import fr.uge.confroid.configuration.Integer;
-import fr.uge.confroid.configuration.String;
+import fr.uge.confroid.configuration.MapValue;
+import fr.uge.confroid.configuration.FloatValue;
+import fr.uge.confroid.configuration.IntegerValue;
+import fr.uge.confroid.configuration.StringValue;
 import fr.uge.confroid.configuration.Value;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
@@ -52,28 +52,28 @@ public class StorageAccessConfigsTest {
     @Test
     public void writeAndReadOneConfigTest() throws IOException {
         Configuration config = new Configuration(
-                new Dictionary(new HashMap<java.lang.String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
-                        put("Salut", new Integer(789));
-                        put("Coco", new Array(new Value[] {
-                                new Integer(5),
-                                new Integer(42),
-                                new Integer(100)
+                        put("Salut", new IntegerValue(789));
+                        put("Coco", new ArrayValue(new Value[] {
+                                new IntegerValue(5),
+                                new IntegerValue(42),
+                                new IntegerValue(100)
                         }));
-                        put("Mdr", new Boolean(true));
-                        put("Ok", new Dictionary(new HashMap<java.lang.String, Value>() {
+                        put("Mdr", new BooleanValue(true));
+                        put("Ok", new MapValue(new HashMap<String, Value>() {
                             {
-                                put("Mdr", new Float(42.5f));
-                                put("Finally", new Boolean(false));
+                                put("Mdr", new FloatValue(42.5f));
+                                put("Finally", new BooleanValue(false));
                             }}));
-                        put("En plus", new String("C'est bon"));
+                        put("En plus", new StringValue("C'est bon"));
                     }})
         );
 
         ConfroidPackage pkg = new ConfroidPackage("fr.uge.test", 1, new Date(), config);
         ConfroidStorage.writeConfig(pkg, Uri.fromFile(testFile), appContext);
 
-        Map<java.lang.String, Map<java.lang.Integer, ConfroidPackage>> collection = ConfroidStorage.readConfigs(Uri.fromFile(testFile), appContext);
+        Map<String, Map<Integer, ConfroidPackage>> collection = ConfroidStorage.readConfigs(Uri.fromFile(testFile), appContext);
 
         assertEquals(1, collection.size());
         assertEquals(1, collection.get("fr.uge.test").size());
@@ -83,61 +83,61 @@ public class StorageAccessConfigsTest {
     @Test
     public void writeAndReadThreeConfigsTest() throws IOException {
         Configuration config1 = new Configuration(
-                new Dictionary(new HashMap<java.lang.String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
-                        put("Salut", new Integer(789));
-                        put("Coco", new Array(new Value[] {
-                                new Integer(5),
-                                new Integer(42),
-                                new Integer(100)
+                        put("Salut", new IntegerValue(789));
+                        put("Coco", new ArrayValue(new Value[] {
+                                new IntegerValue(5),
+                                new IntegerValue(42),
+                                new IntegerValue(100)
                         }));
-                        put("Mdr", new Boolean(true));
-                        put("Ok", new Dictionary(new HashMap<java.lang.String, Value>() {
+                        put("Mdr", new BooleanValue(true));
+                        put("Ok", new MapValue(new HashMap<String, Value>() {
                             {
-                                put("Mdr", new Float(42.5f));
-                                put("Finally", new Boolean(false));
+                                put("Mdr", new FloatValue(42.5f));
+                                put("Finally", new BooleanValue(false));
                             }}));
-                        put("En plus", new String("C'est bon"));
+                        put("En plus", new StringValue("C'est bon"));
                     }})
         );
 
         ConfroidPackage pkg1 = new ConfroidPackage("fr.uge.test", 1, new Date(), config1);
 
         Configuration config2 = new Configuration(
-                new Dictionary(new HashMap<java.lang.String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
-                        put("Salut", new Integer(790));
-                        put("Coco", new Array(new Value[] {
-                                new Integer(5),
-                                new Integer(42),
+                        put("Salut", new IntegerValue(790));
+                        put("Coco", new ArrayValue(new Value[] {
+                                new IntegerValue(5),
+                                new IntegerValue(42),
                         }));
-                        put("Mdr", new Boolean(false));
-                        put("Ok", new Dictionary(new HashMap<java.lang.String, Value>() {
+                        put("Mdr", new BooleanValue(false));
+                        put("Ok", new MapValue(new HashMap<String, Value>() {
                             {
-                                put("Mdr", new Float(42.8f));
-                                put("Finally", new Boolean(false));
+                                put("Mdr", new FloatValue(42.8f));
+                                put("Finally", new BooleanValue(false));
                             }}));
-                        put("En plus", new String("C'est ok"));
+                        put("En plus", new StringValue("C'est ok"));
                     }})
         );
 
         ConfroidPackage pkg2 = new ConfroidPackage("fr.uge.test", 2, new Date(), config2, "Release");
 
         Configuration config3 = new Configuration(
-                new Dictionary(new HashMap<java.lang.String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
-                        put("Salut", new String("Ba ouais"));
-                        put("Coco", new Array(new Value[] {
-                                new Integer(5),
-                                new Integer(42),
-                                new Integer(101)
+                        put("Salut", new StringValue("Ba ouais"));
+                        put("Coco", new ArrayValue(new Value[] {
+                                new IntegerValue(5),
+                                new IntegerValue(42),
+                                new IntegerValue(101)
                         }));
-                        put("Mdr", new Boolean(true));
-                        put("Ok", new Dictionary(new HashMap<java.lang.String, Value>() {
+                        put("Mdr", new BooleanValue(true));
+                        put("Ok", new MapValue(new HashMap<String, Value>() {
                             {
-                                put("Finally", new Boolean(true));
+                                put("Finally", new BooleanValue(true));
                             }}));
-                        put("En plus", new String("C'est bon"));
+                        put("En plus", new StringValue("C'est bon"));
                     }})
         );
 
@@ -147,7 +147,7 @@ public class StorageAccessConfigsTest {
         ConfroidStorage.writeConfig(pkg2, Uri.fromFile(testFile), appContext);
         ConfroidStorage.writeConfig(pkg3, Uri.fromFile(testFile), appContext);
 
-        Map<java.lang.String, Map<java.lang.Integer, ConfroidPackage>> collection = ConfroidStorage.readConfigs(Uri.fromFile(testFile), appContext);
+        Map<String, Map<Integer, ConfroidPackage>> collection = ConfroidStorage.readConfigs(Uri.fromFile(testFile), appContext);
 
         assertEquals(2, collection.size());
 
@@ -162,41 +162,41 @@ public class StorageAccessConfigsTest {
     @Test
     public void updateConfigTest() throws IOException {
         Configuration config1 = new Configuration(
-                new Dictionary(new HashMap<java.lang.String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
-                        put("Salut", new Integer(789));
-                        put("Coco", new Array(new Value[] {
-                                new Integer(5),
-                                new Integer(42),
-                                new Integer(100)
+                        put("Salut", new IntegerValue(789));
+                        put("Coco", new ArrayValue(new Value[] {
+                                new IntegerValue(5),
+                                new IntegerValue(42),
+                                new IntegerValue(100)
                         }));
-                        put("Mdr", new Boolean(true));
-                        put("Ok", new Dictionary(new HashMap<java.lang.String, Value>() {
+                        put("Mdr", new BooleanValue(true));
+                        put("Ok", new MapValue(new HashMap<String, Value>() {
                             {
-                                put("Mdr", new Float(42.5f));
-                                put("Finally", new Boolean(false));
+                                put("Mdr", new FloatValue(42.5f));
+                                put("Finally", new BooleanValue(false));
                             }}));
-                        put("En plus", new String("C'est bon"));
+                        put("En plus", new StringValue("C'est bon"));
                     }})
         );
 
         ConfroidPackage pkg1 = new ConfroidPackage("fr.uge.test", 1, new Date(), config1);
 
         Configuration config2 = new Configuration(
-                new Dictionary(new HashMap<java.lang.String, Value>() {
+                new MapValue(new HashMap<String, Value>() {
                     {
-                        put("Salut", new Integer(790));
-                        put("Coco", new Array(new Value[] {
-                                new Integer(5),
-                                new Integer(42)
+                        put("Salut", new IntegerValue(790));
+                        put("Coco", new ArrayValue(new Value[] {
+                                new IntegerValue(5),
+                                new IntegerValue(42)
                         }));
-                        put("Mdr", new Boolean(false));
-                        put("Ok", new Dictionary(new HashMap<java.lang.String, Value>() {
+                        put("Mdr", new BooleanValue(false));
+                        put("Ok", new MapValue(new HashMap<String, Value>() {
                             {
-                                put("Mdr", new Float(42.8f));
-                                put("Finally", new Boolean(false));
+                                put("Mdr", new FloatValue(42.8f));
+                                put("Finally", new BooleanValue(false));
                             }}));
-                        put("En plus", new String("C'est ok"));
+                        put("En plus", new StringValue("C'est ok"));
                     }})
         );
 
@@ -205,7 +205,7 @@ public class StorageAccessConfigsTest {
         ConfroidStorage.writeConfig(pkg1, Uri.fromFile(testFile), appContext);
         ConfroidStorage.writeConfig(pkg2, Uri.fromFile(testFile), appContext);
 
-        Map<java.lang.String, Map<java.lang.Integer, ConfroidPackage>> collection = ConfroidStorage.readConfigs(Uri.fromFile(testFile), appContext);
+        Map<String, Map<Integer, ConfroidPackage>> collection = ConfroidStorage.readConfigs(Uri.fromFile(testFile), appContext);
 
         assertEquals(1, collection.size());
 

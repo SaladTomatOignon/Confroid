@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.uge.confroid.configuration.Configuration;
-import fr.uge.confroid.configuration.Integer;
+import fr.uge.confroid.configuration.IntegerValue;
+import fr.uge.confroid.settings.AppSettings;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static org.junit.Assert.*;
@@ -30,7 +31,12 @@ public class WebClientTest {
 
     @BeforeClass
     public static void initClient() {
-        client = new Client("Samy", "Batman94", getApplicationContext());
+        String login = "Samy";
+        String password = "Batman94";
+        Context ctx = getApplicationContext();
+        AppSettings.loadSettings(ctx);
+        Client.initClient(login, password, ctx, null);
+        client = new Client(login, password, ctx);
     }
 
     @AfterClass
@@ -61,7 +67,7 @@ public class WebClientTest {
 
     @Test
     public void sendConfigTest() {
-        Configuration configToSend = new Configuration(new Integer(5));
+        Configuration configToSend = new Configuration(new IntegerValue(5));
 
         client.sendConfig(configToSend,
                 configName,
@@ -81,7 +87,7 @@ public class WebClientTest {
 
     @Test
     public void getConfigByNameAndVersionTest() {
-        Configuration configToSend = new Configuration(new Integer(5));
+        Configuration configToSend = new Configuration(new IntegerValue(5));
 
         client.sendConfig(configToSend,
                 configName, 1,
@@ -109,7 +115,7 @@ public class WebClientTest {
 
     @Test
     public void getAllConfigsByNameTest() {
-        Configuration configToSend = new Configuration(new Integer(5));
+        Configuration configToSend = new Configuration(new IntegerValue(5));
 
         client.sendConfig(configToSend,
                 configName, 1,

@@ -6,13 +6,13 @@
             app:key="configure_access"
             app:title="@string/configure_access_title"
             app:summary="@string/configure_access_summary"
-            app:fragment="fr.uge.confroid.front.SettingsActivity$CloudAccessSettingsFragment" />
+            app:fragment="fr.uge.confroid.front.fragments.CloudAccessSettingsFragment" />
 
         <Preference
             app:key="data_sync"
             app:title="@string/data_sync_title"
             app:summary="@string/data_sync_summary"
-            app:fragment="fr.uge.confroid.front.SettingsActivity$DataSyncSettingsFragment" />
+            app:fragment="fr.uge.confroid.front.fragments.DataSyncSettingsFragment" />
 
     </PreferenceCategory>
 

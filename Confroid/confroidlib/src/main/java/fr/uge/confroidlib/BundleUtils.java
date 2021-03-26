@@ -47,7 +47,7 @@ public class BundleUtils {
      *
      * @return The list of Confroid keywords
      */
-    private static Set<String> keywords() {
+    public static Set<String> confroidKeywords() {
         Set<String> keywords = new HashSet<>();
         keywords.add(ID_KEYWORD);
         keywords.add(CLASS_KEYWORD);
@@ -56,16 +56,6 @@ public class BundleUtils {
         keywords.add(ANNOTATION_SEP);
 
         return keywords;
-    }
-
-    /**
-     * Returns true if the given string containts any of the Confroid keyword
-     *
-     * @param string A string
-     * @return True if the given string contains any of the Confroid keyword
-     */
-    public static boolean containsConfroidKeyword(String string) {
-        return keywords().contains(string);
     }
 
     /**
