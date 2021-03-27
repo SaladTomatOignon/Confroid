@@ -2,6 +2,7 @@ package fr.uge.confroid.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 
 import androidx.preference.PreferenceManager;
 
@@ -27,6 +28,9 @@ public class AppSettings {
     private TimeUnit repeatIntervalTimeUnit;
     private boolean allowCellularData;
     private boolean requiresCharging;
+
+    /* Path configs file */
+    private Uri configFilePath;
 
     public static void loadSettings(Context ctx) {
         AppSettings settings = new AppSettings();
@@ -55,6 +59,8 @@ public class AppSettings {
         }
         settings.setAllowCellularData(preferences.getBoolean("allow_cellular_data", false));
         settings.setRequiresCharging(preferences.getBoolean("requires_charging", false));
+
+        settings.setConfigFilePath(ctx, Uri.parse(preferences.getString("config_file_path", "")));
 
         INSTANCE = settings;
     }
@@ -150,5 +156,16 @@ public class AppSettings {
 
     public void setRequiresCharging(boolean requiresCharging) {
         this.requiresCharging = requiresCharging;
+    }
+
+    public Uri getConfigFilePath() {
+        return configFilePath;
+    }
+
+    public void setConfigFilePath(Context ctx, Uri configFilePath) {
+        this.configFilePath = configFilePath;
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        editor.putString("config_file_path", configFilePath.getPath());
+        editor.apply();
     }
 }

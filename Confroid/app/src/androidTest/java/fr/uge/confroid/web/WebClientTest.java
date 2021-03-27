@@ -3,7 +3,6 @@ package fr.uge.confroid.web;
 import android.content.Context;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -131,7 +130,7 @@ public class WebClientTest {
 
         }
 
-        client.getConfigs(configName,
+        client.getConfigsByName(configName,
                 response -> {
                     List<Configuration> receivedConfigs = response.stream().map(
                             cryptedConfig -> client.decryptConfig(cryptedConfig.getConfig())).collect(Collectors.toList());

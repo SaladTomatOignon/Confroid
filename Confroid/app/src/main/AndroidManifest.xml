@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -14,23 +16,29 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".front.ConfigEditorActivity" android:exported="true">
+        <activity
+            android:name=".front.ConfigBrowserActivity"
+            android:label="@string/title_activity_config_browser"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".front.ConfigEditorActivity"
+            android:exported="true">
             <intent-filter>
-                <action android:name="fr.uge.confroid.activity.ConfigEditorActivity"/>
+                <action android:name="fr.uge.confroid.activity.ConfigEditorActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".front.SettingsActivity"
-            android:label="@string/title_activity_settings">
-        </activity>
+            android:label="@string/title_activity_settings" />
         <activity android:name=".front.ConfigVersionsActivity" />
-        <activity android:name=".front.ConfigNamesActivity" />
         <activity
             android:name=".front.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -40,6 +48,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="fr.uge.confroid.receivers.TokenDispenser" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -49,6 +58,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="fr.uge.confroid.services.ConfigurationPuller" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
@@ -57,6 +67,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="fr.uge.confroid.services.ConfigurationPusher" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
@@ -65,12 +76,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="fr.uge.confroid.services.ConfigurationVersions" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
     </application>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

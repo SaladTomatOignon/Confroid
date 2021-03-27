@@ -12,7 +12,11 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -21,6 +25,7 @@ import javax.crypto.SecretKey;
 
 import fr.uge.confroid.configuration.Configuration;
 import fr.uge.confroid.settings.AppSettings;
+import fr.uge.confroid.storage.ConfroidPackage;
 import fr.uge.confroid.utils.CryptUtils;
 import fr.uge.confroid.web.dto.CryptedConfroidPackage;
 
@@ -68,6 +73,7 @@ public class Client {
                 (error) -> {
                     Log.e("Confroid Storage Service", "Authentication failed");
                     AppSettings.getINSTANCE().setConnected(false);
+                    Client.INSTANCE = null;
                     if (!Objects.isNull(statusCallback)) {
                         statusCallback.accept(false);
                     }
@@ -191,8 +197,22 @@ public class Client {
      * @param errorListener The error callback
      * @return True if the request has been sent, false otherwise
      */
-    public boolean getConfigs(String name, Response.Listener<List<CryptedConfroidPackage>> listener, Response.ErrorListener errorListener) {
+    public boolean getConfigsByName(String name, Response.Listener<List<CryptedConfroidPackage>> listener, Response.ErrorListener errorListener) {
         String url = String.join("/", baseAddress(), "configurations", name);
+        return sendGetRequestList(url, listener, errorListener);
+    }
+
+    /**
+     * Retrieves all versions stored in the web service.
+     * Requires authentication.
+     * Asynchronous.
+     *
+     * @param listener The success callback
+     * @param errorListener The error callback
+     * @return True if the request has been sent, false otherwise
+     */
+    public boolean getAllConfigs(Response.Listener<List<CryptedConfroidPackage>> listener, Response.ErrorListener errorListener) {
+        String url = String.join("/", baseAddress(), "configurations/");
         return sendGetRequestList(url, listener, errorListener);
     }
 
@@ -271,5 +291,30 @@ public class Client {
     public Configuration decryptConfig(String cryptedConfig) {
         String decryptedConfig = CryptUtils.decrypt(cryptedConfig, key);
         return Configuration.fromJson(decryptedConfig);
+    }
+
+    /**
+     * Decrypts the given package using the client secret key.
+     *
+     * @param cryptedPackage The crypted package
+     * @return The uncrypted package, or null if decryption failed.
+     */
+    public ConfroidPackage decryptPackage(CryptedConfroidPackage cryptedPackage) {
+        Date convertedDatetime = Date.from(
+                LocalDateTime.parse(cryptedPackage.getCreationDate())
+                        .atZone(ZoneId.systemDefault()).toInstant()
+        );
+
+        try {
+            return new ConfroidPackage(
+                    cryptedPackage.getName(),
+                    cryptedPackage.getVersion(),
+                    convertedDatetime,
+                    decryptConfig(cryptedPackage.getConfig()),
+                    cryptedPackage.getTag()
+            );
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

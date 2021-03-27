@@ -12,6 +12,7 @@ import fr.uge.confroid.front.fragments.ArrayEditorFragment;
 import fr.uge.confroid.front.fragments.BoolEditorFragment;
 import fr.uge.confroid.front.fragments.MapEditorFragment;
 import fr.uge.confroid.front.fragments.TextEditorFragment;
+import fr.uge.confroid.providers.ProviderType;
 import fr.uge.confroid.front.models.Editor;
 import fr.uge.confroid.front.models.EditorPage;
 import fr.uge.confroid.storage.ConfroidPackage;
@@ -39,7 +40,7 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
     private FragmentManager fragmentManager;
     private boolean changed;
 
-    public static void present(Context context, ConfroidPackage confroidPackage) {
+    public static void present(Context context, ConfroidPackage confroidPackage, ProviderType providerType) {
         ConfroidUtils.updateObject(
             context,
             confroidPackage.getName(),

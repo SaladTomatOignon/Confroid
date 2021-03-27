@@ -1,6 +1,8 @@
 package fr.uge.confroid.storage;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 
 import com.google.gson.Gson;
@@ -8,10 +10,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +29,7 @@ import fr.uge.confroid.configuration.ConfigSerializer;
 import fr.uge.confroid.configuration.Configuration;
 
 public class ConfroidStorage {
+    public static final int OPEN_DOCUMENT_REQUEST_CODE = 1;
 
     /**
      * Retrieves and parses a file containing configurations.
@@ -39,17 +42,7 @@ public class ConfroidStorage {
      * @throws IOException if an I/O error occurs
      */
     public static Map<String, Map<Integer, ConfroidPackage>> readConfigs(Uri uri, Context context) throws IOException {
-        Map<String, Map<Integer, TagDateConfig>> collection;
-
-        if (!new File(uri.getPath()).exists()) {
-            return new HashMap<>();
-        }
-
-        try (InputStream inputStream = context.getContentResolver().openInputStream(uri)) {
-            Type pkgCollections = new TypeToken<Map<String, Map<Integer, TagDateConfig>>>(){}.getType();
-            Gson gson = new GsonBuilder().registerTypeAdapter(Configuration.class, new ConfigDeserializer()).create();
-            collection = gson.fromJson(new InputStreamReader(inputStream, Charset.forName(StandardCharsets.UTF_8.name())), pkgCollections);
-        }
+        Map<String, Map<Integer, TagDateConfig>> collection = readRawConfigs(uri, context);
 
         return collection.entrySet().stream().map(
                 ConfroidStorage::createNamePkgEntry
@@ -70,14 +63,16 @@ public class ConfroidStorage {
      * @throws IOException if an I/O error occurs
      */
     private static Map<String, Map<Integer, TagDateConfig>> readRawConfigs(Uri uri, Context context) throws IOException {
-        if (!new File(uri.getPath()).exists()) {
+        File file = new File(uri.getPath());
+
+        if (!file.exists()) {
             return new HashMap<>();
         }
 
-        try (InputStream inputStream = context.getContentResolver().openInputStream(uri)) {
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
             Type pkgCollections = new TypeToken<Map<String, Map<Integer, TagDateConfig>>>(){}.getType();
             Gson gson = new GsonBuilder().registerTypeAdapter(Configuration.class, new ConfigDeserializer()).create();
-            return gson.fromJson(new InputStreamReader(inputStream, Charset.forName(StandardCharsets.UTF_8.name())), pkgCollections);
+            return gson.fromJson(new InputStreamReader(fileInputStream, Charset.forName(StandardCharsets.UTF_8.name())), pkgCollections);
         }
     }
 
@@ -126,9 +121,11 @@ public class ConfroidStorage {
         Map<String, Map<Integer, TagDateConfig>> collection = readRawConfigs(uri, context);
         boolean valueUpdated = addPackageToCollection(collection, pkg);
 
-        try (OutputStream outputStream = context.getContentResolver().openOutputStream(uri)) {
+        File file = new File(uri.getPath());
+
+        try (FileOutputStream fileOutputStream =  new FileOutputStream(file, false)) {
             Gson gson = new GsonBuilder().registerTypeAdapter(Configuration.class, new ConfigSerializer()).create();
-            outputStream.write(gson.toJson(collection).getBytes(StandardCharsets.UTF_8.name()));
+            fileOutputStream.write(gson.toJson(collection).getBytes(StandardCharsets.UTF_8.name()));
         }
 
         return valueUpdated;
@@ -160,6 +157,18 @@ public class ConfroidStorage {
             collection.put(pkg.getName(), versionPkg);
             return false;
         }
+    }
+
+    /**
+     * Launch the document picker
+     *
+     * @param caller The activity calling this method
+     */
+    public static void performFileSearch(Activity caller) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        caller.startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE);
     }
 
     private static class TagDateConfig {
