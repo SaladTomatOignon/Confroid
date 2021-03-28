@@ -60,8 +60,6 @@ public class AppSettings {
         settings.setAllowCellularData(preferences.getBoolean("allow_cellular_data", false));
         settings.setRequiresCharging(preferences.getBoolean("requires_charging", false));
 
-        settings.setConfigFilePath(ctx, Uri.parse(preferences.getString("config_file_path", "")));
-
         INSTANCE = settings;
     }
 
@@ -164,8 +162,5 @@ public class AppSettings {
 
     public void setConfigFilePath(Context ctx, Uri configFilePath) {
         this.configFilePath = configFilePath;
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-        editor.putString("config_file_path", configFilePath.getPath());
-        editor.apply();
     }
 }

@@ -34,7 +34,7 @@ public class FilesProvider implements ConfigProvider {
     @Override
     public void getNames(Context context, Consumer<List<String>> callback, Consumer<String> errorCallback) {
         Uri fileUri = AppSettings.getINSTANCE().getConfigFilePath();
-        if (Objects.isNull(fileUri) || !new File(fileUri.getPath()).exists()) {
+        if (Objects.isNull(fileUri)) {
             errorCallback.accept(context.getResources().getString(R.string.file_not_imported));
             return;
         }

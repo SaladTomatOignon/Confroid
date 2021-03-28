@@ -71,4 +71,9 @@
     <string name="file_not_imported">File not imported</string>
     <string name="file_read_error">Error while loading the config file</string>
     <string name="file_write_error">Error while saving the config file</string>
+
+    <string name="export_config_title">Export this configuration</string>
+    <string name="export_config_cloud">To the cloud</string>
+    <string name="export_config_new_file">To a new file</string>
+    <string name="export_config_existing_file">To an existing file</string>
 </resources>

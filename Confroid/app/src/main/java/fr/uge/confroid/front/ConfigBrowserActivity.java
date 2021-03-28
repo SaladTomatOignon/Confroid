@@ -34,6 +34,7 @@ public class ConfigBrowserActivity extends AppCompatActivity {
         ConfigsBrowserAdapter sectionsPagerAdapter = new ConfigsBrowserAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
+        this.adapter = sectionsPagerAdapter;
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> ConfroidStorage.performFileSearch(this));
@@ -66,8 +67,7 @@ public class ConfigBrowserActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ConfroidStorage.OPEN_DOCUMENT_REQUEST_CODE &&
-            resultCode == Activity.RESULT_OK) {
+        if (requestCode == ConfroidStorage.OPEN_DOCUMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (!Objects.isNull(data)) {
                 AppSettings.getINSTANCE().setConfigFilePath(this, data.getData());
                 if (!Objects.isNull(adapter)) {
@@ -75,5 +75,11 @@ public class ConfigBrowserActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppSettings.getINSTANCE().setConfigFilePath(this, null);
     }
 }

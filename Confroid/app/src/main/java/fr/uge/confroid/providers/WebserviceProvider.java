@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import fr.uge.confroid.settings.AppSettings;
 import fr.uge.confroid.storage.ConfroidPackage;
 import fr.uge.confroid.web.Client;
 import fr.uge.confroid.web.dto.CryptedConfroidPackage;
@@ -49,7 +50,7 @@ public class WebserviceProvider implements ConfigProvider {
 
     @Override
     public void getPackagesByName(String name, Context context, Consumer<List<ConfroidPackage>> callback, Consumer<String> errorCallback) {
-        if (Objects.isNull(Client.getInstance())) {
+        if (!AppSettings.getINSTANCE().isConnected()) {
             errorCallback.accept(context.getResources().getString(R.string.web_client_not_connected));
             return;
         }
@@ -65,7 +66,7 @@ public class WebserviceProvider implements ConfigProvider {
 
     @Override
     public void savePackage(Context context, ConfroidPackage confroidPackage, Consumer<String> successCallback, Consumer<String> errorCallback) {
-        if (Objects.isNull(Client.getInstance())) {
+        if (!AppSettings.getINSTANCE().isConnected()) {
             errorCallback.accept(context.getResources().getString(R.string.web_client_not_connected));
             return;
         }

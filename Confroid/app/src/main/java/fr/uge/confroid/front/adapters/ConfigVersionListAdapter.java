@@ -1,6 +1,7 @@
 package fr.uge.confroid.front.adapters;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import fr.uge.confroid.front.models.ConfigVersionListItem;
 
 public class ConfigVersionListAdapter extends RecyclerView.Adapter<ConfigVersionListItemHolder> {
     private List<ConfigVersionListItem> items;
+    private int position;
 
     public ConfigVersionListAdapter(List<ConfigVersionListItem> items) {
         this.items = Objects.requireNonNull(items);
@@ -35,5 +37,23 @@ public class ConfigVersionListAdapter extends RecyclerView.Adapter<ConfigVersion
     @Override
     public void onBindViewHolder(@NonNull ConfigVersionListItemHolder holder, int position) {
         holder.bind(items.get(position));
+        holder.itemView.setOnLongClickListener(v -> {
+            setPosition(holder.getAdapterPosition());
+            return false;
+        });
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull ConfigVersionListItemHolder holder) {
+        holder.itemView.setOnLongClickListener(null);
+        super.onViewRecycled(holder);
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.DocumentsContract;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,7 +14,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +33,7 @@ import fr.uge.confroid.configuration.Configuration;
 
 public class ConfroidStorage {
     public static final int OPEN_DOCUMENT_REQUEST_CODE = 1;
+    public static final int CREATE_DOCUMENT_REQUEST_CODE = 2;
 
     /**
      * Retrieves and parses a file containing configurations.
@@ -63,16 +67,10 @@ public class ConfroidStorage {
      * @throws IOException if an I/O error occurs
      */
     private static Map<String, Map<Integer, TagDateConfig>> readRawConfigs(Uri uri, Context context) throws IOException {
-        File file = new File(uri.getPath());
-
-        if (!file.exists()) {
-            return new HashMap<>();
-        }
-
-        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+        try (InputStream inputStream = context.getContentResolver().openInputStream(uri)) {
             Type pkgCollections = new TypeToken<Map<String, Map<Integer, TagDateConfig>>>(){}.getType();
             Gson gson = new GsonBuilder().registerTypeAdapter(Configuration.class, new ConfigDeserializer()).create();
-            return gson.fromJson(new InputStreamReader(fileInputStream, Charset.forName(StandardCharsets.UTF_8.name())), pkgCollections);
+            return gson.fromJson(new InputStreamReader(inputStream, Charset.forName(StandardCharsets.UTF_8.name())), pkgCollections);
         }
     }
 
@@ -119,13 +117,16 @@ public class ConfroidStorage {
      */
     public static boolean writeConfig(ConfroidPackage pkg, Uri uri, Context context) throws IOException {
         Map<String, Map<Integer, TagDateConfig>> collection = readRawConfigs(uri, context);
+        if (Objects.isNull(collection)) {
+            collection = new HashMap<>();
+        }
         boolean valueUpdated = addPackageToCollection(collection, pkg);
 
-        File file = new File(uri.getPath());
+        new File(uri.getPath()).delete();
 
-        try (FileOutputStream fileOutputStream =  new FileOutputStream(file, false)) {
+        try (OutputStream outputStream = context.getContentResolver().openOutputStream(uri)) {
             Gson gson = new GsonBuilder().registerTypeAdapter(Configuration.class, new ConfigSerializer()).create();
-            fileOutputStream.write(gson.toJson(collection).getBytes(StandardCharsets.UTF_8.name()));
+            outputStream.write(gson.toJson(collection).getBytes(StandardCharsets.UTF_8.name()));
         }
 
         return valueUpdated;
@@ -169,6 +170,13 @@ public class ConfroidStorage {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
         caller.startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE);
+    }
+
+    public static void createFile(Activity caller) {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TITLE, "confroid_backup.json");
+        caller.startActivityForResult(intent, CREATE_DOCUMENT_REQUEST_CODE);
     }
 
     private static class TagDateConfig {

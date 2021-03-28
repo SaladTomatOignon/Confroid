@@ -13,7 +13,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,16 +41,19 @@ public class StorageAccessConfigsTest {
     private static File testFile;
 
     @BeforeClass
-    public static void initTestFile() {
+    public static void initTestFile() throws IOException {
         ContextWrapper cw = new ContextWrapper(appContext);
         File directory = cw.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         testFile = new File(directory, "confroidTestFile" + ".json");
-
+        if (!testFile.exists()) {
+            testFile.createNewFile();
+        }
     }
 
     @Before
-    public void deleteTestFile() {
-        boolean removed = testFile.delete();
+    public void deleteFile() throws IOException {
+        testFile.delete();
+        testFile.createNewFile();
     }
 
     @Test
