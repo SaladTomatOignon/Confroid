@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+@Transactional
 @Service
 public class ConfigService {
 
@@ -16,35 +18,37 @@ public class ConfigService {
     private ConfigRepo repository;
 
     public List<Configuration> findAll() {
-        List<Configuration> configs = (List<Configuration>) repository.findAll();
-        return configs;
+        return (List<Configuration>) repository.findAll();
     }
 
-    public Configuration save(Configuration config) {
-        return repository.save(config);
+    public Configuration saveOrUpdate(Configuration config) {
+        if (repository.existsByNameAndVersion(config.getName(), config.getVersion())) {
+            repository.updateByVersion(config.getName(), config.getConfig(), config.getCreationDate(), config.getVersion(), config.getTag());
+        } else if (!Objects.isNull(config.getTag()) && repository.existsByNameAndTag(config.getName(), config.getTag())) {
+            repository.updateByTag(config.getName(), config.getConfig(), config.getCreationDate(), config.getVersion(), config.getTag());
+        } else {
+            return repository.save(config);
+        }
+
+        return null;
     }
 
-    @Transactional
     public Optional<Configuration> findById(Long id) {
         return repository.findById(id);
     }
 
-    @Transactional
     public List<Configuration> findByName(String name) {
         return repository.findByName(name);
     }
 
-    @Transactional
     public Optional<Configuration> findByNameAndVersion(String name, int version) {
         return repository.findByNameAndVersion(name, version);
     }
 
-    @Transactional
     public Optional<Configuration> findByNameAndTag(String name, String tag) {
         return repository.findByNameAndTag(name, tag);
     }
 
-    @Transactional
     public void deleteByName(String name) {
         repository.deleteByName(name);
     }

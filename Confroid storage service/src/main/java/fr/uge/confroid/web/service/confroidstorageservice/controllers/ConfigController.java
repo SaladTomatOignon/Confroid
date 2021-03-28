@@ -46,14 +46,14 @@ public class ConfigController {
     @PutMapping()
     public ResponseEntity<Configuration> saveConfig(@Valid @RequestBody Configuration config) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(configService.save(config));
+            return ResponseEntity.status(HttpStatus.CREATED).body(configService.saveOrUpdate(config));
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().build();
         }
     }
 
     @DeleteMapping("/{name}")
-    public ResponseEntity<Void> saveConfig(@PathVariable String name) {
+    public ResponseEntity<Void> deleteConfig(@PathVariable String name) {
         configService.deleteByName(name);
 
         return ResponseEntity.ok().build();
