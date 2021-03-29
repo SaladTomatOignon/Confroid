@@ -24,6 +24,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+import androidx.annotation.NonNull;
 import fr.uge.confroidlib.annotations.ClassValidator;
 import fr.uge.confroidlib.annotations.CustomizableView;
 import fr.uge.confroidlib.annotations.CustomizedView;
@@ -711,6 +712,7 @@ public class BundleUtils {
                     "It must be of the form 'fieldName" + ANNOTATION_SEP + "annotationName'");
         }
 
+        Bundle params = bundle.getBundle(annotKey.get());
         if (annotName.equals(RegexValidator.class.getSimpleName())) {
             return new RegexValidator() {
                 @Override
@@ -720,7 +722,7 @@ public class BundleUtils {
 
                 @Override
                 public String pattern() {
-                    return bundle.getString(ANNOTATION_PARAM + "1");
+                    return params.getString(ANNOTATION_PARAM + "1");
                 }
             };
         }
@@ -771,7 +773,13 @@ public class BundleUtils {
 
                 @Override
                 public String description() {
-                    return bundle.getString(ANNOTATION_PARAM + "1");
+                    return params.getString(ANNOTATION_PARAM + "1");
+                }
+
+                @NonNull
+                @Override
+                public String toString() {
+                    return bundle.toString();
                 }
             };
         }
