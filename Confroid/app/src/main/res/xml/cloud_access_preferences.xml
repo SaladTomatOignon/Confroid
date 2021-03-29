@@ -10,17 +10,17 @@
             app:selectable="false" />
 
         <EditTextPreference
-            app:key="base_address"
+            app:key="@string/prefs_base_address"
             app:title="@string/base_address_title"
             app:summary="@string/base_address_summary" />
 
         <EditTextPreference
-            app:key="login"
+            app:key="@string/prefs_login"
             app:title="@string/login_title"
             app:summary="@string/login_summary" />
 
         <EditTextPreference
-            app:key="password"
+            app:key="@string/prefs_password"
             app:title="@string/password_title"
             app:summary="@string/password_summary" />
 

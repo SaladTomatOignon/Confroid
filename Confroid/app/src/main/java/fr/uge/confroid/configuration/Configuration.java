@@ -232,7 +232,7 @@ public class Configuration {
     public static Value filterKeywords(Value value) {
         if (value.isMap()) {
             return new MapValue(value.getMap().entrySet().stream().filter(entry ->
-                    !BundleUtils.confroidKeywords().contains(entry.getKey()))
+                    BundleUtils.confroidKeywords().stream().noneMatch(keyword -> entry.getKey().contains(keyword)))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         } else if (value.isArray()) {
             return new ArrayValue(Arrays.stream(value.getArray()).filter(

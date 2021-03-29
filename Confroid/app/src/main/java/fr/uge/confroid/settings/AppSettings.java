@@ -9,6 +9,8 @@ import androidx.preference.PreferenceManager;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import fr.uge.confroid.R;
+
 public class AppSettings {
     private static AppSettings INSTANCE;
 
@@ -36,14 +38,14 @@ public class AppSettings {
         AppSettings settings = new AppSettings();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
 
-        String language = preferences.getString("language", "").toUpperCase();
+        String language = preferences.getString(ctx.getResources().getString(R.string.prefs_language), Language.EN.toString()).toUpperCase();
         settings.setLanguage(ctx, Language.valueOf(language));
-        settings.setBaseAddress(preferences.getString("base_address", ""));
-        settings.setLogin(preferences.getString("login", ""));
-        settings.setPassword(preferences.getString("password", ""));
-        settings.setEnableDataSync(preferences.getBoolean("enable_data_sync", true));
+        settings.setBaseAddress(preferences.getString(ctx.getResources().getString(R.string.prefs_base_address), ""));
+        settings.setLogin(preferences.getString(ctx.getResources().getString(R.string.prefs_login), ""));
+        settings.setPassword(preferences.getString(ctx.getResources().getString(R.string.prefs_password), ""));
+        settings.setEnableDataSync(preferences.getBoolean(ctx.getResources().getString(R.string.prefs_enable_data_sync), true));
         settings.setRepeatIntervalTimeUnit(TimeUnit.DAYS);
-        switch (preferences.getString("upload_interval", "")) {
+        switch (preferences.getString(ctx.getResources().getString(R.string.prefs_upload_interval), "")) {
             case "day":
                 settings.setRepeatInterval(1);
                 break;
@@ -57,8 +59,8 @@ public class AppSettings {
                 settings.setRepeatInterval(365);
                 break;
         }
-        settings.setAllowCellularData(preferences.getBoolean("allow_cellular_data", false));
-        settings.setRequiresCharging(preferences.getBoolean("requires_charging", false));
+        settings.setAllowCellularData(preferences.getBoolean(ctx.getResources().getString(R.string.prefs_allow_cellular_data), false));
+        settings.setRequiresCharging(preferences.getBoolean(ctx.getResources().getString(R.string.prefs_requires_charging), false));
 
         INSTANCE = settings;
     }

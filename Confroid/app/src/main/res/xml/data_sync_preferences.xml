@@ -3,13 +3,13 @@
     <PreferenceCategory app:title="@string/data_sync_title">
 
         <SwitchPreference
-            app:key="enable_data_sync"
+            app:key="@string/prefs_enable_data_sync"
             app:title="@string/enable_data_sync_title"
             app:summary="@string/enable_data_sync_summary"
             app:defaultValue="true" />
 
         <ListPreference
-            app:key="upload_interval"
+            app:key="@string/prefs_upload_interval"
             app:dependency="enable_data_sync"
             app:entries="@array/interval_upload_entries"
             app:entryValues="@array/interval_upload_values"
@@ -18,14 +18,14 @@
             app:defaultValue="day" />
 
         <SwitchPreference
-            app:key="allow_cellular_data"
+            app:key="@string/prefs_allow_cellular_data"
             app:dependency="enable_data_sync"
             app:title="@string/allow_cellular_data_title"
             app:summary="@string/allow_cellular_data_summary"
             app:defaultValue="false" />
 
         <SwitchPreference
-            app:key="requires_charging"
+            app:key="@string/prefs_requires_charging"
             app:dependency="enable_data_sync"
             app:title="@string/requires_charging_title"
             app:summary="@string/requires_charging_summary"

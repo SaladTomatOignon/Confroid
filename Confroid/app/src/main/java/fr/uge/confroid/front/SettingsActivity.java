@@ -46,8 +46,9 @@ public class SettingsActivity extends AppCompatActivity implements
 
     private void preferenceOnChange(SharedPreferences preferences, String key) {
         switch (key) {
+
             case "language":
-                String selected = preferences.getString(key, "").toUpperCase();
+                String selected = preferences.getString(key, Language.EN.toString()).toUpperCase();
                 AppSettings.getINSTANCE().setLanguage(getApplicationContext(), Language.valueOf(selected));
                 break;
             case "base_address":

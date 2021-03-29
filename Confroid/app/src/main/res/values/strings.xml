@@ -60,6 +60,20 @@
     <string name="version_title">Version</string>
     <string name="app_version_value">1.0.0</string>
 
+    <!-- Preferences keywords -->
+    <string name="prefs_language">language</string>
+    <string name="prefs_base_address">base_address</string>
+    <string name="prefs_login">login</string>
+    <string name="prefs_password">password</string>
+    <string name="prefs_enable_data_sync">enable_data_sync</string>
+    <string name="prefs_upload_interval">upload_interval</string>
+    <string name="prefs_day">day</string>
+    <string name="prefs_week">week</string>
+    <string name="prefs_month">month</string>
+    <string name="prefs_year">year</string>
+    <string name="prefs_allow_cellular_data">allow_cellular_data</string>
+    <string name="prefs_requires_charging">requires_charging</string>
+
     <!-- ConfigBrowser activity -->
     <string name="title_activity_config_browser">ConfigBrowserActivity</string>
     <string name="title_explore_configs">Explore configurations</string>
