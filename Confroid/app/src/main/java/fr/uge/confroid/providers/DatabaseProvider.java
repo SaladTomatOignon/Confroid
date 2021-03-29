@@ -37,6 +37,8 @@ public class DatabaseProvider implements ConfigProvider {
     @Override
     public void savePackage(Context context, ConfroidPackage confroidPackage, Consumer<String> successCallback, Consumer<String> errorCallback) {
         ConfroidDatabase.exec(context, dao -> dao.update(confroidPackage));
-        successCallback.accept("Ok");
+        if (successCallback != null) {
+            successCallback.accept("Ok");
+        }
     }
 }

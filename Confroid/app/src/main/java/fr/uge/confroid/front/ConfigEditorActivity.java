@@ -12,6 +12,7 @@ import fr.uge.confroid.front.fragments.ArrayEditorFragment;
 import fr.uge.confroid.front.fragments.BoolEditorFragment;
 import fr.uge.confroid.front.fragments.MapEditorFragment;
 import fr.uge.confroid.front.fragments.TextEditorFragment;
+import fr.uge.confroid.providers.ConfigProvider;
 import fr.uge.confroid.providers.ProviderType;
 import fr.uge.confroid.front.models.Editor;
 import fr.uge.confroid.front.models.EditorPage;
@@ -20,14 +21,17 @@ import fr.uge.confroidlib.BundleUtils;
 import fr.uge.confroidlib.ConfroidIntents;
 import fr.uge.confroidlib.ConfroidUtils;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Stack;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class ConfigEditorActivity extends AppCompatActivity implements Editor, FragmentManager.OnBackStackChangedListener {
@@ -41,12 +45,31 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
     private boolean changed;
 
     public static void present(Context context, ConfroidPackage confroidPackage, ProviderType providerType) {
-        ConfroidUtils.updateObject(
-            context,
-            confroidPackage.getName(),
-            Integer.toString(confroidPackage.getVersion()),
-            o -> Log.v("????", Objects.toString(o))
-        );
+        ConfigProvider provider = providerType.getProvider();
+
+        String receiver = UUID.randomUUID().toString();
+        context.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                context.unregisterReceiver(this);
+                Bundle content = intent.getBundleExtra(ConfroidIntents.EXTRA_CONTENT);
+                if (content == null) {
+                    return;
+                }
+                confroidPackage.setConfig(Configuration.fromBundle(content));
+                provider.savePackage(context, confroidPackage, null, null);
+            }
+        }, new IntentFilter(receiver));
+
+        Intent intent = new Intent();
+        intent.setAction(ConfroidIntents.INTENT_CONFIG_EDITOR);
+        intent.setPackage(ConfroidIntents.PACKAGE_NAME);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+
+        intent.putExtra(ConfroidIntents.EXTRA_RECEIVER, receiver);
+        intent.putExtra(ConfroidIntents.EXTRA_CONTENT, confroidPackage.getConfig().toBundle());
+
+        context.startActivity(intent);
     }
 
     @Override
@@ -141,6 +164,7 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
         int count = fragmentManager.getBackStackEntryCount();
         if (count == 0) {
             finish();
+
             String receiver = getIntent().getStringExtra(ConfroidIntents.EXTRA_RECEIVER);
             if (receiver != null) {
                 Intent response = new Intent(receiver);
@@ -151,5 +175,4 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
             }
         }
     }
-
 }
