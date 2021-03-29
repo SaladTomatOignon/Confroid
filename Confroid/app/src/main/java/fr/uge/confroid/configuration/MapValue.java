@@ -30,12 +30,13 @@ public class MapValue implements Value {
 
     /**
      * Gets the entries of the map without confroid keywords.
-     * @return A stream of the entries.
+     * @return A set of the entries.
      */
     public Set<Map.Entry<String, Value>> editableEntries() {
-        return Configuration.filterKeywords(this)
-                .getMap()
-                .entrySet();
+        return values.entrySet().stream()
+                .filter(entry -> BundleUtils.confroidKeywords().stream()
+                        .noneMatch(keyword -> entry.getKey().contains(keyword)))
+                .collect(Collectors.toSet());
     }
 
     @Override
