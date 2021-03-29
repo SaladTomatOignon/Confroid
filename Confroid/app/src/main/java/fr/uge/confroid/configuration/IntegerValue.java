@@ -29,6 +29,11 @@ public class IntegerValue implements Value {
     }
 
     @Override
+    public IntegerValue deepCopy() {
+        return new IntegerValue(value);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

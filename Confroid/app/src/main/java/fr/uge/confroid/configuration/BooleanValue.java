@@ -29,6 +29,11 @@ public class BooleanValue implements Value {
     }
 
     @Override
+    public BooleanValue deepCopy() {
+        return new BooleanValue(value);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

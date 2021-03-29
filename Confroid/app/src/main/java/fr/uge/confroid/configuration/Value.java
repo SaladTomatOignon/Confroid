@@ -83,6 +83,13 @@ public interface Value {
     }
 
     /**
+     * Performs a deep copy of the given value
+     *
+     * @return A copy of this value
+     */
+    Value deepCopy();
+
+    /**
      * Updates the value.
      * @param value new value.
      */
