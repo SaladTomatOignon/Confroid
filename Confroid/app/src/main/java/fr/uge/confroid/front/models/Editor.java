@@ -10,7 +10,7 @@ public interface Editor {
     /**
      * Called when node of the page tree change.
      */
-    void onChange();
+    void onChange(Value newValue);
 
     /**
      * Push new page to the editor history.

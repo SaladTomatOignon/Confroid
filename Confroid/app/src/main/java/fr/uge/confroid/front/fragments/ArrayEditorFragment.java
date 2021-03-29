@@ -82,8 +82,8 @@ public class ArrayEditorFragment extends EditorFragment {
     }
 
     @Override
-    public void onUpdateValue(Value value) {
-        arrayValue = (ArrayValue) value;
+    public void onUpdatePage(EditorPage page) {
+        arrayValue = (ArrayValue) page.getValue();
         entries = arrayValue.editableEntries();
 
         setMenuEnabled(false);
@@ -105,7 +105,7 @@ public class ArrayEditorFragment extends EditorFragment {
         );
 
         item.setOnEditListener(() -> {
-            push(new EditorPage(Integer.toString(index), entry));
+            push(Integer.toString(index), entry);
         });
 
         item.setOnDeleteListener(() -> {

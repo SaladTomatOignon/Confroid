@@ -2,20 +2,20 @@ package fr.uge.confroid.front.models;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import fr.uge.confroid.R;
-import fr.uge.confroid.configuration.Configuration;
 import fr.uge.confroid.configuration.Value;
-import fr.uge.confroidlib.BundleUtils;
 import fr.uge.confroidlib.annotations.Description;
 
 /**
@@ -32,11 +32,11 @@ public class ConfigValueListItem {
     private Runnable deleteListener;
     private Consumer<String> renameListener;
 
-    private ConfigValueListItem(Context context, String name, Value value) {
+    private ConfigValueListItem(Context context, String name, Value value, String description) {
         this.context = Objects.requireNonNull(context);
         this.name = Objects.requireNonNull(name);
         this.value = Objects.requireNonNull(value);
-        this.description = null;
+        this.description = description;
 
     }
 
@@ -56,7 +56,7 @@ public class ConfigValueListItem {
 
 
     public boolean hasDescription() {
-        return true;
+        return description != null;
     }
 
 
@@ -169,13 +169,34 @@ public class ConfigValueListItem {
      * @param context Current activity context.
      * @param name Name of the item.
      * @param value Value to edit when the item is clicked.
+     * @param annotations List of annotations associated to the element.
+     * @return new {@link ConfigValueListItem} object
+     */
+    public static ConfigValueListItem create(Context context, String name, Value value, List<Annotation> annotations) {
+        Editor editor = (Editor) context;
+        value = editor.resolveReference(value);
+
+        Optional<Description> desc =  annotations.stream()
+                .filter(e -> e instanceof Description)
+                .map(e -> (Description) e)
+                .findFirst();
+
+        return new ConfigValueListItem(context, name, value, desc.map(Description::description).orElse(null));
+    }
+
+    /**
+     * Creates new instance of {@link ConfigValueListItem} object.
+     *
+     * Note:
+     *  This method will resolve the reference of the given {@code value} if its
+     *  a reference.
+     *
+     * @param context Current activity context.
+     * @param name Name of the item.
+     * @param value Value to edit when the item is clicked.
      * @return new {@link ConfigValueListItem} object
      */
     public static ConfigValueListItem create(Context context, String name, Value value) {
-        Editor editor = (Editor) context;
-        value = editor.resolveReference(value);
-        Bundle bundle = new Configuration(value).toBundle();
-        // Annotation annotation = BundleUtils.getAnnotationFromBundle(bundle);
-        return new ConfigValueListItem(context, name, value);
+        return create(context, name, value, new ArrayList<>());
     }
 }

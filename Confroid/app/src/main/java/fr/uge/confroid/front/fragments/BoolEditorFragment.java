@@ -12,6 +12,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import fr.uge.confroid.R;
 import fr.uge.confroid.configuration.BooleanValue;
 import fr.uge.confroid.configuration.Value;
+import fr.uge.confroid.front.models.EditorPage;
 
 public class BoolEditorFragment extends EditorFragment implements CompoundButton.OnCheckedChangeListener {
     private SwitchCompat toggle;
@@ -35,7 +36,8 @@ public class BoolEditorFragment extends EditorFragment implements CompoundButton
     }
 
     @Override
-    void onUpdateValue(Value value) {
+    void onUpdatePage(EditorPage page) {
+        Value value = page.getValue();
         toggle.setChecked(value.getBoolean());
         toggle.setText(value.getBoolean() ? "true" : "false");
     }

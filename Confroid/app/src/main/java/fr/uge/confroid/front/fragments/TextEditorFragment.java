@@ -8,7 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,19 +27,33 @@ import fr.uge.confroid.configuration.IntegerValue;
 import fr.uge.confroid.configuration.LongValue;
 import fr.uge.confroid.configuration.StringValue;
 import fr.uge.confroid.configuration.Value;
+import fr.uge.confroid.front.models.EditorPage;
+import fr.uge.confroidlib.annotations.ClassValidator;
+import fr.uge.confroidlib.annotations.RangeValidator;
+import fr.uge.confroidlib.annotations.RegexValidator;
 
 
 public class TextEditorFragment extends EditorFragment implements TextWatcher {
     private static final java.lang.String TAG = "TextEditorFragment";
+    private final ArrayList<Function<String, String>> validators = new ArrayList<>();
 
-    private EditText input;
-    private Value value;
+    private EditorPage page;
+    private TextInputLayout inputLayout;
+    private TextInputEditText input;
 
     public static TextEditorFragment newInstance(Value value) {
         if (value.isPrimitive() && ! value.isBoolean()) {
             return new TextEditorFragment();
         }
         return null;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        validators.add(this::applyRegexValidator);
+        validators.add(this::applyRangeValidator);
+        validators.add(this::applyClassValidator);
     }
 
     @Override
@@ -45,13 +66,14 @@ public class TextEditorFragment extends EditorFragment implements TextWatcher {
         super.onViewCreated(view, savedInstanceState);
         input = view.findViewById(R.id.input);
         input.addTextChangedListener(this);
+
+        inputLayout = view.findViewById(R.id.input_layout);
     }
 
     @Override
-    public void onUpdateValue(Value value) {
-        this.value = value;
-
-        switch (value.valueType()) {
+    public void onUpdatePage(EditorPage page) {
+        this.page = page;
+        switch (page.getValue().valueType()) {
             case STRING:
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 break;
@@ -73,7 +95,7 @@ public class TextEditorFragment extends EditorFragment implements TextWatcher {
                 break;
         }
 
-        input.setText(value.toString());
+        input.setText(page.getValue().toString());
     }
 
     @Override
@@ -83,43 +105,108 @@ public class TextEditorFragment extends EditorFragment implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
     }
 
     @Override
     public void afterTextChanged(Editable s) {
+        inputLayout.setErrorEnabled(false);
+        inputLayout.setError("");
+
         try {
-            switch (value.valueType()) {
+            String value = s.toString();
+            for (Function<String, String> validator : validators) {
+                value = validator.apply(value);
+                if (value == null) {
+                    return;
+                }
+            }
+
+            switch (page.getValue().valueType()) {
                 case STRING:
-                    update(new StringValue(s.toString()));
+                    update(new StringValue(value));
                     break;
                 case BYTE:
-                    update(new ByteValue(
-                        Byte.parseByte(s.toString())
-                    ));
+                    update(new ByteValue(Byte.parseByte(value)));
                 case LONG:
-                    update(new LongValue(
-                        Long.parseLong(s.toString())
-                    ));
+                    update(new LongValue(Long.parseLong(value)));
                     break;
                 case INTEGER:
-                    update(new IntegerValue(
-                        Integer.parseInt(s.toString())
-                    ));
+                    update(new IntegerValue(Integer.parseInt(value)));
                     break;
                 case FLOAT:
-                    update(new FloatValue(
-                        Float.parseFloat(s.toString())
-                    ));
+                    update(new FloatValue(Float.parseFloat(value)));
                     break;
                 case DOUBLE:
-                    update(new DoubleValue(
-                        Double.parseDouble(s.toString())
-                    ));
+                    update(new DoubleValue(Double.parseDouble(value)));
                     break;
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
     }
+
+    private String applyClassValidator(String s) {
+        Optional<ClassValidator> validator = page.getAnnotation(ClassValidator.class);
+        if (validator.isPresent()) {
+            try {
+                Class<?> clazz = validator.get().predicateClass();
+                Predicate<String> predicate = (Predicate) clazz.newInstance();
+                if (!predicate.test(s)) {
+                    inputLayout.setErrorEnabled(true);
+                    inputLayout.setError(getContext().getString(
+                        R.string.error_class_validation, clazz.getName()
+                    ));
+                    return null;
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (java.lang.InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
+        return s;
+    }
+
+    private String applyRangeValidator(String s) {
+        Optional<RangeValidator> validator = page.getAnnotation(RangeValidator.class);
+
+        if (validator.isPresent()) {
+            long value = Long.parseLong(s);
+            long min = validator.get().minRange();
+            long max = validator.get().maxRange();
+            if (value < min) {
+                inputLayout.setErrorEnabled(true);
+                inputLayout.setError(getContext().getString(
+                    R.string.error_range_validation, min + "", max + ""
+                ));
+                return null;
+            } else if (value > max) {
+                inputLayout.setErrorEnabled(true);
+                inputLayout.setError(getContext().getString(
+                    R.string.error_range_validation, min + "", max + ""
+                ));
+                return null;
+            }
+        }
+
+        return s;
+    }
+
+    private String applyRegexValidator(String s) {
+        Optional<RegexValidator> validator = page.getAnnotation(RegexValidator.class);
+
+        if (validator.isPresent()) {
+            String pattern = validator.get().pattern();
+            if (!s.matches(pattern)) {
+                inputLayout.setErrorEnabled(true);
+                inputLayout.setError(getContext().getString(
+                    R.string.error_pattern_validation, pattern
+                ));
+                return null;
+            }
+        }
+
+        return s;
+    }
+
 }

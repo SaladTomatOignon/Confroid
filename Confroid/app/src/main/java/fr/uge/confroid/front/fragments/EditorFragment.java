@@ -3,6 +3,9 @@ package fr.uge.confroid.front.fragments;
 import android.content.Context;
 import android.os.Bundle;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import fr.uge.confroid.configuration.Value;
@@ -14,7 +17,6 @@ import fr.uge.confroid.front.models.EditorPage;
  */
 abstract class EditorFragment extends Fragment {
     private Editor editor;
-    private Value mapValue;
 
     @Override
     public void onAttach(Context context) {
@@ -29,17 +31,27 @@ abstract class EditorFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        EditorPage session = editor.peekPage();
-        mapValue = editor.resolveReference(session.getValue());
-        this.onUpdateValue(mapValue);
+        EditorPage page = editor.peekPage();
+        this.onUpdatePage(page);
     }
 
     /**
      * Push the given {@code page} to the editor history.
-     * @param page Page to push.
+     * @param name Name of the page to push.
+     * @param value Value to edit in the page.
      */
-    public void push(EditorPage page) {
-        editor.pushPage(page);
+    public void push(String name, Value value) {
+        editor.pushPage(EditorPage.create(editor, name, value));
+    }
+
+    /**
+     * Push the given {@code page} to the editor history.
+     * @param name Name of the page to push.
+     * @param value Value to edit in the page.
+     * @param annotations Annotations associated to the value to to edit.
+     */
+    public void push(String name, Value value, List<Annotation> annotations) {
+        editor.pushPage(EditorPage.create(editor, name, value, annotations));
     }
 
     /**
@@ -47,24 +59,22 @@ abstract class EditorFragment extends Fragment {
      * @param newValue New value.
      */
     public void update(Value newValue) {
-        mapValue.setValue(newValue);
-        editor.onChange();
+        editor.onChange(newValue);
     }
 
     /**
-     * Updates the {@link Value} associated the current page and recall {@link EditorFragment#onUpdateValue}.
+     * Updates the {@link Value} associated the current page and recall {@link EditorFragment#onUpdatePage}.
      * @param newValue New value.
      */
     public void updateAndRefresh(Value newValue) {
-        mapValue.setValue(newValue);
-        onUpdateValue(mapValue);
-        editor.onChange();
+        editor.onChange(newValue);
+        onUpdatePage(editor.peekPage());
     }
 
     /**
      * Lifecycle hook called once the page data is initialized and after
      * each time {@link EditorFragment#updateAndRefresh(Value)} is method is called.
-     * @param value The value associated to the page.
+     * @param page The current page to edit.
      */
-    abstract void onUpdateValue(Value value);
+    abstract void onUpdatePage(EditorPage page);
 }

@@ -2,6 +2,7 @@ package fr.uge.confroid.front.fragments;
 
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,8 +12,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -102,9 +106,9 @@ public class MapEditorFragment extends EditorFragment {
     }
 
     @Override
-    public void onUpdateValue(Value value) {
-        mapValue = (MapValue) value;
-        entries = value.getMap();
+    public void onUpdatePage(EditorPage page) {
+        mapValue = (MapValue) page.getValue();
+        entries = mapValue.getMap();
 
         setMenuEnabled(false);
 
@@ -120,14 +124,18 @@ public class MapEditorFragment extends EditorFragment {
 
     private ConfigValueListItem entryToListItem(Map.Entry<String, Value> entry) {
         lastValue = entry.getValue();
+
+        List<Annotation> annotations = mapValue.annotations(entry.getKey());
+
         ConfigValueListItem item = ConfigValueListItem.create(
             getContext(),
             entry.getKey(),
-            entry.getValue()
+            entry.getValue(),
+            annotations
         );
 
         item.setOnEditListener(() -> {
-            push(new EditorPage(entry.getKey(), entry.getValue()));
+            push(entry.getKey(), entry.getValue(), annotations);
         });
 
         if (mapValue.isSubClassOfMap()) {

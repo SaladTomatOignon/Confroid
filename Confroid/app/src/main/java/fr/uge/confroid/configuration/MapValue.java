@@ -1,6 +1,10 @@
 package fr.uge.confroid.configuration;
 
+import android.os.Bundle;
+
+import java.lang.annotation.Annotation;
 import java.util.AbstractMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -39,10 +43,23 @@ public class MapValue implements Value {
                 .collect(Collectors.toSet());
     }
 
+    public List<Annotation> annotations(String key) {
+        return values.entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().startsWith(key + BundleUtils.ANNOTATION_SEP))
+                .map(entry -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putBundle(entry.getKey(), new Configuration(entry.getValue()).toBundle());
+                    return BundleUtils.getAnnotationFromBundle(bundle);
+                })
+                .collect(Collectors.toList());
+    }
+
     @Override
     public ValueTypes valueType() {
         return ValueTypes.MAP;
     }
+
 
     @Override
     public void setValue(Value value) {

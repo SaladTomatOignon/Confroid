@@ -1,16 +1,24 @@
 package fr.uge.confroid.front.models;
 
+import android.util.Log;
+
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import fr.uge.confroid.configuration.Value;
 
 public class EditorPage {
     private final String name;
     private final Value value;
+    private final List<Annotation> annotations;
 
-    public EditorPage(String name, Value value) {
+    private EditorPage(String name, Value value, List<Annotation> annotations) {
         this.name = Objects.requireNonNull(name);
         this.value = Objects.requireNonNull(value);
+        this.annotations = Objects.requireNonNull(annotations);
     }
 
     public String getName() {
@@ -19,6 +27,13 @@ public class EditorPage {
 
     public Value getValue() {
         return value;
+    }
+
+    public <T> Optional<T> getAnnotation(Class clazz) {
+        return annotations.stream()
+                .filter(e -> clazz.isAssignableFrom(e.getClass()))
+                .map(e -> (T) e)
+                .findFirst();
     }
 
     public void setValue(Value newValue) {
@@ -38,4 +53,13 @@ public class EditorPage {
     public int hashCode() {
         return Objects.hash(name, value);
     }
+
+    public static EditorPage create(Editor editor, String key, Value value, List<Annotation> annotations) {
+        return new EditorPage(key, editor.resolveReference(value), annotations);
+    }
+
+    public static EditorPage create(Editor editor, String key, Value value) {
+        return new EditorPage(key, editor.resolveReference(value), new ArrayList<>());
+    }
 }
+

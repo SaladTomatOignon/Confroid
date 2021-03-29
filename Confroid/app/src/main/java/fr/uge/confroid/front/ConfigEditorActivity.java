@@ -95,12 +95,13 @@ public class ConfigEditorActivity extends AppCompatActivity implements Editor, F
         fragments.add(ArrayEditorFragment::newInstance);
 
         root = Configuration.fromBundle(content).getContent();
-        pushPage(new EditorPage(getString(R.string.app_name), root));
+        pushPage(EditorPage.create(this, getString(R.string.app_name), root));
     }
 
 
     @Override
-    public void onChange() {
+    public void onChange(Value newValue) {
+        peekPage().setValue(newValue);
         changed = true;
     }
 

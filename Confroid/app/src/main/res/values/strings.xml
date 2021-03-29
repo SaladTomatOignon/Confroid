@@ -12,6 +12,11 @@
     <string name="label_no_result">No result !</string>
     <string name="label_already_exists">There is already an entry with this name</string>
 
+    <string name="error_range_validation">Value must be in the range [%s, %s]</string>
+    <string name="error_pattern_validation">Value must matches with the pattern “%s”</string>
+    <string name="error_class_validation">Value must matches with the validator “%s”</string>
+
+
     <!-- Preference Titles -->
     <string name="root_fragment_title">Settings</string>
     <string name="cloud_service_header">Cloud service</string>

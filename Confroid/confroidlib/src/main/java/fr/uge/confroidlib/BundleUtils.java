@@ -736,12 +736,12 @@ public class BundleUtils {
 
                 @Override
                 public long minRange() {
-                    return bundle.getLong(ANNOTATION_PARAM + "1");
+                    return params.getLong(ANNOTATION_PARAM + "1");
                 }
 
                 @Override
                 public long maxRange() {
-                    return bundle.getLong(ANNOTATION_PARAM + "2");
+                    return params.getLong(ANNOTATION_PARAM + "2");
                 }
             };
         }
@@ -756,7 +756,7 @@ public class BundleUtils {
                 @Override
                 public Class<? extends Predicate> predicateClass() {
                     try {
-                        return (Class<? extends Predicate>) Class.forName(bundle.getString(ANNOTATION_PARAM + "1"));
+                        return (Class<? extends Predicate>) Class.forName(params.getString(ANNOTATION_PARAM + "1"));
                     } catch (ClassNotFoundException e) {
                         return null;
                     }
@@ -774,12 +774,6 @@ public class BundleUtils {
                 @Override
                 public String description() {
                     return params.getString(ANNOTATION_PARAM + "1");
-                }
-
-                @NonNull
-                @Override
-                public String toString() {
-                    return bundle.toString();
                 }
             };
         }
@@ -812,7 +806,7 @@ public class BundleUtils {
                 @Override
                 public Class<? extends CustomizableView> viewClass() {
                     try {
-                        return (Class<? extends CustomizableView>) Class.forName(bundle.getString(ANNOTATION_PARAM + "1"));
+                        return (Class<? extends CustomizableView>) Class.forName(params.getString(ANNOTATION_PARAM + "1"));
                     } catch (ClassNotFoundException e) {
                         return null;
                     }
