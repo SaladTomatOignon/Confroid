@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fr.uge.confroidlib.BundleUtils;
+
 public class ArrayValue implements Value {
     private Value[] values;
 
@@ -11,10 +13,28 @@ public class ArrayValue implements Value {
         this.values = values;
     }
 
+    /**
+     * Gets the values of this array without confroid keywords.
+     * @return A list of the values.
+     */
     public List<Value> editableEntries() {
-        return Arrays.stream(
-            Configuration.filterKeywords(this).getArray()
-        ).collect(Collectors.toList());
+        return Arrays.stream(values)
+                .filter(v -> !(v.isString() &&
+                        BundleUtils.confroidKeywords().stream().anyMatch(
+                                keyword -> v.getString().contains(keyword))))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets the values of this array containing confroid keywords.
+     * @return A list of the values.
+     */
+    public List<Value> nonEditableEntries() {
+        return Arrays.stream(values)
+                .filter(v -> v.isString() &&
+                        BundleUtils.confroidKeywords().stream().anyMatch(
+                                keyword -> v.getString().contains(keyword)))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -223,8 +223,6 @@ public class Configuration {
 
     /**
      * Filters the given value to keep only non-Confroid properties.
-     * If the value is an Array, the function returns a new Array containing the filtered values,
-     * otherwise the function returns the same value object.
      *
      * @param value The value to filter
      * @return The value filtered
