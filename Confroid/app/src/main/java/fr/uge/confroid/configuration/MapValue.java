@@ -1,8 +1,10 @@
 package fr.uge.confroid.configuration;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import fr.uge.confroidlib.BundleUtils;
 
@@ -59,6 +61,21 @@ public class MapValue implements Value {
     public String preview() {
         int size = Configuration.filterKeywords(this).getMap().size();
         return size + " keys";
+    }
+
+    @Override
+    public MapValue deepCopy() {
+        return new MapValue(
+                values.entrySet().stream()
+                        .map(entry ->
+                                new AbstractMap.SimpleEntry<>(
+                                        entry.getKey(),
+                                        entry.getValue().deepCopy()))
+                        .collect(Collectors.toMap(
+                                AbstractMap.SimpleEntry::getKey,
+                                AbstractMap.SimpleEntry::getValue)
+                        )
+        );
     }
 
     @Override

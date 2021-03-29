@@ -29,6 +29,11 @@ public class FloatValue implements Value {
     }
 
     @Override
+    public FloatValue deepCopy() {
+        return new FloatValue(value);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

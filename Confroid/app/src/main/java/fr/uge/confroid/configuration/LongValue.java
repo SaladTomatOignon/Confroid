@@ -29,6 +29,11 @@ public class LongValue implements Value {
     }
 
     @Override
+    public LongValue deepCopy() {
+        return new LongValue(value);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

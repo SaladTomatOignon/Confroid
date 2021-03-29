@@ -28,6 +28,11 @@ public class StringValue implements Value {
     }
 
     @Override
+    public StringValue deepCopy() {
+        return new StringValue(value);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
