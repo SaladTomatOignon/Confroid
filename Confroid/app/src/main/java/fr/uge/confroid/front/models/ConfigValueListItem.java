@@ -79,7 +79,7 @@ public class ConfigValueListItem {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.title_rename);
+        builder.setTitle(R.string.title_dialog_rename_value);
 
         final EditText input = new EditText(context);
         input.setText(name);
