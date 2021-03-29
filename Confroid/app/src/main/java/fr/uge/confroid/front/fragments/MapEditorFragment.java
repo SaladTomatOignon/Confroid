@@ -156,7 +156,7 @@ public class MapEditorFragment extends EditorFragment {
     private void setMenuEnabled(boolean enabled) {
         menuEnabled = enabled;
         if (menuAdd != null) {
-            menuAdd.setEnabled(false);
+            menuAdd.setEnabled(enabled);
         }
     }
 }

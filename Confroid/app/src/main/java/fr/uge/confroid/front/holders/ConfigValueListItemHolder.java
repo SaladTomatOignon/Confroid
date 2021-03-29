@@ -20,6 +20,7 @@ public class ConfigValueListItemHolder extends RecyclerView.ViewHolder implement
     private final TextView labelName;
     private final TextView labelType;
     private final TextView labelPreview;
+    private final TextView labelDescription;
 
     private ConfigValueListItem item;
 
@@ -29,6 +30,7 @@ public class ConfigValueListItemHolder extends RecyclerView.ViewHolder implement
         labelName = itemView.findViewById(R.id.label_name);
         labelType = itemView.findViewById(R.id.label_type);
         labelPreview = itemView.findViewById(R.id.label_preview);
+        labelDescription = itemView.findViewById(R.id.label_description);
 
         itemView.setOnCreateContextMenuListener(this);
     }
@@ -40,6 +42,13 @@ public class ConfigValueListItemHolder extends RecyclerView.ViewHolder implement
         labelName.setText(item.getName());
         labelType.setText(item.getType());
         labelPreview.setText(item.getPreview());
+        labelDescription.setVisibility(View.GONE);
+
+        if (item.hasDescription()) {
+            labelDescription.setVisibility(View.VISIBLE);
+            labelDescription.setText(item.getDescription());
+        }
+
         itemView.setOnClickListener(__ -> item.edit());
     }
 

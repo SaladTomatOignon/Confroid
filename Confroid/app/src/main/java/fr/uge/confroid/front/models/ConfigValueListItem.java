@@ -2,16 +2,21 @@ package fr.uge.confroid.front.models;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
 
+import java.lang.annotation.Annotation;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import fr.uge.confroid.R;
+import fr.uge.confroid.configuration.Configuration;
 import fr.uge.confroid.configuration.Value;
+import fr.uge.confroidlib.BundleUtils;
+import fr.uge.confroidlib.annotations.Description;
 
 /**
  * Representation of a data shown inside
@@ -21,6 +26,7 @@ public class ConfigValueListItem {
     private final Context context;
     private final String name;
     private final Value value;
+    private final String description;
 
     private Runnable editListener;
     private Runnable deleteListener;
@@ -30,6 +36,8 @@ public class ConfigValueListItem {
         this.context = Objects.requireNonNull(context);
         this.name = Objects.requireNonNull(name);
         this.value = Objects.requireNonNull(value);
+        this.description = null;
+
     }
 
     /**
@@ -44,6 +52,11 @@ public class ConfigValueListItem {
      */
     public boolean canBeDeleted() {
         return deleteListener != null;
+    }
+
+
+    public boolean hasDescription() {
+        return true;
     }
 
 
@@ -114,6 +127,9 @@ public class ConfigValueListItem {
         return value.preview();
     }
 
+    public String getDescription() {
+        return description;
+    }
 
     /**
      * Call the given {@code editListener} when
@@ -158,6 +174,8 @@ public class ConfigValueListItem {
     public static ConfigValueListItem create(Context context, String name, Value value) {
         Editor editor = (Editor) context;
         value = editor.resolveReference(value);
+        Bundle bundle = new Configuration(value).toBundle();
+        // Annotation annotation = BundleUtils.getAnnotationFromBundle(bundle);
         return new ConfigValueListItem(context, name, value);
     }
 }

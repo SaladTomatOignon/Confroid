@@ -32,7 +32,6 @@ public class ArrayEditorFragment extends EditorFragment {
     private final ConfigValueListAdapter adapter = new ConfigValueListAdapter();
     private ArrayValue arrayValue;
     private List<Value> entries;
-    private Value lastValue;
 
     private MenuItem menuAdd;
     private boolean menuEnabled = false;
@@ -75,7 +74,8 @@ public class ArrayEditorFragment extends EditorFragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_action_add) {
-
+            entries.add(entries.get(entries.size()-1).deepCopy());
+            mergeAndUpdate();
         }
 
         return super.onOptionsItemSelected(item);
@@ -117,13 +117,14 @@ public class ArrayEditorFragment extends EditorFragment {
     }
 
     private void mergeAndUpdate() {
+        entries.addAll(arrayValue.nonEditableEntries());
         updateAndRefresh(new ArrayValue(entries.toArray(new Value[0])));
     }
 
     private void setMenuEnabled(boolean enabled) {
         menuEnabled = enabled;
         if (menuAdd != null) {
-            menuAdd.setEnabled(false);
+            menuAdd.setEnabled(enabled);
         }
     }
 }
