@@ -1,8 +1,8 @@
 <resources>
     <!-- Languages Preference -->
     <string-array name="language_entries">
-        <item>English</item>
-        <item>French</item>
+        <item>Anglais</item>
+        <item>Français</item>
     </string-array>
 
     <string-array name="language_values">
@@ -12,16 +12,16 @@
 
     <!-- Interval uploads Preference -->
     <string-array name="interval_upload_entries">
-        <item>Every day</item>
-        <item>Every week</item>
-        <item>Every month</item>
-        <item>Every year</item>
+        <item>Tous les jours</item>
+        <item>Toutes les semaines</item>
+        <item>Tous les mois</item>
+        <item>Tous les ans</item>
     </string-array>
 
     <string-array name="interval_upload_values">
-        <item>day</item>
-        <item>week</item>
-        <item>month</item>
-        <item>year</item>
+        <item>jour</item>
+        <item>semaine</item>
+        <item>mois</item>
+        <item>année</item>
     </string-array>
 </resources>

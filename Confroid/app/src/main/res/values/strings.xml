@@ -1,21 +1,14 @@
 <resources>
     <string name="app_name">Confroid</string>
-    <string name="title_activity_explore">Explore</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name="title_dialog_create_value">Add value</string>
-    <string name="title_dialog_rename_value">Rename value</string>
-
+    <string name="title_explore">Explore</string>
     <string name="label_delete">Delete</string>
-    <string name="label_create">Create</string>
     <string name="label_rename">Rename</string>
     <string name="label_cancel">Cancel</string>
-    <string name="label_no_result">No result !</string>
-    <string name="label_already_exists">There is already an entry with this name</string>
-
-    <string name="error_range_validation">Value must be in the range [%s, %s]</string>
-    <string name="error_pattern_validation">Value must matches with the pattern “%s”</string>
-    <string name="error_class_validation">Value must matches with the validator “%s”</string>
-
+    <string name="title_rename">Type a new name</string>
+    <string name="label_no_result">No result found !</string>
+    <string name="explore">Explore</string>
+    <string name="nothing_to_show">Nothing to show</string>
+    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
 
     <!-- Preference Titles -->
     <string name="root_fragment_title">Settings</string>
@@ -27,7 +20,7 @@
     <string name="configure_access_summary">Manage web address and logins</string>
 
     <!-- Connexion Preferences -->
-    <string name="connexion_title">Connexion</string>
+    <string name="connexion_title">Connection</string>
 
     <string name="base_address_empty_error">Base address is empty</string>
     <string name="login_empty_error">Login is empty</string>
@@ -65,24 +58,24 @@
     <!-- General Preferences -->
     <string name="language_title">Language</string>
     <string name="version_title">Version</string>
-    <string name="app_version_value">1.0.0</string>
+    <string name="app_version_value" translatable="false">1.0.0</string>
 
     <!-- Preferences keywords -->
-    <string name="prefs_language">language</string>
-    <string name="prefs_base_address">base_address</string>
-    <string name="prefs_login">login</string>
-    <string name="prefs_password">password</string>
-    <string name="prefs_enable_data_sync">enable_data_sync</string>
-    <string name="prefs_upload_interval">upload_interval</string>
-    <string name="prefs_day">day</string>
-    <string name="prefs_week">week</string>
-    <string name="prefs_month">month</string>
-    <string name="prefs_year">year</string>
-    <string name="prefs_allow_cellular_data">allow_cellular_data</string>
-    <string name="prefs_requires_charging">requires_charging</string>
+    <string name="prefs_language" translatable="false">language</string>
+    <string name="prefs_base_address" translatable="false">base_address</string>
+    <string name="prefs_login" translatable="false">login</string>
+    <string name="prefs_password" translatable="false">password</string>
+    <string name="prefs_enable_data_sync" translatable="false">enable_data_sync</string>
+    <string name="prefs_upload_interval" translatable="false">upload_interval</string>
+    <string name="prefs_day" translatable="false">day</string>
+    <string name="prefs_week" translatable="false">week</string>
+    <string name="prefs_month" translatable="false">month</string>
+    <string name="prefs_year" translatable="false">year</string>
+    <string name="prefs_allow_cellular_data" translatable="false">allow_cellular_data</string>
+    <string name="prefs_requires_charging" translatable="false">requires_charging</string>
 
     <!-- ConfigBrowser activity -->
-    <string name="title_activity_config_browser">ConfigBrowserActivity</string>
+    <string name="title_activity_config_browser" translatable="false">ConfigBrowserActivity</string>
     <string name="title_explore_configs">Explore configurations</string>
     <string name="tab_title_local">Local</string>
     <string name="tab_title_cloud">Cloud</string>
@@ -97,5 +90,4 @@
     <string name="export_config_cloud">To the cloud</string>
     <string name="export_config_new_file">To a new file</string>
     <string name="export_config_existing_file">To an existing file</string>
-    <string name="add">Add</string>
 </resources>
