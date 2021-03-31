@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.DocumentsContract;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -174,7 +171,7 @@ public class ConfroidStorage {
 
     public static void createFile(Activity caller) {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.setType("text/plain");
+        intent.setType("application/json");
         intent.putExtra(Intent.EXTRA_TITLE, "confroid_backup.json");
         caller.startActivityForResult(intent, CREATE_DOCUMENT_REQUEST_CODE);
     }

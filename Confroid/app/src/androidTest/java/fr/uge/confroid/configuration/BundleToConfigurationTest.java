@@ -17,6 +17,8 @@ import java.util.Objects;
 import fr.uge.confroidlib.BundleUtils;
 import fr.uge.confroidlib.annotations.ClassValidator;
 import fr.uge.confroidlib.annotations.Description;
+import fr.uge.confroidlib.annotations.GeoCoordinates;
+import fr.uge.confroidlib.annotations.PhoneNumber;
 import fr.uge.confroidlib.annotations.RangeValidator;
 import fr.uge.confroidlib.validators.CreditCardChecker;
 
@@ -95,26 +97,31 @@ public class BundleToConfigurationTest {
         Value referencedValue = Configuration.getReferencedValue(1, config.getContent());
 
         assertEquals(config.getContent(), referencedValue);
-        assertNull(Configuration.getReferencedValue(2, config.getContent()));
+        assertNull(Configuration.getReferencedValue(4, config.getContent()));
     }
 
     public static class MixObjectsClass {
         @Description(description = "Une map de Integers")
-        public Map<String, Integer> mapInteger;
+        public Map<java.lang.String, java.lang.Integer> mapInteger;
         @Description(description = "Une map de Float")
-        public List<Float> listFloat;
+        public List<java.lang.Float> listFloat;
         @ClassValidator(predicateClass = CreditCardChecker.class)
-        public Integer[] arrayIntegers;
+        public java.lang.Integer[] arrayIntegers;
         @ClassValidator(predicateClass = CreditCardChecker.class)
         @RangeValidator(minRange = 0, maxRange = 255)
         public byte octet;
         public boolean bool;
+        public int[] intArray;
         public MixObjectsClass self;
+        @GeoCoordinates
+        public float[] gpsCoordinates;
+        @PhoneNumber
+        public java.lang.String phoneNumber;
 
         public MixObjectsClass() {
             this.mapInteger = new HashMap<>();
             this.listFloat = new ArrayList<>();
-            this.arrayIntegers = new Integer[5];
+            this.arrayIntegers = new java.lang.Integer[5];
         }
 
         public void initValues() {
@@ -130,10 +137,15 @@ public class BundleToConfigurationTest {
                 this.arrayIntegers[i] = i;
             }
 
+            this.intArray = new int[] {1, 2, 3};
+
             this.octet = 100;
             this.bool = true;
 
             this.self = this;
+
+            this.gpsCoordinates = new float[] {12, 45, 89};
+            this.phoneNumber = "0651487597";
         }
 
         @Override
@@ -156,7 +168,7 @@ public class BundleToConfigurationTest {
         }
 
         @Override
-        public String toString() {
+        public java.lang.String toString() {
             return "MixObjectsClass{" +
                     "mapInteger=" + mapInteger +
                     ", listFloat=" + listFloat +

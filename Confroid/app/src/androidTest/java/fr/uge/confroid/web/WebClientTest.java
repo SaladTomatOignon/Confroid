@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import fr.uge.confroid.configuration.Configuration;
@@ -36,16 +37,16 @@ public class WebClientTest {
         AppSettings.loadSettings(ctx);
         Client.initClient(login, password, ctx, null);
         client = new Client(login, password, ctx);
+
+        if (Objects.isNull(AppSettings.getINSTANCE().getBaseAddress()) ||
+                AppSettings.getINSTANCE().getBaseAddress().isEmpty()) {
+            throw new AssertionError("Base address is null or empty, can not make tests");
+        }
     }
 
     @AfterClass
     public static void removeTestConfigsStatic() {
-        client.deleteConfigs(configName,
-                response -> {
-                    // Nothing
-                }, error -> {
-                    throw new AssertionError(error);
-                });
+        client.deleteConfigs(configName, null, null);
     }
 
     @Before

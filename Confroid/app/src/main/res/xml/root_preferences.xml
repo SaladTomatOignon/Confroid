@@ -18,6 +18,12 @@
 
     <PreferenceCategory app:title="@string/general_header">
 
+        <!--
+
+        Not fully implemented yet.
+        We need to replace the context of each activity each time we launch it,
+        To apply the chosen locale language.
+
         <ListPreference
             app:key="@string/prefs_language"
             app:entries="@array/language_entries"
@@ -25,6 +31,7 @@
             app:defaultValue="en"
             app:title="@string/language_title"
             app:useSimpleSummaryProvider="true" />
+        -->
 
         <Preference
             app:title="@string/version_title"

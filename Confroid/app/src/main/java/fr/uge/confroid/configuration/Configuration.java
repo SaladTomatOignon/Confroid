@@ -179,14 +179,15 @@ public class Configuration {
      * Fonction auxiliaire de {@link #fromBundle(Bundle)}.
      *
      * @param bundle Le Bundle à parser
-     * @return L'objet Value créé depuis le Bundle, ou null si le bundle ne contient aucune valeur
+     * @return L'objet Value créé depuis le Bundle, ou une Map vide si le bundle ne contient aucune valeur
      * @throws IllegalArgumentException Si une valeur du bundle ne peut pas être parsée dans une configuration
      */
     private static Value valueFromBundle(Bundle bundle) throws IllegalArgumentException {
         Set<String> keys = bundle.keySet();
 
         if (keys.isEmpty()) {
-            return null;
+            // Empty map for empty bundle
+            return new MapValue(new HashMap<>());
         }
 
         if (BundleUtils.isBundleArray(bundle)) { // If the bundle represents an array

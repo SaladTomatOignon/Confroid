@@ -16,6 +16,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import fr.uge.confroidlib.annotations.ClassValidator;
 import fr.uge.confroidlib.annotations.Description;
+import fr.uge.confroidlib.annotations.GeoCoordinates;
+import fr.uge.confroidlib.annotations.PhoneNumber;
 import fr.uge.confroidlib.annotations.RangeValidator;
 import fr.uge.confroidlib.annotations.RegexValidator;
 import fr.uge.confroidlib.validators.CreditCardChecker;
@@ -147,6 +149,16 @@ public class BundleUtilsTest {
     }
 
     @Test
+    public void floatArrayTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        float[] array = new float[] {42.25f, 789.807f, -123f, 0.1f};
+
+        Bundle bundle = BundleUtils.convertToBundleReflection(array);
+        float[] convertedList = (float[]) BundleUtils.convertFromBundle(bundle);
+
+        assertArrayEquals(array, convertedList, 0.001f);
+    }
+
+    @Test
     public void integerArrayTest() throws ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {
         Integer[] array = new Integer[] {42, 789, -123, 0};
 
@@ -175,6 +187,7 @@ public class BundleUtilsTest {
         mixObjectsClass.initValues();
 
         Bundle bundle = BundleUtils.convertToBundleReflection(mixObjectsClass);
+
         MixObjectsClass convertedObject = (MixObjectsClass) BundleUtils.convertFromBundle(bundle);
 
         assertEquals(mixObjectsClass, convertedObject);
@@ -590,6 +603,11 @@ public class BundleUtilsTest {
         @RangeValidator(minRange = 0, maxRange = 255)
         public byte octet;
         public boolean bool;
+        public MixObjectsClass self;
+        @GeoCoordinates
+        public float[] gpsCoordinates;
+        @PhoneNumber
+        public String phoneNumber;
 
         public MixObjectsClass() {
             this.mapInteger = new HashMap<>();
@@ -625,6 +643,11 @@ public class BundleUtilsTest {
 
             this.octet = 100;
             this.bool = true;
+
+            this.self = this;
+
+            this.gpsCoordinates = new float[] {48.8391196f, 2.5870128f, 99f};
+            this.phoneNumber = "0651487597";
         }
 
         @Override

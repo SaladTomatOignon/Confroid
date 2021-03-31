@@ -24,14 +24,14 @@ public class ConfigurationToBundleTest {
         BooleanValue bool = new BooleanValue(false);
         ArrayValue array = new ArrayValue(new Value[]{a, str, floot, bool});
 
-        Map<String, Value> map1 = new HashMap<>();
+        Map<java.lang.String, Value> map1 = new HashMap<>();
         map1.put("int", a);
         map1.put("chaine", str);
         map1.put("Tableau vide", emptyArray);
         map1.put("boolean", bool);
         map1.put("Tableau", array);
 
-        Map<String, Value> map2 = new HashMap<>();
+        Map<java.lang.String, Value> map2 = new HashMap<>();
         map2.put("key1", new BooleanValue(true));
         map2.put("key2", new FloatValue(852.123f));
         map2.put("key3", new ByteValue((byte) 5));
