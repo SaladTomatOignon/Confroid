@@ -20,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Demo.create(this);
+        // Demo.create(this);
+
         initApplication();
 
         findViewById(R.id.btn_explore).setOnClickListener(view -> {
@@ -32,9 +33,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Initializes the application.
-     */
     private void initApplication() {
         initSettings();
         initWebClient();
