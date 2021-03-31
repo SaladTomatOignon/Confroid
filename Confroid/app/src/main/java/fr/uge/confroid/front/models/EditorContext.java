@@ -6,7 +6,7 @@ import fr.uge.confroid.configuration.Value;
 /**
  *  Provides access to Confroid editor activity.
  */
-public interface Editor {
+public interface EditorContext {
     /**
      * Called when node of the page tree change.
      */

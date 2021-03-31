@@ -1,7 +1,5 @@
 package fr.uge.confroid.front.models;
 
-import android.util.Log;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +52,12 @@ public class EditorPage {
         return Objects.hash(name, value);
     }
 
-    public static EditorPage create(Editor editor, String key, Value value, List<Annotation> annotations) {
-        return new EditorPage(key, editor.resolveReference(value), annotations);
+    public static EditorPage create(EditorContext editorContext, String key, Value value, List<Annotation> annotations) {
+        return new EditorPage(key, editorContext.resolveReference(value), annotations);
     }
 
-    public static EditorPage create(Editor editor, String key, Value value) {
-        return new EditorPage(key, editor.resolveReference(value), new ArrayList<>());
+    public static EditorPage create(EditorContext editorContext, String key, Value value) {
+        return new EditorPage(key, editorContext.resolveReference(value), new ArrayList<>());
     }
 }
 

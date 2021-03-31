@@ -173,8 +173,8 @@ public class ConfigValueListItem {
      * @return new {@link ConfigValueListItem} object
      */
     public static ConfigValueListItem create(Context context, String name, Value value, List<Annotation> annotations) {
-        Editor editor = (Editor) context;
-        value = editor.resolveReference(value);
+        EditorContext editorContext = (EditorContext) context;
+        value = editorContext.resolveReference(value);
 
         Optional<Description> desc =  annotations.stream()
                 .filter(e -> e instanceof Description)

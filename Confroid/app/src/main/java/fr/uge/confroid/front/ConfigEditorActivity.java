@@ -14,12 +14,11 @@ import fr.uge.confroid.front.fragments.MapEditorFragment;
 import fr.uge.confroid.front.fragments.TextEditorFragment;
 import fr.uge.confroid.providers.ConfigProvider;
 import fr.uge.confroid.providers.ProviderType;
-import fr.uge.confroid.front.models.Editor;
+import fr.uge.confroid.front.models.EditorContext;
 import fr.uge.confroid.front.models.EditorPage;
 import fr.uge.confroid.storage.ConfroidPackage;
 import fr.uge.confroidlib.BundleUtils;
 import fr.uge.confroidlib.ConfroidIntents;
-import fr.uge.confroidlib.ConfroidUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,12 +28,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.function.Function;
 
-public class ConfigEditorActivity extends AppCompatActivity implements Editor, FragmentManager.OnBackStackChangedListener {
+public class ConfigEditorActivity extends AppCompatActivity implements EditorContext, FragmentManager.OnBackStackChangedListener {
     private static final String TAG = "ConfigEditorActivity";
     private final ArrayList<Function<Value, Fragment>> fragments = new ArrayList<>();
 

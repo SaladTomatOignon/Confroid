@@ -9,20 +9,20 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import fr.uge.confroid.configuration.Value;
-import fr.uge.confroid.front.models.Editor;
+import fr.uge.confroid.front.models.EditorContext;
 import fr.uge.confroid.front.models.EditorPage;
 
 /**
  * Base fragment that handle logic shared by all editors.
  */
 abstract class EditorFragment extends Fragment {
-    private Editor editor;
+    private EditorContext editorContext;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof Editor){
-            this.editor = (Editor) context;
+        if (context instanceof EditorContext){
+            this.editorContext = (EditorContext) context;
         }  else {
             throw new ClassCastException(context.toString() + " must implement ValueChangeListener");
         }
@@ -31,7 +31,7 @@ abstract class EditorFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        EditorPage page = editor.peekPage();
+        EditorPage page = editorContext.peekPage();
         this.onUpdatePage(page);
     }
 
@@ -41,7 +41,7 @@ abstract class EditorFragment extends Fragment {
      * @param value Value to edit in the page.
      */
     public void push(String name, Value value) {
-        editor.pushPage(EditorPage.create(editor, name, value));
+        editorContext.pushPage(EditorPage.create(editorContext, name, value));
     }
 
     /**
@@ -51,7 +51,7 @@ abstract class EditorFragment extends Fragment {
      * @param annotations Annotations associated to the value to to edit.
      */
     public void push(String name, Value value, List<Annotation> annotations) {
-        editor.pushPage(EditorPage.create(editor, name, value, annotations));
+        editorContext.pushPage(EditorPage.create(editorContext, name, value, annotations));
     }
 
     /**
@@ -59,7 +59,7 @@ abstract class EditorFragment extends Fragment {
      * @param newValue New value.
      */
     public void update(Value newValue) {
-        editor.onChange(newValue);
+        editorContext.onChange(newValue);
     }
 
     /**
@@ -67,8 +67,8 @@ abstract class EditorFragment extends Fragment {
      * @param newValue New value.
      */
     public void updateAndRefresh(Value newValue) {
-        editor.onChange(newValue);
-        onUpdatePage(editor.peekPage());
+        editorContext.onChange(newValue);
+        onUpdatePage(editorContext.peekPage());
     }
 
     /**
