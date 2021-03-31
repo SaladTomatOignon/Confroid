@@ -48,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="26dp"
-        android:text="@string/title_activity_explore"
+        android:text="@string/title_explore"
         android:textColor="@android:color/white"
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"

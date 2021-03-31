@@ -67,17 +67,10 @@ public class FilesProvider implements ConfigProvider {
 
     @Override
     public void savePackage(Context context, ConfroidPackage confroidPackage, Consumer<String> successCallback, Consumer<String> errorCallback) {
-        Uri fileUri = AppSettings.getINSTANCE().getConfigFilePath();
-        if (Objects.isNull(fileUri)) {
-            errorCallback.accept(context.getResources().getString(R.string.file_not_imported));
-            return;
-        }
-
-        try {
-            ConfroidStorage.writeConfig(confroidPackage, fileUri, context);
-            successCallback.accept("Ok");
-        } catch (IOException e) {
-            errorCallback.accept(context.getResources().getString(R.string.file_write_error));
-        }
+        /**
+         * We need to re-ask to the user to re open the file in order to grant authorization.
+         * This is tedious for the user so we choose to don't save the file automaticaly at the end
+         * of the edition. But the user can still update its configuration with the button on the UI.
+         */
     }
 }

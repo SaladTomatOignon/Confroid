@@ -1,14 +1,25 @@
 <resources>
     <string name="app_name">Confroid</string>
+    <string name="title_activity_explore">Explore</string>
+    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
+    <string name="title_dialog_create_value">Add value</string>
+    <string name="title_dialog_rename_value">Rename value</string>
+
     <string name="title_explore">Explore</string>
     <string name="label_delete">Delete</string>
+    <string name="label_create">Create</string>
     <string name="label_rename">Rename</string>
     <string name="label_cancel">Cancel</string>
+    <string name="label_no_result">No result !</string>
+    <string name="label_already_exists">There is already an entry with this name</string>
+
+    <string name="error_range_validation">Value must be in the range [%s, %s]</string>
+    <string name="error_pattern_validation">Value must matches with the pattern “%s”</string>
+    <string name="error_class_validation">Value must matches with the validator “%s”</string>
+
     <string name="title_rename">Type a new name</string>
-    <string name="label_no_result">No result found !</string>
     <string name="explore">Explore</string>
     <string name="nothing_to_show">Nothing to show</string>
-    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
 
     <!-- Preference Titles -->
     <string name="root_fragment_title">Settings</string>
@@ -90,4 +101,5 @@
     <string name="export_config_cloud">To the cloud</string>
     <string name="export_config_new_file">To a new file</string>
     <string name="export_config_existing_file">To an existing file</string>
+    <string name="add">Add</string>
 </resources>

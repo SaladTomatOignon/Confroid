@@ -62,6 +62,15 @@ public class Client {
      */
     public static void initClient(String username, String password, Context context, Consumer<Boolean> statusCallback) {
         Client client = new Client(username, password, context);
+
+        if (Objects.isNull(client.baseAddress()) || client.baseAddress().isEmpty()) {
+            Log.w("Confroid Storage Service", "Base address is null or empty");
+            if (!Objects.isNull(statusCallback)) {
+                statusCallback.accept(false);
+            }
+            return;
+        }
+
         client.login(
                 (response) ->  {
                     Client.INSTANCE = client;
