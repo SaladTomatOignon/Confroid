@@ -756,7 +756,7 @@ public class BundleUtils {
                 @Override
                 public Class<? extends Predicate> predicateClass() {
                     try {
-                        return (Class<? extends Predicate>) Class.forName(params.getString(ANNOTATION_PARAM + "1"));
+                        return (Class<? extends Predicate>) Class.forName("fr.uge.confroidlib.validators." + params.getString(ANNOTATION_PARAM + "1"));
                     } catch (ClassNotFoundException e) {
                         return null;
                     }
