@@ -20,6 +20,9 @@ public interface ConfroidPackageDao {
     @Delete
     void delete(ConfroidPackage confroidPackage);
 
+    @Query("UPDATE packages SET tag = NULL WHERE name LIKE :name AND tag LIKE :tag")
+    void removeTag(String name, String tag);
+
     @Query("SELECT * FROM packages WHERE name LIKE :name AND tag LIKE :tag LIMIT 1")
     ConfroidPackage findByTag(String name, String tag);
 

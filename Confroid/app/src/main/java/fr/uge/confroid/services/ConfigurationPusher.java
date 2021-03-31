@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import java.util.Date;
+import java.util.Objects;
 
 import fr.uge.confroid.configuration.Configuration;
 import fr.uge.confroid.storage.ConfroidDatabase;
@@ -60,6 +61,11 @@ public class ConfigurationPusher extends BackgroundService {
             ConfroidPackage latest = dao.findLastVersion(name);
             if (latest != null) {
                 pkg.setVersion(latest.getVersion() + 1);
+            }
+
+            /* Removing previous same tags because (name, tag) is unique */
+            if (!Objects.isNull(pkg.getTag())) {
+                dao.removeTag(pkg.getName(), pkg.getTag());
             }
 
             dao.create(pkg);

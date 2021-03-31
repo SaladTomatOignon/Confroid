@@ -158,7 +158,8 @@ public class ConfroidStorage {
     }
 
     /**
-     * Launch the document picker
+     * Launches the document picker (using Storage Access Framework)
+     * to select a file
      *
      * @param caller The activity calling this method
      */
@@ -169,6 +170,12 @@ public class ConfroidStorage {
         caller.startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE);
     }
 
+    /**
+     * Launches the document picker (using Storage Access Framework)
+     * to select a repository where to save a file
+     *
+     * @param caller The activity calling this method
+     */
     public static void createFile(Activity caller) {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.setType("application/json");
