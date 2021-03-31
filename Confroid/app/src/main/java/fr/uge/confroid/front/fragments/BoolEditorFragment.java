@@ -9,19 +9,29 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.Fragment;
 import fr.uge.confroid.R;
 import fr.uge.confroid.configuration.BooleanValue;
 import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.models.EditorArgs;
+import fr.uge.confroid.front.models.EditorOpener;
 
 public class BoolEditorFragment extends EditorFragment implements CompoundButton.OnCheckedChangeListener {
-    private SwitchCompat toggle;
-    public static BoolEditorFragment newInstance(Value value) {
-        if (value.isBoolean()) {
+    public static class Opener implements EditorOpener {
+        @Override
+        public boolean canHandle(EditorArgs args) {
+            return args.getValue().isBoolean();
+        }
+
+        @Override
+        public Fragment createEditor() {
             return new BoolEditorFragment();
         }
-        return null;
     }
+
+
+    private SwitchCompat toggle;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {

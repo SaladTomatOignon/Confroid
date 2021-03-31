@@ -19,6 +19,7 @@ import java.util.function.Predicate;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import fr.uge.confroid.R;
 import fr.uge.confroid.configuration.ByteValue;
 import fr.uge.confroid.configuration.DoubleValue;
@@ -26,27 +27,33 @@ import fr.uge.confroid.configuration.FloatValue;
 import fr.uge.confroid.configuration.IntegerValue;
 import fr.uge.confroid.configuration.LongValue;
 import fr.uge.confroid.configuration.StringValue;
-import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.models.EditorArgs;
+import fr.uge.confroid.front.models.EditorOpener;
 import fr.uge.confroidlib.annotations.ClassValidator;
 import fr.uge.confroidlib.annotations.RangeValidator;
 import fr.uge.confroidlib.annotations.RegexValidator;
 
 
 public class TextEditorFragment extends EditorFragment implements TextWatcher {
+    public static class Opener implements EditorOpener {
+        @Override
+        public boolean canHandle(EditorArgs args) {
+            return args.getValue().isPrimitive() && !args.getValue().isBoolean();
+        }
+
+        @Override
+        public Fragment createEditor() {
+            return new TextEditorFragment();
+        }
+    }
+
+
     private static final java.lang.String TAG = "TextEditorFragment";
     private final ArrayList<Function<String, String>> validators = new ArrayList<>();
-
     private EditorArgs page;
     private TextInputLayout inputLayout;
     private TextInputEditText input;
 
-    public static TextEditorFragment newInstance(Value value) {
-        if (value.isPrimitive() && ! value.isBoolean()) {
-            return new TextEditorFragment();
-        }
-        return null;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

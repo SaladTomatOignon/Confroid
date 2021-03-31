@@ -2,7 +2,6 @@ package fr.uge.confroid.front;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import fr.uge.confroid.R;
@@ -12,6 +11,7 @@ import fr.uge.confroid.front.fragments.ArrayEditorFragment;
 import fr.uge.confroid.front.fragments.BoolEditorFragment;
 import fr.uge.confroid.front.fragments.MapEditorFragment;
 import fr.uge.confroid.front.fragments.TextEditorFragment;
+import fr.uge.confroid.front.models.EditorOpener;
 import fr.uge.confroid.providers.ConfigProvider;
 import fr.uge.confroid.providers.ProviderType;
 import fr.uge.confroid.front.models.EditorContext;
@@ -30,11 +30,10 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.UUID;
-import java.util.function.Function;
 
 public class ConfigEditorActivity extends AppCompatActivity implements EditorContext, FragmentManager.OnBackStackChangedListener {
     private static final String TAG = "ConfigEditorActivity";
-    private final ArrayList<Function<Value, Fragment>> editors = new ArrayList<>();
+    private final ArrayList<EditorOpener> openers = new ArrayList<>();
     private final Stack<EditorArgs> args = new Stack<>();
 
     private Value root;
@@ -87,10 +86,10 @@ public class ConfigEditorActivity extends AppCompatActivity implements EditorCon
             return;
         }
 
-        editors.add(MapEditorFragment::newInstance);
-        editors.add(BoolEditorFragment::newInstance);
-        editors.add(TextEditorFragment::newInstance);
-        editors.add(ArrayEditorFragment::newInstance);
+        openers.add(new MapEditorFragment.Opener());
+        openers.add(new BoolEditorFragment.Opener());
+        openers.add(new TextEditorFragment.Opener());
+        openers.add(new ArrayEditorFragment.Opener());
 
         root = Configuration.fromBundle(content).getContent();
         pushEditor(EditorArgs.create(this, getString(R.string.app_name), root));
@@ -107,9 +106,8 @@ public class ConfigEditorActivity extends AppCompatActivity implements EditorCon
     public void pushEditor(EditorArgs args) {
         actionBar.setTitle(args.getName());
 
-        for (Function<Value, Fragment> fn : editors) {
-            Fragment editor = fn.apply(args.getValue());
-            if (editor != null) {
+        for (EditorOpener opener : openers) {
+            if (opener.canHandle(args)) {
                 this.args.push(args);
                 FragmentTransaction transaction = fragmentManager.beginTransaction()
                         .setCustomAnimations(
@@ -118,7 +116,7 @@ public class ConfigEditorActivity extends AppCompatActivity implements EditorCon
                                 R.anim.fade_in,   // popEnter
                                 R.anim.slide_out  // popExit
                         );
-                transaction.replace(R.id.fragment_container, editor);
+                transaction.replace(R.id.fragment_container, opener.createEditor());
                 transaction.addToBackStack(null);
                 transaction.commit();
                 return;

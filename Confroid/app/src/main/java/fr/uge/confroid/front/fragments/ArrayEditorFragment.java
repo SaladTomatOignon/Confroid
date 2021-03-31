@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
@@ -22,22 +23,28 @@ import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.adapters.ConfigValueListAdapter;
 import fr.uge.confroid.front.models.ConfigValueListItem;
 import fr.uge.confroid.front.models.EditorArgs;
+import fr.uge.confroid.front.models.EditorOpener;
 
 public class ArrayEditorFragment extends EditorFragment {
+    public static class Opener implements EditorOpener {
+        @Override
+        public boolean canHandle(EditorArgs args) {
+            return args.getValue().isArray();
+        }
+
+        @Override
+        public Fragment createEditor() {
+            return new ArrayEditorFragment();
+        }
+    }
+
+
     private final ConfigValueListAdapter adapter = new ConfigValueListAdapter();
     private ArrayValue arrayValue;
     private List<Value> entries;
-
     private MenuItem menuAdd;
     private boolean menuEnabled = false;
 
-
-    public static ArrayEditorFragment newInstance(Value value) {
-        if (value.isArray()) {
-            return new ArrayEditorFragment();
-        }
-        return null;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

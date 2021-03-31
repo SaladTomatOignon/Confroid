@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
@@ -27,23 +28,28 @@ import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.adapters.ConfigValueListAdapter;
 import fr.uge.confroid.front.models.ConfigValueListItem;
 import fr.uge.confroid.front.models.EditorArgs;
+import fr.uge.confroid.front.models.EditorOpener;
 
 public class MapEditorFragment extends EditorFragment {
-    private final ConfigValueListAdapter adapter = new ConfigValueListAdapter();
+    public static class Opener implements EditorOpener {
+        @Override
+        public boolean canHandle(EditorArgs args) {
+            return args.getValue().isMap();
+        }
 
+        @Override
+        public Fragment createEditor() {
+            return new MapEditorFragment();
+        }
+    }
+
+    private final ConfigValueListAdapter adapter = new ConfigValueListAdapter();
     private MapValue mapValue;
     private Map<String, Value> entries;
     private Value lastValue;
-
     private MenuItem menuAdd;
     private boolean menuEnabled = false;
 
-    public static MapEditorFragment newInstance(Value value) {
-        if (value.isMap()) {
-            return new MapEditorFragment();
-        }
-        return null;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
