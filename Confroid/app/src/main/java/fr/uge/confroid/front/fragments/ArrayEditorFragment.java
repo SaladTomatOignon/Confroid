@@ -40,6 +40,7 @@ public class ArrayEditorFragment extends EditorFragment {
 
 
     private final ConfigValueListAdapter adapter = new ConfigValueListAdapter();
+
     private ArrayValue arrayValue;
     private List<Value> entries;
     private MenuItem menuAdd;

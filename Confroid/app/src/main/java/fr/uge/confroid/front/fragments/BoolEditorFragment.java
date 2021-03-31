@@ -46,7 +46,7 @@ public class BoolEditorFragment extends EditorFragment implements CompoundButton
     }
 
     @Override
-    void onUpdateArgs(EditorArgs args) {
+    public void onUpdateArgs(EditorArgs args) {
         Value value = args.getValue();
         toggle.setChecked(value.getBoolean());
         toggle.setText(value.getBoolean() ? "true" : "false");

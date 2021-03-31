@@ -50,6 +50,7 @@ public class TextEditorFragment extends EditorFragment implements TextWatcher {
 
     private static final java.lang.String TAG = "TextEditorFragment";
     private final ArrayList<Function<String, String>> validators = new ArrayList<>();
+
     private EditorArgs page;
     private TextInputLayout inputLayout;
     private TextInputEditText input;

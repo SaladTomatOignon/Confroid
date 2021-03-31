@@ -10,12 +10,12 @@ import java.util.Objects;
 import fr.uge.confroidlib.ConfroidUtils;
 import fr.uge.confroidlib.annotations.ClassValidator;
 import fr.uge.confroidlib.annotations.Description;
+import fr.uge.confroidlib.annotations.PhoneNumber;
 import fr.uge.confroidlib.annotations.RangeValidator;
 import fr.uge.confroidlib.annotations.RegexValidator;
 import fr.uge.confroidlib.validators.CreditCardChecker;
 
 public class Demo {
-
     public static void create(Context context) {
         ShoppingPreferences prefs = new ShoppingPreferences();
         ShippingAddress address1 = new ShippingAddress("Bugdroid", "Bd Descartes", "Champs-sur-Marne", "France");
@@ -24,6 +24,7 @@ public class Demo {
         prefs.map("home", new ShoppingInfo(address1, billing, true));
         prefs.map("work", new ShoppingInfo(address2, billing, false));
         ConfroidUtils.saveConfiguration(context, "shoppingPreferences", prefs, "stable");
+
 
         ConfroidUtils.saveConfiguration(context, "array", new Integer[]  { 10, 20, 30 }, null);
         ConfroidUtils.saveConfiguration(context, "primitive", 10, null);
@@ -34,10 +35,38 @@ public class Demo {
 
         ConfroidUtils.saveConfiguration(context, "hashmap", map, null);
 
+
         ArrayList<Integer> list = new ArrayList<Integer>();
         list.add(10);
         list.add(20);
         ConfroidUtils.saveConfiguration(context, "list", list, null);
+
+        Contact contact = new Contact("0623465179");
+        ConfroidUtils.saveConfiguration(context, "contact", contact, "stable");
+    }
+
+    public static class Contact {
+        @PhoneNumber
+        public String phoneNumber;
+
+        public Contact() {}
+
+        public Contact(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Contact contact = (Contact) o;
+            return Objects.equals(phoneNumber, contact.phoneNumber);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(phoneNumber);
+        }
     }
 
     public static class BillingDetails {

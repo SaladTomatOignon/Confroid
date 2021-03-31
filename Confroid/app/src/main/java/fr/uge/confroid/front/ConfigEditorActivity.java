@@ -10,6 +10,7 @@ import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.fragments.ArrayEditorFragment;
 import fr.uge.confroid.front.fragments.BoolEditorFragment;
 import fr.uge.confroid.front.fragments.MapEditorFragment;
+import fr.uge.confroid.front.fragments.PhoneNumberEditorFragment;
 import fr.uge.confroid.front.fragments.TextEditorFragment;
 import fr.uge.confroid.front.models.EditorOpener;
 import fr.uge.confroid.providers.ConfigProvider;
@@ -86,6 +87,8 @@ public class ConfigEditorActivity extends AppCompatActivity implements EditorCon
             return;
         }
 
+
+        openers.add(new PhoneNumberEditorFragment.Opener());
         openers.add(new MapEditorFragment.Opener());
         openers.add(new BoolEditorFragment.Opener());
         openers.add(new TextEditorFragment.Opener());
