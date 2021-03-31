@@ -2,7 +2,6 @@ package fr.uge.confroid.front.fragments;
 
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,10 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -29,7 +26,7 @@ import fr.uge.confroid.configuration.MapValue;
 import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.adapters.ConfigValueListAdapter;
 import fr.uge.confroid.front.models.ConfigValueListItem;
-import fr.uge.confroid.front.models.EditorPage;
+import fr.uge.confroid.front.models.EditorArgs;
 
 public class MapEditorFragment extends EditorFragment {
     private final ConfigValueListAdapter adapter = new ConfigValueListAdapter();
@@ -94,7 +91,7 @@ public class MapEditorFragment extends EditorFragment {
                         Toast.makeText(getContext(), R.string.label_already_exists, Toast.LENGTH_SHORT).show();
                     } else {
                         entries.put(newName, lastValue.deepCopy());
-                        updateAndRefresh(new MapValue(entries));
+                        updateValue(new MapValue(entries), true);
                     }
                 }
             });
@@ -106,8 +103,8 @@ public class MapEditorFragment extends EditorFragment {
     }
 
     @Override
-    public void onUpdatePage(EditorPage page) {
-        mapValue = (MapValue) page.getValue();
+    public void onUpdateArgs(EditorArgs args) {
+        mapValue = (MapValue) args.getValue();
         entries = mapValue.getMap();
 
         setMenuEnabled(false);
@@ -135,7 +132,7 @@ public class MapEditorFragment extends EditorFragment {
         );
 
         item.setOnEditListener(() -> {
-            push(entry.getKey(), entry.getValue(), annotations);
+            pushEditor(entry.getKey(), entry.getValue(), annotations);
         });
 
         if (mapValue.isSubClassOfMap()) {
@@ -143,7 +140,7 @@ public class MapEditorFragment extends EditorFragment {
 
             item.setOnDeleteListener(() -> {
                 entries.remove(entry.getKey());
-                updateAndRefresh(new MapValue(entries));
+                updateValue(new MapValue(entries), true);
             });
 
             item.setOnRenameListener(newName -> {
@@ -154,7 +151,7 @@ public class MapEditorFragment extends EditorFragment {
 
                 entries.remove(entry.getKey());
                 entries.put(newName, entry.getValue());
-                updateAndRefresh(new MapValue(entries));
+                updateValue(new MapValue(entries), true);
             });
         }
 

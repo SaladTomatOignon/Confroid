@@ -27,7 +27,7 @@ import fr.uge.confroid.configuration.IntegerValue;
 import fr.uge.confroid.configuration.LongValue;
 import fr.uge.confroid.configuration.StringValue;
 import fr.uge.confroid.configuration.Value;
-import fr.uge.confroid.front.models.EditorPage;
+import fr.uge.confroid.front.models.EditorArgs;
 import fr.uge.confroidlib.annotations.ClassValidator;
 import fr.uge.confroidlib.annotations.RangeValidator;
 import fr.uge.confroidlib.annotations.RegexValidator;
@@ -37,7 +37,7 @@ public class TextEditorFragment extends EditorFragment implements TextWatcher {
     private static final java.lang.String TAG = "TextEditorFragment";
     private final ArrayList<Function<String, String>> validators = new ArrayList<>();
 
-    private EditorPage page;
+    private EditorArgs page;
     private TextInputLayout inputLayout;
     private TextInputEditText input;
 
@@ -71,9 +71,9 @@ public class TextEditorFragment extends EditorFragment implements TextWatcher {
     }
 
     @Override
-    public void onUpdatePage(EditorPage page) {
-        this.page = page;
-        switch (page.getValue().valueType()) {
+    public void onUpdateArgs(EditorArgs args) {
+        this.page = args;
+        switch (args.getValue().valueType()) {
             case STRING:
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 break;
@@ -95,7 +95,7 @@ public class TextEditorFragment extends EditorFragment implements TextWatcher {
                 break;
         }
 
-        input.setText(page.getValue().toString());
+        input.setText(args.getValue().toString());
     }
 
     @Override
@@ -123,21 +123,21 @@ public class TextEditorFragment extends EditorFragment implements TextWatcher {
 
             switch (page.getValue().valueType()) {
                 case STRING:
-                    update(new StringValue(value));
+                    updateValue(new StringValue(value), false);
                     break;
                 case BYTE:
-                    update(new ByteValue(Byte.parseByte(value)));
+                    updateValue(new ByteValue(Byte.parseByte(value)), false);
                 case LONG:
-                    update(new LongValue(Long.parseLong(value)));
+                    updateValue(new LongValue(Long.parseLong(value)), false);
                     break;
                 case INTEGER:
-                    update(new IntegerValue(Integer.parseInt(value)));
+                    updateValue(new IntegerValue(Integer.parseInt(value)), false);
                     break;
                 case FLOAT:
-                    update(new FloatValue(Float.parseFloat(value)));
+                    updateValue(new FloatValue(Float.parseFloat(value)), false);
                     break;
                 case DOUBLE:
-                    update(new DoubleValue(Double.parseDouble(value)));
+                    updateValue(new DoubleValue(Double.parseDouble(value)), false);
                     break;
             }
         } catch (Exception e) {

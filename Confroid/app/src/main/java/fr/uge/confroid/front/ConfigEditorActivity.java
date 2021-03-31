@@ -15,7 +15,7 @@ import fr.uge.confroid.front.fragments.TextEditorFragment;
 import fr.uge.confroid.providers.ConfigProvider;
 import fr.uge.confroid.providers.ProviderType;
 import fr.uge.confroid.front.models.EditorContext;
-import fr.uge.confroid.front.models.EditorPage;
+import fr.uge.confroid.front.models.EditorArgs;
 import fr.uge.confroid.storage.ConfroidPackage;
 import fr.uge.confroidlib.BundleUtils;
 import fr.uge.confroidlib.ConfroidIntents;
@@ -34,10 +34,10 @@ import java.util.function.Function;
 
 public class ConfigEditorActivity extends AppCompatActivity implements EditorContext, FragmentManager.OnBackStackChangedListener {
     private static final String TAG = "ConfigEditorActivity";
-    private final ArrayList<Function<Value, Fragment>> fragments = new ArrayList<>();
+    private final ArrayList<Function<Value, Fragment>> editors = new ArrayList<>();
+    private final Stack<EditorArgs> args = new Stack<>();
 
     private Value root;
-    private Stack<EditorPage> pages = new Stack<>();
     private ActionBar actionBar;
     private FragmentManager fragmentManager;
     private boolean changed;
@@ -87,30 +87,30 @@ public class ConfigEditorActivity extends AppCompatActivity implements EditorCon
             return;
         }
 
-        fragments.add(MapEditorFragment::newInstance);
-        fragments.add(BoolEditorFragment::newInstance);
-        fragments.add(TextEditorFragment::newInstance);
-        fragments.add(ArrayEditorFragment::newInstance);
+        editors.add(MapEditorFragment::newInstance);
+        editors.add(BoolEditorFragment::newInstance);
+        editors.add(TextEditorFragment::newInstance);
+        editors.add(ArrayEditorFragment::newInstance);
 
         root = Configuration.fromBundle(content).getContent();
-        pushPage(EditorPage.create(this, getString(R.string.app_name), root));
+        pushEditor(EditorArgs.create(this, getString(R.string.app_name), root));
     }
 
 
     @Override
     public void onChange(Value newValue) {
-        peekPage().setValue(newValue);
+        currentEditorArgs().setValue(newValue);
         changed = true;
     }
 
     @Override
-    public void pushPage(EditorPage page) {
-        actionBar.setTitle(page.getName());
+    public void pushEditor(EditorArgs args) {
+        actionBar.setTitle(args.getName());
 
-        for (Function<Value, Fragment> fn : fragments) {
-            Fragment editor = fn.apply(page.getValue());
+        for (Function<Value, Fragment> fn : editors) {
+            Fragment editor = fn.apply(args.getValue());
             if (editor != null) {
-                pages.push(page);
+                this.args.push(args);
                 FragmentTransaction transaction = fragmentManager.beginTransaction()
                         .setCustomAnimations(
                                 R.anim.slide_in,  // enter
@@ -126,14 +126,13 @@ public class ConfigEditorActivity extends AppCompatActivity implements EditorCon
         }
 
         throw new IllegalArgumentException(
-            "There is no registered editor to handle " + page.getValue().toString()
+            "There is no registered editor to handle " + args.getValue().toString()
         );
     }
 
-
     @Override
-    public EditorPage peekPage() {
-        return pages.peek();
+    public EditorArgs currentEditorArgs() {
+        return args.peek();
     }
 
     @Override
@@ -153,12 +152,12 @@ public class ConfigEditorActivity extends AppCompatActivity implements EditorCon
 
     @Override
     public void onBackPressed() {
-        if (!pages.isEmpty()) {
-            pages.pop();
+        if (!args.isEmpty()) {
+            args.pop();
         }
 
-        if (!pages.isEmpty()) {
-            actionBar.setTitle(pages.peek().getName());
+        if (!args.isEmpty()) {
+            actionBar.setTitle(args.peek().getName());
         }
 
         super.onBackPressed();

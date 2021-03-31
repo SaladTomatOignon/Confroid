@@ -3,6 +3,8 @@ package fr.uge.confroid.front.fragments;
 import android.content.Context;
 import android.os.Bundle;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.annotation.Annotation;
 import java.util.List;
 
@@ -10,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.models.EditorContext;
-import fr.uge.confroid.front.models.EditorPage;
+import fr.uge.confroid.front.models.EditorArgs;
 
 /**
  * Base fragment that handle logic shared by all editors.
@@ -19,7 +21,7 @@ abstract class EditorFragment extends Fragment {
     private EditorContext editorContext;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         if (context instanceof EditorContext){
             this.editorContext = (EditorContext) context;
@@ -31,50 +33,45 @@ abstract class EditorFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        EditorPage page = editorContext.peekPage();
-        this.onUpdatePage(page);
+        EditorArgs page = editorContext.currentEditorArgs();
+        this.onUpdateArgs(page);
     }
 
     /**
-     * Push the given {@code page} to the editor history.
-     * @param name Name of the page to push.
-     * @param value Value to edit in the page.
+     * Push new editor to the activity history.
+     * @param name Name of the editor.
+     * @param value Value of the editor.
      */
-    public void push(String name, Value value) {
-        editorContext.pushPage(EditorPage.create(editorContext, name, value));
+    public void pushEditor(String name, Value value) {
+        editorContext.pushEditor(EditorArgs.create(editorContext, name, value));
     }
 
     /**
-     * Push the given {@code page} to the editor history.
-     * @param name Name of the page to push.
-     * @param value Value to edit in the page.
+     * Push new editor to the activity history.
+     * @param name Name of the editor.
+     * @param value Value of the editor.
      * @param annotations Annotations associated to the value to to edit.
      */
-    public void push(String name, Value value, List<Annotation> annotations) {
-        editorContext.pushPage(EditorPage.create(editorContext, name, value, annotations));
+    public void pushEditor(String name, Value value, List<Annotation> annotations) {
+        editorContext.pushEditor(EditorArgs.create(editorContext, name, value, annotations));
     }
 
     /**
-     * Updates the {@link Value} associated the current page.
+     * Updates the {@link Value} associated the current editor.
      * @param newValue New value.
      */
-    public void update(Value newValue) {
+    public void updateValue(Value newValue, boolean refresh) {
         editorContext.onChange(newValue);
+        if (refresh) {
+            onUpdateArgs(editorContext.currentEditorArgs());
+        }
     }
 
     /**
-     * Updates the {@link Value} associated the current page and recall {@link EditorFragment#onUpdatePage}.
-     * @param newValue New value.
+     * Lifecycle hook called once the editor data is initialized and after
+     * each time {@link EditorFragment#updateValue(Value, boolean)} method is called with
+     * {@code refresh} arg set to {@code true}.
+     * @param args Arguments of the editor.
      */
-    public void updateAndRefresh(Value newValue) {
-        editorContext.onChange(newValue);
-        onUpdatePage(editorContext.peekPage());
-    }
-
-    /**
-     * Lifecycle hook called once the page data is initialized and after
-     * each time {@link EditorFragment#updateAndRefresh(Value)} is method is called.
-     * @param page The current page to edit.
-     */
-    abstract void onUpdatePage(EditorPage page);
+    abstract void onUpdateArgs(EditorArgs args);
 }

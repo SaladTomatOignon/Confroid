@@ -1,15 +1,12 @@
 package fr.uge.confroid.front.fragments;
 
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,16 +14,14 @@ import java.util.stream.IntStream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.confroid.R;
 import fr.uge.confroid.configuration.ArrayValue;
-import fr.uge.confroid.configuration.MapValue;
 import fr.uge.confroid.configuration.Value;
 import fr.uge.confroid.front.adapters.ConfigValueListAdapter;
 import fr.uge.confroid.front.models.ConfigValueListItem;
-import fr.uge.confroid.front.models.EditorPage;
+import fr.uge.confroid.front.models.EditorArgs;
 
 public class ArrayEditorFragment extends EditorFragment {
     private final ConfigValueListAdapter adapter = new ConfigValueListAdapter();
@@ -75,15 +70,15 @@ public class ArrayEditorFragment extends EditorFragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_action_add) {
             entries.add(entries.get(entries.size()-1).deepCopy());
-            mergeAndUpdate();
+            updateAndRefresh();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onUpdatePage(EditorPage page) {
-        arrayValue = (ArrayValue) page.getValue();
+    public void onUpdateArgs(EditorArgs args) {
+        arrayValue = (ArrayValue) args.getValue();
         entries = arrayValue.editableEntries();
 
         setMenuEnabled(false);
@@ -105,20 +100,20 @@ public class ArrayEditorFragment extends EditorFragment {
         );
 
         item.setOnEditListener(() -> {
-            push(Integer.toString(index), entry);
+            pushEditor(Integer.toString(index), entry);
         });
 
         item.setOnDeleteListener(() -> {
             entries.remove(index);
-            mergeAndUpdate();
+            updateAndRefresh();
         });
 
         return item;
     }
 
-    private void mergeAndUpdate() {
+    private void updateAndRefresh() {
         entries.addAll(arrayValue.nonEditableEntries());
-        updateAndRefresh(new ArrayValue(entries.toArray(new Value[0])));
+        updateValue(new ArrayValue(entries.toArray(new Value[0])), true);
     }
 
     private void setMenuEnabled(boolean enabled) {

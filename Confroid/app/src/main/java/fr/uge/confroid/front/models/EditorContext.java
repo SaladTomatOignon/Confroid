@@ -8,20 +8,20 @@ import fr.uge.confroid.configuration.Value;
  */
 public interface EditorContext {
     /**
-     * Called when node of the page tree change.
+     * Called when the value of the current visible editor change.
      */
     void onChange(Value newValue);
 
     /**
-     * Push new page to the editor history.
-     * @param page The page to push.
+     * Push new editor to the activity history.
+     * @param args Arguments to pass to the editor.
      */
-    void pushPage(EditorPage page);
+    void pushEditor(EditorArgs args);
 
     /**
-     * Gets the top most page of the editor history.
+     * Gets the arguments of the current visible editor.
      */
-    EditorPage peekPage();
+    EditorArgs currentEditorArgs();
 
     /**
      * A value can be a reference to an another value in confroid,
