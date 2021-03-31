@@ -102,4 +102,6 @@
     <string name="export_config_new_file">To a new file</string>
     <string name="export_config_existing_file">To an existing file</string>
     <string name="add">Add</string>
+    <string name="hint_phone_number">Phone number</string>
+    <string name="label_pick_contact">Pick contact</string>
 </resources>
