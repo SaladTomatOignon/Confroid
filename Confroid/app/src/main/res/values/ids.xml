@@ -3,4 +3,5 @@
     <item name="ctx_menu_export_cloud" type="id" />
     <item name="ctx_menu_export_new_file" type="id" />
     <item name="ctx_menu_export_existing_file" type="id" />
+    <item name="ctx_menu_delete_config" type="id" />
 </resources>

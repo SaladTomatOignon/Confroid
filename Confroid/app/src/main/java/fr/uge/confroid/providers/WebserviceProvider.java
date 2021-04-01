@@ -79,8 +79,23 @@ public class WebserviceProvider implements ConfigProvider {
                 confroidPackage.getDate().toInstant()
                         .atZone(ZoneId.systemDefault())
                         .toLocalDateTime(),
-                response -> successCallback.accept("Ok"),
-                error -> errorCallback.accept(error.getMessage())
+                Objects.isNull(successCallback) ? null : response -> successCallback.accept("Ok"),
+                Objects.isNull(errorCallback) ? null : error -> errorCallback.accept(error.getMessage())
+        );
+    }
+
+    @Override
+    public void removePackage(Context context, ConfroidPackage confroidPackage, Consumer<String> successCallback, Consumer<String> errorCallback) {
+        if (!AppSettings.getINSTANCE().isConnected()) {
+            errorCallback.accept(context.getResources().getString(R.string.web_client_not_connected));
+            return;
+        }
+
+        Client.getInstance().deleteConfig(
+                confroidPackage.getName(),
+                confroidPackage.getVersion(),
+                Objects.isNull(successCallback) ? null : (success) -> successCallback.accept(success.toString()),
+                Objects.isNull(errorCallback) ? null : (error) -> Log.w(TAG, error)
         );
     }
 }

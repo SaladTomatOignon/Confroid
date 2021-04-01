@@ -1,5 +1,6 @@
 package fr.uge.confroid.front.holders;
 
+import android.os.Build;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import fr.uge.confroid.R;
@@ -37,9 +40,15 @@ public class ConfigVersionListItemHolder extends RecyclerView.ViewHolder impleme
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         menu.setHeaderTitle(R.string.export_config_title);
-        menu.add(Menu.NONE, R.id.ctx_menu_export_cloud, Menu.NONE, R.string.export_config_cloud)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            menu.setGroupDividerEnabled(true);
+        }
+
+        menu.add(Menu.FIRST, R.id.ctx_menu_export_cloud, Menu.NONE, R.string.export_config_cloud)
                 .setEnabled(AppSettings.getINSTANCE().isConnected());
-        menu.add(Menu.NONE, R.id.ctx_menu_export_new_file, Menu.NONE, R.string.export_config_new_file);
-        menu.add(Menu.NONE, R.id.ctx_menu_export_existing_file, Menu.NONE, R.string.export_config_existing_file);
+        menu.add(Menu.FIRST, R.id.ctx_menu_export_new_file, Menu.NONE, R.string.export_config_new_file);
+        menu.add(Menu.FIRST, R.id.ctx_menu_export_existing_file, Menu.NONE, R.string.export_config_existing_file);
+
+        menu.add(Menu.CATEGORY_SECONDARY, R.id.ctx_menu_delete_config, Menu.NONE, R.string.delete_config);
     }
 }

@@ -39,4 +39,14 @@ public interface ConfigProvider {
      * @param errorCallback The function called if saving failed
      */
     void savePackage(Context context, ConfroidPackage confroidPackage, Consumer<String> successCallback, Consumer<String> errorCallback);
+
+    /**
+     * Removes the package to where it has been retrieved.
+     *
+     * @param context A context to remove data
+     * @param confroidPackage The package to remove
+     * @param successCallback The function called when data is removed successfully
+     * @param errorCallback The function called if removing failed
+     */
+    void removePackage(Context context, ConfroidPackage confroidPackage, Consumer<String> successCallback, Consumer<String> errorCallback);
 }

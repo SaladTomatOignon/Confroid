@@ -101,6 +101,9 @@
     <string name="export_config_cloud">To the cloud</string>
     <string name="export_config_new_file">To a new file</string>
     <string name="export_config_existing_file">To an existing file</string>
+    <string name="delete_config">Delete configuration</string>
+    <string name="delete_config_success">Configuration successfully deleted</string>
+    <string name="delete_config_error">Error while removing configuration</string>
     <string name="add">Add</string>
     <string name="hint_phone_number">Phone number</string>
     <string name="label_pick_contact">Pick contact</string>

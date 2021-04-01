@@ -292,6 +292,29 @@ public class Client {
     }
 
     /**
+     * Deletes a config according to the name and the version given in arguments.
+     *
+     * @param name The config name to delete
+     * @param version The version to delete
+     * @param listener The success callback
+     * @param errorListener The error callback
+     * @return True if the request has been sent, false otherwise
+     */
+    public boolean deleteConfig(String name, int version, Response.Listener<CryptedConfroidPackage> listener, Response.ErrorListener errorListener) {
+        String url = String.join("/", baseAddress(), "configurations", name, String.valueOf(version));
+
+        try {
+            JsonConfroidPackageRequest request = new JsonConfroidPackageRequest(Request.Method.DELETE, url, null, listener, errorListener);
+            queue.add(request);
+        } catch (Exception e) {
+            Log.e("Error while deleting config from web service", e.getMessage() + " Address: " + url);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Decrypts the given configuration using the client secret key.
      *
      * @param cryptedConfig The crypted configuration

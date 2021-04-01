@@ -65,4 +65,7 @@
     <string name="label_create">Créer</string>
     <string name="hint_phone_number">Numéro de téléphone</string>
     <string name="label_pick_contact">Sélectionner</string>
+    <string name="delete_config">Supprimer la configuration</string>
+    <string name="delete_config_success">Configuration supprimée avec succes</string>
+    <string name="delete_config_error">Erreur lors de la suppression de la configuration</string>
 </resources>

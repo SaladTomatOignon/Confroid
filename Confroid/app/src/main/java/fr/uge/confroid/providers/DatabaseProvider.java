@@ -26,19 +26,51 @@ public class DatabaseProvider implements ConfigProvider {
 
     @Override
     public void getNames(Context context, Consumer<List<String>> callback, Consumer<String> errorCallback) {
-        ConfroidDatabase.exec(context, dao -> callback.accept(dao.findAllNames()));
+        try {
+            ConfroidDatabase.exec(context, dao -> callback.accept(dao.findAllNames()));
+        } catch (Exception e) {
+            if (!Objects.isNull(errorCallback)) {
+                errorCallback.accept(e.getMessage());
+            }
+        }
     }
 
     @Override
     public void getPackagesByName(String name, Context context, Consumer<List<ConfroidPackage>> callback, Consumer<String> errorCallback) {
-        ConfroidDatabase.exec(context, dao -> callback.accept(dao.findAllVersions(name)));
+        try {
+            ConfroidDatabase.exec(context, dao -> callback.accept(dao.findAllVersions(name)));
+        } catch (Exception e) {
+            if (!Objects.isNull(errorCallback)) {
+                errorCallback.accept(e.getMessage());
+            }
+        }
     }
 
     @Override
     public void savePackage(Context context, ConfroidPackage confroidPackage, Consumer<String> successCallback, Consumer<String> errorCallback) {
-        ConfroidDatabase.exec(context, dao -> dao.update(confroidPackage));
-        if (successCallback != null) {
-            successCallback.accept("Ok");
+        try {
+            ConfroidDatabase.exec(context, dao -> dao.update(confroidPackage));
+            if (!Objects.isNull(successCallback)) {
+                successCallback.accept("Ok");
+            }
+        } catch (Exception e) {
+            if (!Objects.isNull(errorCallback)) {
+                errorCallback.accept(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void removePackage(Context context, ConfroidPackage confroidPackage, Consumer<String> successCallback, Consumer<String> errorCallback) {
+        try {
+            ConfroidDatabase.exec(context, dao -> dao.delete(confroidPackage));
+            if (!Objects.isNull(successCallback)) {
+                successCallback.accept("Ok");
+            }
+        } catch (Exception e) {
+            if (!Objects.isNull(errorCallback)) {
+                errorCallback.accept(e.getMessage());
+            }
         }
     }
 }

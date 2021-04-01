@@ -35,7 +35,9 @@ public class ConfigVersionsActivity extends AppCompatActivity {
     private static final String SOURCE_KEYWORD = "EXTRA_DATA_SOURCE";
     private ConfigVersionListAdapter adapter;
     private List<ConfroidPackage> confroidPackages;
+    private List<ConfigVersionListItem> recyclerItems;
     private ConfroidPackage packageToExport;
+    private ProviderType providerType;
 
     public static void present(Context context, String name, ProviderType source) {
         Intent intent = new Intent(context, ConfigVersionsActivity.class);
@@ -64,7 +66,7 @@ public class ConfigVersionsActivity extends AppCompatActivity {
             finish();
             return;
         }
-        ProviderType providerType = ProviderType.valueOf(dataSourceName);
+        this.providerType = ProviderType.valueOf(dataSourceName);
 
         getSupportActionBar().setTitle(name);
 
@@ -77,18 +79,18 @@ public class ConfigVersionsActivity extends AppCompatActivity {
 
         confroidPackages = new ArrayList<>();
         providerType.getProvider().getPackagesByName(name, this, versions -> {
-                    List<ConfigVersionListItem> items = versions
+                    this.recyclerItems = versions
                             .stream()
                             .sorted((a, b) -> b.getDate().compareTo(a.getDate()))
                             .map(version -> ConfigVersionListItem.create(this, version, providerType))
                             .collect(Collectors.toList());
 
-                    if (items.isEmpty()) {
+                    if (recyclerItems.isEmpty()) {
                         emptyState.setVisibility(View.VISIBLE);
                     }
 
                     confroidPackages.addAll(versions);
-                    adapter = new ConfigVersionListAdapter(items);
+                    adapter = new ConfigVersionListAdapter(recyclerItems);
 
                     recycler.setAdapter(adapter);
                 },
@@ -105,6 +107,9 @@ public class ConfigVersionsActivity extends AppCompatActivity {
             return super.onContextItemSelected(item);
         }
 
+        // Starting from the end because the list is reversed (descending version order)
+        position = confroidPackages.size() - 1 - position;
+
         switch (item.getItemId()) {
             case R.id.ctx_menu_export_cloud:
                 exportConfigToCloud(confroidPackages.get(position));
@@ -114,6 +119,12 @@ public class ConfigVersionsActivity extends AppCompatActivity {
                 break;
             case R.id.ctx_menu_export_existing_file:
                 exportToExistingFile(confroidPackages.get(position));
+                break;
+            case R.id.ctx_menu_delete_config:
+                removePackage(confroidPackages.get(position));
+                // Reestablishing "real" order for recycler items
+                this.recyclerItems.remove(confroidPackages.size() - 1 - position);
+                this.adapter.notifyDataSetChanged();
                 break;
         }
 
@@ -145,6 +156,18 @@ public class ConfigVersionsActivity extends AppCompatActivity {
     private void exportToExistingFile(ConfroidPackage pkg) {
         this.packageToExport = pkg;
         ConfroidStorage.performFileSearch(this);
+    }
+
+    private void removePackage(ConfroidPackage pkg) {
+        this.providerType.getProvider().removePackage(
+                this,
+                pkg,
+                msg -> Toast.makeText(this, R.string.delete_config_success, Toast.LENGTH_SHORT).show(),
+                errMsg -> {
+                    Toast.makeText(this, R.string.delete_config_error, Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error while removing a config : " + errMsg);
+                }
+        );
     }
 
     @Override

@@ -130,6 +130,35 @@ public class ConfroidStorage {
     }
 
     /**
+     * Removes a configuration from the file specified by the Uri,
+     * according to the given name and version.
+     * It has no effect if the package does not exist.
+     *
+     * @param name The name of the configuration to remove
+     * @param version The version of the configuration to remove
+     * @param uri The URI to the file to update
+     * @param context A context to perform I/O operations
+     * @return True if the configuration has been removed, false otherwise
+     * @throws IOException if an I/O error occurs
+     */
+    public static boolean deleteConfig(String name, int version, Uri uri, Context context) throws IOException {
+        Map<String, Map<Integer, TagDateConfig>> collection = readRawConfigs(uri, context);
+        if (Objects.isNull(collection)) {
+            collection = new HashMap<>();
+        }
+        boolean removed = removePackageFromCollection(collection, name, version);
+
+        new File(uri.getPath()).delete();
+
+        try (OutputStream outputStream = context.getContentResolver().openOutputStream(uri)) {
+            Gson gson = new GsonBuilder().registerTypeAdapter(Configuration.class, new ConfigSerializer()).create();
+            outputStream.write(gson.toJson(collection).getBytes(StandardCharsets.UTF_8.name()));
+        }
+
+        return removed;
+    }
+
+    /**
      * Add a package to the collection.
      * If the version of the package already exists, the existing package is updated.
      *
@@ -155,6 +184,24 @@ public class ConfroidStorage {
             collection.put(pkg.getName(), versionPkg);
             return false;
         }
+    }
+
+    /**
+     * Removes a package where the name and version is given from the collection.
+     * It has no effect if the package does not exist.
+     *
+     * @param collection The collection where to remove the package
+     * @param name The name of the package to remove
+     * @param version The version of the package to remove
+     * @return True if the package has been removed, false otherwise
+     */
+    private static boolean removePackageFromCollection(Map<String, Map<Integer, TagDateConfig>> collection, String name, int version) {
+        if (collection.containsKey(name)) {
+            Map<Integer, TagDateConfig> versionPkg = collection.get(name);
+            return !Objects.isNull(versionPkg.remove(version));
+        }
+
+        return false;
     }
 
     /**
