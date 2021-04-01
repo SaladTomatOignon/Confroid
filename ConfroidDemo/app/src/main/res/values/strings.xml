@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">ConfroidDemo</string>
+    <string name="app_name">Confroid Demo</string>
+    <string name="action_settings">Settings</string>
+    <string name="content_description">Application test for Confroid.\n\nHere you can store or edit some demo values (ShoppingPreferences, Map, Array ...)\n\nYou can create your own object and send it with ConfroidUtils methods.\n\nThe only constraint is that map keys must be of type String</string>
+    <string name="store_description">Store some objects into Confroid</string>
+    <string name="edit_description">Edit Shopping Preferences</string>
+    <string name="update_description">Update Shopping Preferences</string>
 </resources>
