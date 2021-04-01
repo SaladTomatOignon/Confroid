@@ -22,6 +22,8 @@ public interface ConfigRepo extends CrudRepository<Configuration, Long> {
 
     void deleteByName(String name);
 
+    void deleteByNameAndVersion(String name, int version);
+
     boolean existsByNameAndVersion(String name, int version);
 
     boolean existsByNameAndTag(String name, String tag);

@@ -58,4 +58,11 @@ public class ConfigController {
 
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{name}/{version}")
+    public ResponseEntity<Void> deleteConfig(@PathVariable String name, @PathVariable int version) {
+        configService.deleteByName(name);
+
+        return ResponseEntity.ok().build();
+    }
 }

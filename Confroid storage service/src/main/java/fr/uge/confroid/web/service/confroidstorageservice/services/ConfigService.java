@@ -52,4 +52,8 @@ public class ConfigService {
     public void deleteByName(String name) {
         repository.deleteByName(name);
     }
+
+    public void deleteByNameAndVersion(String name, int version) {
+        repository.deleteByNameAndVersion(name, version);
+    }
 }
