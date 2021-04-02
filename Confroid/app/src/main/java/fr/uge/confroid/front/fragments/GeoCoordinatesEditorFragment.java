@@ -3,6 +3,8 @@ package fr.uge.confroid.front.fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -30,7 +32,7 @@ import fr.uge.confroid.front.models.EditorArgs;
 import fr.uge.confroid.front.models.EditorOpener;
 import fr.uge.confroidlib.annotations.GeoCoordinates;
 
-public class GeoCoordinatesEditorFragment extends EditorFragment {
+public class GeoCoordinatesEditorFragment extends EditorFragment implements LocationListener {
     public static class Opener implements EditorOpener {
         @Override
         public boolean canHandle(EditorArgs args) {
@@ -51,6 +53,9 @@ public class GeoCoordinatesEditorFragment extends EditorFragment {
     private EditText inputLongitude;
     private List<Value> editableEntries;
     private List<Value> unEditableEntries;
+    private LocationManager locationManager;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -109,6 +114,8 @@ public class GeoCoordinatesEditorFragment extends EditorFragment {
 
         Button button = view.findViewById(R.id.btn_pick_location);
         button.setOnClickListener(__ -> ensureLocationPermissionThenReadLocation());
+
+        locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
     }
 
 
@@ -126,6 +133,13 @@ public class GeoCoordinatesEditorFragment extends EditorFragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        inputLatitude.setText(String.valueOf(location.getLatitude()));
+        inputLongitude.setText(String.valueOf(location.getLongitude()));
+        locationManager.removeUpdates(this);
+    }
 
     @Override
     public void onUpdateArgs(EditorArgs args) {
@@ -160,9 +174,6 @@ public class GeoCoordinatesEditorFragment extends EditorFragment {
 
         // The permission is already granted.
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, location -> {
-            inputLatitude.setText(String.valueOf(location.getLatitude()));
-            inputLongitude.setText(String.valueOf(location.getLongitude()));
-        });
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this);
     }
 }
