@@ -120,7 +120,7 @@ public class ArrayEditorFragment extends EditorFragment {
     }
 
     private void updateAndRefresh() {
-        entries.addAll(arrayValue.nonEditableEntries());
+        entries.addAll(arrayValue.unEditableEntries());
         updateValue(new ArrayValue(entries.toArray(new Value[0])), true);
     }
 

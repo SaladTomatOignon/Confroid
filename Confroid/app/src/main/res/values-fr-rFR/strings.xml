@@ -58,7 +58,8 @@
     <string name="error_range_validation">La valeur doit être compris dans l\'interval [%s, %s]</string>
     <string name="error_pattern_validation">La valeur doit matcher avec le pattern “%s”</string>
     <string name="error_class_validation">La valeur doit être validée par le validateur “%s”</string>
-    <string name="error_missing_contact_permission">Vous devez d\'abord autoriser confroid à accéder à votre liste de contacts !</string>
+    <string name="error_contact_permission">Vous devez autoriser confroid à accéder à votre liste de contacts !</string>
+    <string name="error_location_permission">Vous devez autoriser confroid à accéder à votre position !</string>
     <string name="add">Ajouter</string>
     <string name="title_activity_explore">Explorer</string>
     <string name="title_dialog_create_value">Ajouter une valeur</string>
@@ -66,6 +67,9 @@
     <string name="label_create">Créer</string>
     <string name="hint_phone_number">Numéro de téléphone</string>
     <string name="label_pick_contact">Sélectionner</string>
+    <string name="label_my_location">Ma Position</string>
+    <string name="hint_latitude">Latitude</string>
+    <string name="hint_longitude">Longitude</string>
     <string name="delete_config">Supprimer la configuration</string>
     <string name="delete_config_success">Configuration supprimée avec succes</string>
     <string name="delete_config_error">Erreur lors de la suppression de la configuration</string>

@@ -29,7 +29,7 @@ public class ArrayValue implements Value {
      * Gets the values of this array containing confroid keywords.
      * @return A list of the values.
      */
-    public List<Value> nonEditableEntries() {
+    public List<Value> unEditableEntries() {
         return Arrays.stream(values)
                 .filter(v -> v.isString() &&
                         BundleUtils.confroidKeywords().stream().anyMatch(

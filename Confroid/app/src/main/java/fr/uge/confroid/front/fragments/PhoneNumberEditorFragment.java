@@ -3,12 +3,10 @@ package fr.uge.confroid.front.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
@@ -22,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import fr.uge.confroid.R;
 import fr.uge.confroid.configuration.StringValue;
@@ -44,10 +43,11 @@ public class PhoneNumberEditorFragment extends EditorFragment implements TextWat
         }
     }
 
-    private final int INTENT_READ_CONTACTS = 10;
-    private final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    private final int READ_CONTACT_INTENT_CODE = 10;
+    private final int READ_CONTACT_PERMISSION_CODE = 20;
 
     private EditText input;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -61,26 +61,28 @@ public class PhoneNumberEditorFragment extends EditorFragment implements TextWat
         input.addTextChangedListener(this);
 
         Button button = view.findViewById(R.id.btn_pick_contact);
-        button.setOnClickListener(__ -> setInputFromContacts());
+        button.setOnClickListener(__ -> ensureContactPermissionThenPickContact());
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == INTENT_READ_CONTACTS && resultCode == Activity.RESULT_OK) {
-            retrieveContactNumber(data.getData());
+        if (requestCode == READ_CONTACT_INTENT_CODE && resultCode == Activity.RESULT_OK) {
+            onPickContact(data.getData());
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setInputFromContacts();
+        if (requestCode == READ_CONTACT_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                ensureContactPermissionThenPickContact();
             } else {
-                Toast.makeText(getContext(), R.string.error_missing_contact_permission, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.error_contact_permission, Toast.LENGTH_SHORT).show();
             }
+            return;
         }
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -108,28 +110,12 @@ public class PhoneNumberEditorFragment extends EditorFragment implements TextWat
     }
 
 
-    private void setInputFromContacts() {
-        Context context = getContext();
-        // Check the SDK version and whether the permission is already granted or not.
-        if (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-            context.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(new String[] { Manifest.permission.READ_CONTACTS }, PERMISSIONS_REQUEST_READ_CONTACTS);
-            // wait for onRequestPermissionsResult()
-        } else {
-            // Android version is lesser than 6.0 or the permission is already granted.
-            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-            startActivityForResult(intent, INTENT_READ_CONTACTS);
-        }
-    }
-
-    private void retrieveContactNumber(Uri uriContact) {
+    private void onPickContact(Uri uri) {
         String contactNumber = null;
         ContentResolver contentResolver = getContext().getContentResolver();
 
         Cursor cursorID = contentResolver.query(
-            uriContact,
+            uri,
             new String[]{ ContactsContract.Contacts._ID },
             null, null, null
         );
@@ -155,7 +141,19 @@ public class PhoneNumberEditorFragment extends EditorFragment implements TextWat
 
         cursorPhone.close();
 
-        Toast.makeText(getContext(), "Contact Phone Number: " + contactNumber, Toast.LENGTH_LONG).show();
         input.setText(contactNumber);
+    }
+
+    private void ensureContactPermissionThenPickContact() {
+        // Check whether the permission is already granted or not.
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] { Manifest.permission.READ_CONTACTS }, READ_CONTACT_PERMISSION_CODE);
+            // wait for onRequestPermissionsResult()
+            return;
+        }
+
+        // The permission is already granted.
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+        startActivityForResult(intent, READ_CONTACT_INTENT_CODE);
     }
 }

@@ -3,6 +3,7 @@ package fr.uge.confroid.front;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.Objects;
 import fr.uge.confroidlib.ConfroidUtils;
 import fr.uge.confroidlib.annotations.ClassValidator;
 import fr.uge.confroidlib.annotations.Description;
+import fr.uge.confroidlib.annotations.GeoCoordinates;
 import fr.uge.confroidlib.annotations.PhoneNumber;
 import fr.uge.confroidlib.annotations.RangeValidator;
 import fr.uge.confroidlib.annotations.RegexValidator;
@@ -43,6 +45,9 @@ public class Demo {
 
         Contact contact = new Contact("0623465179");
         ConfroidUtils.saveConfiguration(context, "contact", contact, "stable");
+
+        Location location = new Location(48.8706298f, 2.3169336f);
+        ConfroidUtils.saveConfiguration(context, "location", location, "stable");
     }
 
     public static class Contact {
@@ -69,6 +74,27 @@ public class Demo {
         }
     }
 
+    public static class Location {
+        @GeoCoordinates
+        public float[] coordinates;
+
+        public Location(float latitude, float longitude) {
+            coordinates = new float[] { latitude, longitude };
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Location location = (Location) o;
+            return Arrays.equals(coordinates, location.coordinates);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(coordinates);
+        }
+    }
     public static class BillingDetails {
 
         @Description(description = "Titulaire de la carte")

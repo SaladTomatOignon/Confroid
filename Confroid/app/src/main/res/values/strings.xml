@@ -12,11 +12,18 @@
     <string name="label_cancel">Cancel</string>
     <string name="label_no_result">No result !</string>
     <string name="label_already_exists">There is already an entry with this name</string>
+    <string name="label_pick_contact">Pick contact</string>
+    <string name="label_my_location">My Location</string>
+
+    <string name="hint_phone_number">Phone number</string>
+    <string name="hint_latitude">Latitude</string>
+    <string name="hint_longitude">Longitude</string>
 
     <string name="error_range_validation">Value must be in the range [%s, %s]</string>
     <string name="error_pattern_validation">Value must matches with the pattern “%s”</string>
     <string name="error_class_validation">Value must matches with the validator “%s”</string>
-    <string name="error_missing_contact_permission">You must grant the permission to confroid to read your contacts !</string>
+    <string name="error_contact_permission">You must grant the permission to confroid to read your contacts !</string>
+    <string name="error_location_permission">You must grant the permission to confroid to read your location !</string>
 
     <string name="title_rename">Type a new name</string>
     <string name="explore">Explore</string>
@@ -106,6 +113,4 @@
     <string name="delete_config_success">Configuration successfully deleted</string>
     <string name="delete_config_error">Error while removing configuration</string>
     <string name="add">Add</string>
-    <string name="hint_phone_number">Phone number</string>
-    <string name="label_pick_contact">Pick contact</string>
 </resources>
