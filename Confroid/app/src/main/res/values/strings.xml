@@ -16,6 +16,7 @@
     <string name="error_range_validation">Value must be in the range [%s, %s]</string>
     <string name="error_pattern_validation">Value must matches with the pattern “%s”</string>
     <string name="error_class_validation">Value must matches with the validator “%s”</string>
+    <string name="error_missing_contact_permission">You must grant the permission to confroid to read your contacts !</string>
 
     <string name="title_rename">Type a new name</string>
     <string name="explore">Explore</string>

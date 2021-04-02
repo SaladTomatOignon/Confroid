@@ -58,6 +58,7 @@
     <string name="error_range_validation">La valeur doit être compris dans l\'interval [%s, %s]</string>
     <string name="error_pattern_validation">La valeur doit matcher avec le pattern “%s”</string>
     <string name="error_class_validation">La valeur doit être validée par le validateur “%s”</string>
+    <string name="error_missing_contact_permission">Vous devez d\'abord autoriser confroid à accéder à votre liste de contacts !</string>
     <string name="add">Ajouter</string>
     <string name="title_activity_explore">Explorer</string>
     <string name="title_dialog_create_value">Ajouter une valeur</string>
