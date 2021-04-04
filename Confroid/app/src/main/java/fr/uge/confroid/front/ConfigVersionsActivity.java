@@ -81,7 +81,7 @@ public class ConfigVersionsActivity extends AppCompatActivity {
         providerType.getProvider().getPackagesByName(name, this, versions -> {
                     this.recyclerItems = versions
                             .stream()
-                            .sorted((a, b) -> b.getDate().compareTo(a.getDate()))
+                            .sorted((a, b) -> b.getVersion() - a.getVersion())
                             .map(version -> ConfigVersionListItem.create(this, version, providerType))
                             .collect(Collectors.toList());
 

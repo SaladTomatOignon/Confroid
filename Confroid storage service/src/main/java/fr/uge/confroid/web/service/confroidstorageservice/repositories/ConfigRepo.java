@@ -14,11 +14,14 @@ import java.util.Optional;
 @Repository
 public interface ConfigRepo extends CrudRepository<Configuration, Long> {
 
+    @Query("SELECT DISTINCT name FROM Configurations")
+    List<String> getAllNames();
+
     Optional<Configuration> findByNameAndVersion(String name, int version);
 
     Optional<Configuration> findByNameAndTag(String name, String tag);
 
-    List<Configuration> findByName(String name);
+    List<Configuration> findByNameOrderByVersionAsc(String name);
 
     void deleteByName(String name);
 

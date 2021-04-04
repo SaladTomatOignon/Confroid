@@ -17,8 +17,8 @@ public class ConfigService {
     @Autowired
     private ConfigRepo repository;
 
-    public List<Configuration> findAll() {
-        return (List<Configuration>) repository.findAll();
+    public List<String> getAllNames() {
+        return repository.getAllNames();
     }
 
     public Configuration saveOrUpdate(Configuration config) {
@@ -38,7 +38,7 @@ public class ConfigService {
     }
 
     public List<Configuration> findByName(String name) {
-        return repository.findByName(name);
+        return repository.findByNameOrderByVersionAsc(name);
     }
 
     public Optional<Configuration> findByNameAndVersion(String name, int version) {

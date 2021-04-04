@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
@@ -212,7 +213,7 @@ public class Client {
     }
 
     /**
-     * Retrieves all versions stored in the web service.
+     * Retrieves all configurations names stored in the web service.
      * Requires authentication.
      * Asynchronous.
      *
@@ -220,9 +221,9 @@ public class Client {
      * @param errorListener The error callback
      * @return True if the request has been sent, false otherwise
      */
-    public boolean getAllConfigs(Response.Listener<List<CryptedConfroidPackage>> listener, Response.ErrorListener errorListener) {
+    public boolean getAllConfigsName(Response.Listener<List<String>> listener, Response.ErrorListener errorListener) {
         String url = String.join("/", baseAddress(), "configurations/");
-        return sendGetRequestList(url, listener, errorListener);
+        return sendGetRequestListString(url, listener, errorListener);
     }
 
     /**
@@ -270,6 +271,28 @@ public class Client {
     }
 
     /**
+     * Sends a GET request to the specified url.
+     * Response json format should be a list of Strings
+     * Asynchronous.
+     *
+     * @param url The url to send the GET request
+     * @param listener The success callback
+     * @param errorListener The error callback
+     * @return True if the request has been sent, false otherwise
+     */
+    private boolean sendGetRequestListString(String url, Response.Listener<List<String>> listener, Response.ErrorListener errorListener) {
+        try {
+            JsonStringsRequest request = new JsonStringsRequest(Request.Method.GET, url, null, listener, errorListener);
+            queue.add(request);
+        } catch (Exception e) {
+            Log.e("Error while getting configs names from web service", e.getMessage() + " Address: " + url);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Deletes all configs with the given name from the web service.
      *
      * @param name The configs name to delete
@@ -300,11 +323,11 @@ public class Client {
      * @param errorListener The error callback
      * @return True if the request has been sent, false otherwise
      */
-    public boolean deleteConfig(String name, int version, Response.Listener<CryptedConfroidPackage> listener, Response.ErrorListener errorListener) {
+    public boolean deleteConfig(String name, int version, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         String url = String.join("/", baseAddress(), "configurations", name, String.valueOf(version));
 
         try {
-            JsonConfroidPackageRequest request = new JsonConfroidPackageRequest(Request.Method.DELETE, url, null, listener, errorListener);
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.DELETE, url, null, listener, errorListener);
             queue.add(request);
         } catch (Exception e) {
             Log.e("Error while deleting config from web service", e.getMessage() + " Address: " + url);

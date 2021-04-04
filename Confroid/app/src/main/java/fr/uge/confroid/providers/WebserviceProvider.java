@@ -39,11 +39,8 @@ public class WebserviceProvider implements ConfigProvider {
             return;
         }
 
-        Client.getInstance().getAllConfigs(
-                (cryptedList) ->
-                        callback.accept(cryptedList.stream()
-                                .map(CryptedConfroidPackage::getName)
-                                .collect(Collectors.toList())),
+        Client.getInstance().getAllConfigsName(
+                callback::accept,
                 (error) ->
                         Log.w(TAG, error));
     }

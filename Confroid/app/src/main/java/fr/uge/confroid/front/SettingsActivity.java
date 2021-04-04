@@ -20,6 +20,7 @@ import fr.uge.confroid.settings.Language;
 
 public class SettingsActivity extends AppCompatActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +41,9 @@ public class SettingsActivity extends AppCompatActivity implements
         }
 
         // Listen preferences on change
+        listener = this::preferenceOnChange;
         PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(this::preferenceOnChange);
+                .registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void preferenceOnChange(SharedPreferences preferences, String key) {

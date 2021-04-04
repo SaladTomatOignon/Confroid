@@ -20,12 +20,10 @@ public class ConfigController {
 
     @Autowired
     private ConfigService configService;
-    @Autowired
-    private UserService userService;
 
     @GetMapping()
-    public ResponseEntity<List<Configuration>> getAllConfigs() {
-        return ResponseEntity.ok(configService.findAll());
+    public ResponseEntity<List<String>> getAllNames() {
+        return ResponseEntity.ok(configService.getAllNames());
     }
 
     @GetMapping("/{name}")
@@ -53,16 +51,16 @@ public class ConfigController {
     }
 
     @DeleteMapping("/{name}")
-    public ResponseEntity<Void> deleteConfig(@PathVariable String name) {
+    public ResponseEntity<String> deleteConfig(@PathVariable String name) {
         configService.deleteByName(name);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("{name:" + name + "}");
     }
 
     @DeleteMapping("/{name}/{version}")
-    public ResponseEntity<Void> deleteConfig(@PathVariable String name, @PathVariable int version) {
-        configService.deleteByName(name);
+    public ResponseEntity<String> deleteConfig(@PathVariable String name, @PathVariable int version) {
+        configService.deleteByNameAndVersion(name, version);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("{name:" + name + ", version:" + version + "}");
     }
 }
