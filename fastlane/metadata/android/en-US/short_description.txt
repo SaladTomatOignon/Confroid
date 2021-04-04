@@ -1,0 +1,1 @@
+Android storage application and centralized configuration management library

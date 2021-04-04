@@ -1,0 +1,1 @@
+Application Android et bibliothèque de gestion centralisée de configurations
