@@ -10,7 +10,7 @@
   <p align="center">
     Android storage application and centralized configuration management library
     <br />
-    <a href="https://github.com/SaladTomatOignon/Confroid/Documentation"><strong>Go to the documentation »</strong></a>
+    <a href="https://github.com/SaladTomatOignon/Confroid/tree/main/Documentation"><strong>Go to the documentation »</strong></a>
     <br />
     <br />
     <a href="https://github.com/SaladTomatOignon/Confroid/tree/main/Confroid%20storage%20service">Web service</a>
@@ -19,7 +19,7 @@
     ·
     <a href="https://github.com/SaladTomatOignon/Confroid/tree/main/ConfroidDemo">Demo application</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report bug</a>
+    <a href="https://github.com/SaladTomatOignon/Confroid/issues">Report bug</a>
   </p>
 </p>
 
@@ -127,7 +127,7 @@ Or build and run it from an IDE like IntelliJ.
 When the Confroid application and the web service are started, you can link the both applications from Confroid in the settings view.
 On the URL field, type your IP address, in the username and password fields, type informations that are stored in the web service database, you will have to create a user if none exist (a demo dump database is provided).
 
-_For more details, please refer to the [Documentation](https://github.com/SaladTomatOignon/Confroid/Documentation)_.
+_For more details, please refer to the [Documentation](https://github.com/SaladTomatOignon/Confroid/tree/main/Documentation)_.
 
 The web service connection is optional and it does not prevent you to use Confroid if you don't want to use it.
 
@@ -135,7 +135,7 @@ The web service connection is optional and it does not prevent you to use Confro
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/SaladTomatOignon/Confroid/issues) for a list of proposed features (and known issues).
 
 
 <!-- CONTRIBUTING -->
